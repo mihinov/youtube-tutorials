@@ -1,15 +1,23 @@
 # YouTube туториалы
 ## Тут собраны ссылки на мои проекты с ютуба
 
+<br>
+
 ### youtube-gsap-circle
 
-[youtube-tutorials/youtube-gsap-circle](https://mihinov.github.io/youtube-tutorials/youtube-gsap-circle/)
+[Сайт](https://mihinov.github.io/youtube-tutorials/youtube-gsap-circle/)
 
-[https://youtube.com/watch?v=FsYO00DZZXM](https://youtube.com/watch?v=FsYO00DZZXM)
+[Видео](https://youtube.com/watch?v=FsYO00DZZXM)
+
+[Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-gsap-circle)
+
+<br>
 
 ### youtube-perspective-card
 
-[youtube-tutorials/youtube-perspective-card](https://mihinov.github.io/youtube-tutorials/youtube-perspective-card/)
+[Сайт](https://mihinov.github.io/youtube-tutorials/youtube-perspective-card/)
 
-[https://youtube.com/watch?v=FsYO00DZZXM](https://youtube.com/watch?v=j0i9rG-YFz4&feature=shares)
+[Видео](https://youtube.com/watch?v=j0i9rG-YFz4&feature=shares)
+
+[Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-perspective-card)
 
