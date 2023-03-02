@@ -4,7 +4,9 @@
   "description": "",
   "scripts": {
     "start": "parcel ./index.html --open",
-    "build": "parcel build ./youtube-gsap-circle/index.html --public-url ./ --dist-dir dist/youtube-gsap-circle && parcel build youtube-perspective-card/index.html --public-url ./ --dist-dir dist/youtube-perspective-card"
+		"build:gsap-circle": "parcel build ./youtube-gsap-circle/index.html --public-url ./ --dist-dir dist/youtube-gsap-circle",
+		"build:perspective-card": "parcel build youtube-perspective-card/index.html --public-url ./ --dist-dir dist/youtube-perspective-card",
+    "build": "npm run build:gsap-circle && npm run build:perspective-card"
   },
   "author": "",
   "license": "ISC",
