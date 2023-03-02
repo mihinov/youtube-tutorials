@@ -1,0 +1,52 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: rgb(41, 41, 41);
+}
+
+.progressbar {
+	max-width: 450px;
+	display: block;
+	font-size: 10px;
+	--color: rgb(0, 186, 16);
+	--percent: 0;
+	--r: 30;
+	--PI: 3.14;
+	--lengthCircle: calc(2 * var(--PI) * var(--r));
+	--opacityThumb: 0;
+}
+
+.progressbar circle {
+	r: var(--r);
+	stroke-width: 2;
+	fill: transparent;
+}
+
+.progressbar__track {
+	stroke: #ededed;
+}
+
+.progressbar__thumb {
+	stroke: var(--color);
+	stroke-dasharray: calc( var(--lengthCircle) * var(--percent) / 100 ) var(--lengthCircle);
+	stroke-linecap: round;
+	transform-origin: center;
+  transform-box: fill-box;
+	transform: rotate(-90deg);
+	opacity: var(--opacityThumb);
+}
+
+.progressbar text {
+  fill: var(--color);
+}
+
+.progressbar__percent {
+  font-size: 1.6em;
+}
