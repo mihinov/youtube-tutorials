@@ -3,6 +3,22 @@ on:
   push:
     branches:
       - master
+
+permissions:
+  id-token: write
+  contents: write
+  actions: write
+  checks: write
+  deployments: write
+  discussions: write
+  issues: write
+  pages: read
+  packages: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  statuses: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -12,20 +28,6 @@ jobs:
         node-version: [18.x]
 
     steps:
-      permissions:
-        id-token: write
-        contents: write
-        actions: write
-        checks: write
-        deployments: write
-        discussions: write
-        issues: write
-        pages: read
-        packages: write
-        pull-requests: write
-        repository-projects: write
-        security-events: write
-        statuses: write
 
       - uses: actions/checkout@v2
 
