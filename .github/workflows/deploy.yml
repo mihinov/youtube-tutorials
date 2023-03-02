@@ -1,4 +1,4 @@
-name: Angular GitHub CI/CD
+name: Deploy Parcel
 on:
   push:
     branches:
@@ -27,10 +27,10 @@ jobs:
 
       - name: Build
         run: |
-          npm run build:github
+          npm run build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.2.3
         with:
           branch: gh-pages # The branch the action should deploy to.
-          folder: dist/test-news # The folder the action should deploy.
+          folder: dist # The folder the action should deploy.
