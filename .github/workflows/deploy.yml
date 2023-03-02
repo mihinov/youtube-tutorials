@@ -12,6 +12,11 @@ jobs:
         node-version: [18.x]
 
     steps:
+      permissions:
+        contents: write
+        issues: write
+        pull-requests: write
+
       - uses: actions/checkout@v2
 
       - name: Use Node.js ${{ matrix.node-version }}
