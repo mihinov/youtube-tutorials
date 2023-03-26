@@ -39,7 +39,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/youtube-angular-tree",
+            "outputPath": "../dist/youtube-angular-tree",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
