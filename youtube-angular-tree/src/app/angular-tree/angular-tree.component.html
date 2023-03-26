@@ -13,8 +13,9 @@
           (click)="expandNodeToggle(node)"
         ></div>
 
-        <label for="" class="label" [attr.id]="node.id">
+        <label [for]="'checkbox-' + node.id" class="label" [attr.id]="node.id">
           <input
+						[id]="'checkbox-' + node.id"
             type="checkbox"
             [indeterminate]="isNodeIndeterminate(node)"
             [checked]="isNodeChecked(node)"
