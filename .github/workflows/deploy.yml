@@ -1,4 +1,4 @@
-name: Deploy Parcel
+name: Deploy Youtube-tutorials
 on:
   push:
     branches:
