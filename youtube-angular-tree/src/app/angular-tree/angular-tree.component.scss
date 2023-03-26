@@ -1,0 +1,177 @@
+:host {
+	--size: 2;
+	--sizeCheckbox: 16px;
+
+	display: block;
+	font-size: calc(1rem * var(--size));
+}
+
+@property --opacityBoxShadow {
+	syntax: "<number>";
+  inherits: false;
+  initial-value: inherit;
+}
+
+@property --sizeBoxShadow {
+	syntax: "<number>";
+  inherits: false;
+  initial-value: inherit;
+}
+
+@property --size {
+	syntax: "<number>";
+  inherits: false;
+  initial-value: inherit;
+}
+
+label {
+	display: inline-flex;
+	align-items: center;
+	gap: calc(var(--sizeCheckbox) * var(--size) * 0.4);
+	color: var(--color);
+	cursor: pointer;
+}
+
+ul {
+	padding-left: calc(var(--sizeCheckbox) * var(--size) * 2);
+}
+
+.label-wrapper {
+	display: flex;
+	align-items: center;
+	gap: calc(var(--sizeCheckbox) * var(--sze));
+	margin-bottom: var(--sizeCheckbox);
+	user-select: none;
+	position: relative;
+}
+
+/* Стили для unchecked */
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 2px solid var(--color);
+  border-radius: 3px;
+	--width: calc(var(--sizeCheckbox) * var(--size));
+  min-width: var(--width);
+	max-width: var(--width);
+  height: var(--width);
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+	overflow: hidden;
+}
+
+input[type="checkbox"]::before {
+	content: '';
+	opacity: 0;
+	position: absolute;
+	text-align: center;
+	transition: opacity 0.3s ease;
+}
+
+/* Стили для checked */
+input[type="checkbox"]:checked::before {
+  content: '\2714';
+  font-size: calc(var(--sizeCheckbox) * 0.75 * var(--size));
+  color: var(--color);
+  line-height: calc(var(--sizeCheckbox) * var(--size) * 0.92);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+	opacity: 1;
+}
+
+/* Стили для indeterminate */
+input[type="checkbox"]:indeterminate::before {
+  content: '';
+  top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+  width: 70%;
+  height: 15%;
+  background-color: var(--color);
+	opacity: 1;
+}
+
+.expand-more {
+	--sizeSmaller: var(--size) * 0.7;
+	--width: calc(var(--sizeCheckbox) * var(--sizeSmaller));
+	--opacityBoxShadow: 0;
+	--mixColor: color-mix(in srgb, var(--color) calc(100% * var(--opacityBoxShadow)), rgba(255, 255, 255, 0));
+	--sizeBoxShadow: 1;
+
+	min-width: var(--width);
+	max-width: var(--width);
+	height: var(--width);
+	cursor: default;
+	border-radius: 50%;
+	overflow: hidden;
+	background-color: var(--mixColor);
+	cursor: pointer;
+	box-shadow: 0px 0px calc(10px * var(--sizeBoxShadow)) calc(5px * var(--sizeBoxShadow)) var(--mixColor);
+	transform: rotate(-90deg);
+
+	position: absolute;
+	left: calc(var(--sizeCheckbox) * var(--size) * -1);
+
+	transition-duration: 0.2s;
+	transition-timing-function: linear;
+	transition-property: var(--opacityBoxShadow) var(--sizeBoxShadow);
+}
+
+.expand-more::before,
+.expand-more::after {
+	content: '';
+	display: block;
+	position: absolute;
+	bottom: 10%;
+	left: 20%;
+	background-color: color-mix(in srgb, var(--color) 50%, rgb(0, 0, 0));
+	--height: calc(var(--width) * 0.2);
+	height: var(--height);
+	width: 60%;
+	transform-origin: 0 50%;
+	border-radius: calc(var(--height));
+}
+
+.expand-more::before {
+	transform: translateX(56%) rotate(-125deg);
+}
+
+.expand-more::after {
+	transform: translateX(43%) rotate(-55deg);
+}
+
+.expand-more:hover {
+	--opacityBoxShadow: 1;
+}
+
+.expand-more:active {
+	--opacityBoxShadow: 0;
+	--sizeBoxShadow: 2;
+}
+
+.expand-more_none {
+	display: none;
+}
+
+.expand-more_closed {
+	transform: rotate(0deg);
+}
+
+.angular-tree-none {
+	display: none;
+}
+
+.next-tree {
+	overflow-y: hidden;
+}
+
+@media (max-width: 1000px) {
+	:host {
+		--size: 1.5;
+	}
+}
