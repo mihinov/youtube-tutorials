@@ -24,7 +24,7 @@
   initial-value: inherit;
 }
 
-label {
+.label {
 	display: inline-flex;
 	align-items: center;
 	gap: calc(var(--sizeCheckbox) * var(--size) * 0.4);
