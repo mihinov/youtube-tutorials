@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "parcel ./index.html --open",
 		"build:gsap-circle": "parcel build ./youtube-gsap-circle/index.html --public-url ./ --dist-dir dist/youtube-gsap-circle",
 		"build:perspective-card": "parcel build youtube-perspective-card/index.html --public-url ./ --dist-dir dist/youtube-perspective-card",
 		"build:angular-tree": "cd ./youtube-angular-tree && ng build --configuration github",
-    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:angular-tree"
+		"build:readme": "node ./copyReadme.js",
+    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:angular-tree && npm run build:readme"
   },
   "author": "",
   "license": "ISC",
