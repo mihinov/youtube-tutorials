@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Header Example</title>
+	<link rel="stylesheet" href="styles.css">
+
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		header {
+			background-color: #f8f9fa;
+			padding: 20px 0;
+		}
+
+		.container {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			align-items: center;
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+
+		nav {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			grid-column: 2;
+		}
+
+		nav a {
+			margin: 0 10px;
+			text-decoration: none;
+			color: #333;
+		}
+
+		.buttons {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			grid-column: 3;
+		}
+
+		.buttons button {
+			margin-left: 10px;
+			padding: 5px 10px;
+			border: none;
+			background-color: #007bff;
+			color: #fff;
+			cursor: pointer;
+		}
+
+		.buttons button:hover {
+			background-color: #0056b3;
+		}
+	</style>
+
+</head>
+
+<body>
+	<header>
+		<div class="container">
+			<nav>
+				<a href="#">Link 1</a>
+				<a href="#">Link 2</a>
+				<a href="#">Link 3</a>
+				<a href="#">Link 4</a>
+			</nav>
+			<div class="buttons">
+				<button>Sign In</button>
+				<button>Get Started</button>
+			</div>
+		</div>
+	</header>
+</body>
+
+</html>
