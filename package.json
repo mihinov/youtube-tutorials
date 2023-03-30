@@ -8,7 +8,7 @@
 		"build:angular-tree": "cd ./youtube-angular-tree && ng build --configuration github",
 		"build:security-supplies": "parcel build youtube-security-supplies/index.html --public-url ./ --dist-dir dist/youtube-security-supplies",
 		"build:readme": "node ./copyReadme.js",
-    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:angular-tree && npm run build:readme && npm run build:security-supplies"
+    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:angular-tree && npm run build:readme"
   },
   "author": "",
   "license": "ISC",

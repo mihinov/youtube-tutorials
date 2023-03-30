@@ -49,6 +49,7 @@ img {
 	transition-property: color, background-color;
 	transition-timing-function: ease;
 	transition-duration: 0.2s;
+	font-weight: bold;
 }
 
 .btn_green {
@@ -103,20 +104,16 @@ img {
 	display: flow-root;
 	padding: 60px 0;
 	overflow: hidden;
-	position: relative;
 }
 
 .intro__wrapper {
 	display: grid;
-	grid-template-columns: 300px auto;
-}
-
-.intro__left {
+	grid-template-columns: 450px auto;
 }
 
 .intro__right {
 	position: relative;
-	right: -20vw;
+	right: -10vw;
 }
 
 
@@ -127,9 +124,21 @@ img {
 	object-fit: cover;
 }
 
+.intro__right-img_hidden {
+	opacity: 0;
+}
+
 .intro__title {
 	font-size: 4.5em;
 	margin: 0;
+	line-height: 1;
+	margin-bottom: 40px;
+	font-weight: normal;
+}
+
+.intro__description {
+	font-size: 1.2em;
+	margin-bottom: 30px;
 }
 
 
@@ -154,5 +163,31 @@ img {
 
 	.header__btns {
 		justify-content: center;
+	}
+
+
+	.intro__wrapper {
+		grid-template-columns: auto;
+		place-items: center;
+		gap: 4em;
+	}
+
+	.intro__right {
+		position: static;
+		right: auto;
+	}
+
+	.intro__left {
+		max-width: 400px;
+	}
+
+	.intro__title {
+		font-size: 3em;
+		margin-bottom: 20px;
+	}
+
+	.intro__description {
+		font-size: 1.1em;
+		margin-bottom: 20px;
 	}
 }

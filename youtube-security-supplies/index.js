@@ -1,9 +1,28 @@
-const leftNode = document.querySelector('.intro__left');
-const rightNode = document.querySelector('.intro__right-img')
-const containerNode = document.querySelector('.intro .container');
+const introTitleNode = document.querySelector('.intro__title');
+const introDescriptionNode = document.querySelector('.intro__description');
+const introBtnNode = document.querySelector('.intro__btn');
+const introImgNode = document.querySelector('.intro__right-img');
 
-setInterval(() => {
-	// console.log(getComputedStyle(leftNode).getPropertyValue('width'), 'leftNode width');
-	// console.log(containerNode.offsetWidth);
-	console.log(getComputedStyle(rightNode).getPropertyValue('right'), 'rightNode');
-}, 500);
+gsap.defaults({ duration: 0.5, ease: 'ease' });
+
+const tlIntroImg = gsap.timeline();
+tlIntroImg.add(gsap.set(introImgNode, { scale: 1.2 }));
+tlIntroImg.fromTo(introImgNode, { y: '40%'}, { opacity: 1, y: 0 });
+tlIntroImg.to(introImgNode, { scale: 1 });
+tlIntroImg.pause();
+
+const tlLeft = gsap.timeline()
+.from(introTitleNode, {
+	opacity: 0,
+	x: '40%'
+})
+.from(introDescriptionNode, {
+	opacity: 0,
+	x: '-40%'
+})
+.from(introBtnNode, {
+	opacity: 0,
+	scale: 1.5,
+}).add(tlIntroImg.play());
+
+
