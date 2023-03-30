@@ -3,7 +3,7 @@ const introDescriptionNode = document.querySelector('.intro__description');
 const introBtnNode = document.querySelector('.intro__btn');
 const introImgNode = document.querySelector('.intro__right-img');
 
-gsap.defaults({ duration: 0.5, ease: 'ease' });
+gsap.defaults({ duration: 1, ease: 'ease' });
 
 const tlIntroImg = gsap.timeline();
 tlIntroImg.add(gsap.set(introImgNode, { scale: 1.2 }));
