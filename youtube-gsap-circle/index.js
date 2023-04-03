@@ -20,6 +20,5 @@ function onUpdateGsap() {
 
 
 const tl = gsap.timeline()
-.set(svgNode, { '--opacityThumb': 1, onComplete: onUpdateGsap })
 .to(svgNode, { '--opacityThumb': 1, duration: 0.2 })
 .to(svgNode, { '--percent': 100, duration: 5, ease: 'linear', onUpdate: onUpdateGsap });
