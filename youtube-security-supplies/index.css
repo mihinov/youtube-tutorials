@@ -2,6 +2,10 @@
 	box-sizing: inherit;
 }
 
+:root {
+	--maxWidthContainer: 1094px;
+}
+
 html {
 	box-sizing: border-box;
 }
@@ -19,7 +23,7 @@ img {
 }
 
 .container {
-	max-width: 1094px;
+	max-width: var(--maxWidthContainer);
 	display: block;
 	margin: 0 auto;
 	padding: 0 1em;
@@ -201,35 +205,29 @@ img {
 }
 
 
-.section-two-blocks {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	margin-top: 76px;
-}
-
-.section-two-blocks__left {
+.lines-text {
 	display: flex;
 	flex-direction: column;
 	font-size: 31px;
 	width: 470px;
 }
 
-.section-two-blocks__left-item {
+.lines-text__item {
 	padding: 0.8em 0;
-}
-
-.section-two-blocks__left-item {
 	border-top: 1px solid  #273720;
 }
 
-.section-two-blocks__left-item:last-child {
+.lines-text__item:last-child {
 	border-bottom: 1px solid  #273720;
 }
 
-.section-two-blocks__right {
-	position: relative;
+.deals__two {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 76px;
 }
+
 
 /* .vendors */
 
@@ -239,36 +237,112 @@ img {
 	overflow: hidden;
 }
 
-.section-two-blocks_vendors {
+.vendors__two {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	margin-top: 140px;
+	gap: 40px;
 }
 
-.section-two-blocks_vendors .section-two-blocks__right-img {
-	max-width: 500px;
+.vendors__two-right {
+	max-width: 523px;
+	position: relative;
 }
 
-.section-two-blocks_vendors .section-two-blocks__right-img_absolute {
+.vendors__two-right-img_absolute {
 	position: absolute;
-	top: -80px;
-	left: -40px;
+	top: -28%;
+	left: -7%;
 }
 
-.section-two-blocks_vendors .section-two-block__right-line {
+.vendors__two-right-line {
 	position: absolute;
 	width: 150%;
-	height: 150%;
+	height: 174%;
 	bottom: 13%;
 	left: 30%;
 	background-color: #E6FF4C;
-	clip-path: polygon(0% 100%, 0% 65%, 41% 0%, 60% 0%, 59% 38%, 22% 100%);
+	clip-path: polygon(7% 100%, 6% 66%, 42% 0%, 66% 1%, 64% 38%, 31% 100%)
 }
 
 /* .vendors */
 
+/* .teams */
+
+.teams {
+	background-color: rgb(39, 55, 32);
+	padding: 120px 0;
+}
+
+.teams__title {
+	color: white;
+	margin: 0;
+	font-size: 4.5em;
+	text-align: center;
+}
+
+.teams__wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 57px;
+}
+
+.teams__slider-item {
+	padding: 44px 82px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 30px;
+	border-radius: 30px;
+	--width: max(75%, 500px);
+	min-width: var(--width);
+	max-width: var(--width);
+}
+
+.teams__slider-item:nth-child(2n + 1) { /* нечётные */
+	background-color: white;
+}
+
+.teams__slider-item:nth-child(2n) { /* чётные */
+	background-color: #D2EBD5;
+}
+
+.teams__slider-item-img {
+	--width: 128px;
+	min-width: var(--width);
+	max-width: var(--width);
+}
+
+.teams__slider-text {
+	margin: 0;
+	font-size: 2em;
+}
+
+.teams__slider-review {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+}
+
+.teams__slider-review-img {
+	--width: 64px;
+	min-width: var(--width);
+	max-width: var(--width);
+}
+
+.teams__slider-review-text {
+	font-size: 1.125em;
+}
+
+/* .teams */
+
+
+
 
 @media (max-width: 1000px) {
 
-	.section-two-blocks_deals {
+	.deals__two {
 		flex-direction: column;
 		gap: 80px;
 	}
@@ -277,8 +351,14 @@ img {
 		justify-content: center;
 	}
 
-	.section-two-blocks__left {
+	.lines-text {
 		width: auto;
+	}
+
+	.vendors__two {
+		flex-direction: column;
+		gap: 160px;
+		margin-top: 76px;
 	}
 
 }

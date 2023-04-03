@@ -1,3 +1,5 @@
+import { Slider } from "./slider/slider.js";
+
 const introTitleNode = document.querySelector('.intro__title');
 const introDescriptionNode = document.querySelector('.intro__description');
 const introBtnNode = document.querySelector('.intro__btn');
@@ -25,4 +27,29 @@ const tlLeft = gsap.timeline()
 	scale: 1.5,
 }).add(tlIntroImg.play());
 
+
+
+
+
+const slider = new Slider('.teams__slider');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export {};
 

@@ -1,0 +1,17 @@
+.slider {
+	display: flex;
+	flex-direction: column;
+	gap: 32px;
+	overflow: hidden;
+}
+
+.slider__arrows {
+	display: flex;
+	gap: 20px;
+	margin: 0 auto;
+}
+
+.slider__items {
+	display: flex;
+	gap: 50px;
+}

@@ -18,10 +18,8 @@ function onUpdateGsap() {
   percentNode.textContent = Math.round(percent);
 }
 
-// const tl = gsap.timeline()
-// .to(svgNode, { '--opacityThumb': 1, duration: 0.2 })
-// .to(svgNode, { '--percent': 100, duration: 5, ease: 'linear', onUpdate: onUpdateGsap });
-
 
 const tl = gsap.timeline()
-gsap.set(svgNode, { '--opacityThumb': 1, '--percent': 45, onComplete: onUpdateGsap });
+.set(svgNode, { '--opacityThumb': 1, onComplete: onUpdateGsap })
+.to(svgNode, { '--opacityThumb': 1, duration: 0.2 })
+.to(svgNode, { '--percent': 100, duration: 5, ease: 'linear', onUpdate: onUpdateGsap });
