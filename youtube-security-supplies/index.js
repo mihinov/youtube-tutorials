@@ -50,6 +50,5 @@ const slider = new Slider('.teams__slider');
 
 
 
-
 export {};
 

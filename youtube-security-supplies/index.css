@@ -91,10 +91,7 @@ img {
 	grid-area: header__btns;
 	display: flex;
 	justify-content: flex-end;
-}
-
-.header__btns {
-	margin-left: 4em;
+	margin-left: 2.5em;
 }
 
 /* .header */
@@ -273,6 +270,7 @@ img {
 .teams {
 	background-color: rgb(39, 55, 32);
 	padding: 120px 0;
+	overflow-x: hidden;
 }
 
 .teams__title {

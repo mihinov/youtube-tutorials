@@ -2,16 +2,28 @@
 	display: flex;
 	flex-direction: column;
 	gap: 32px;
-	overflow: hidden;
 }
 
 .slider__arrows {
 	display: flex;
-	gap: 20px;
+	gap: 30px;
 	margin: 0 auto;
+	user-select: none;
 }
 
 .slider__items {
 	display: flex;
+	align-items: center;
 	gap: 50px;
+	transition: transform 0.2s ease;
+}
+
+.slider__arrow {
+	cursor: pointer;
+	padding: 20px;
+	transition: background-color 0.2s ease;
+}
+
+.slider__arrow:hover {
+	background-color: rgba(255, 255, 255, 0.1);
 }
