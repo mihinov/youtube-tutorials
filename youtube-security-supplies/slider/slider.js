@@ -75,8 +75,8 @@ export class Slider {
 		});
 
 		this.#nodes.sliderItemsNode.addEventListener('pointerdown', this.#dragStart);
-		document.addEventListener('pointermove', this.#dragging);
-		// this.#nodes.sliderItemsNode.addEventListener('touchmove', this.#dragging);
+		// document.addEventListener('pointermove', this.#dragging);
+		this.#nodes.sliderItemsNode.addEventListener('pointermove', this.#dragging);
 		this.#nodes.sliderItemsNode.addEventListener('pointerup', this.#dragStop);
 	}
 
