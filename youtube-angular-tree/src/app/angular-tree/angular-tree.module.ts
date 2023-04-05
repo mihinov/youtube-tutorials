@@ -5,7 +5,6 @@ import { AngularTreeComponent } from './angular-tree.component';
 @NgModule({
   declarations: [
     AngularTreeComponent,
-		AbortController
   ],
   imports: [
     CommonModule
