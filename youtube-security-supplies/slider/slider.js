@@ -76,19 +76,22 @@ export class Slider {
 
 		this.#nodes.sliderItemsNode.addEventListener('pointerdown', this.#dragStart);
 		// document.addEventListener('pointermove', this.#dragging);
-		this.#nodes.sliderItemsNode.addEventListener('pointermove', this.#dragging);
+		document.addEventListener('pointerrawupdate', this.#dragging);
 		this.#nodes.sliderItemsNode.addEventListener('pointerup', this.#dragStop);
 	}
 
 	#dragStart = (e) => {
+		this.#isDragging = true;
 		console.log('dragStart');
 	}
 
 	#dragStop = (e) => {
+		this.#isDragging = false;
 		console.log('dragStop');
 	}
 
 	#dragging = (e) => {
+		if (this.#isDragging === false) return;
 
 		this.#countDragging++;
 		this.#teamsTitleNode.innerText = `${this.#countDragging} dragging`;
