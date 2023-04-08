@@ -5,19 +5,28 @@ export class Slider {
 		sliderItemsNode: null,
 		sliderItemNodes: [],
 		sliderArrowLeftNode: null,
-		sliderArrowRightNode: null
+		sliderArrowRightNode: null,
+		sliderWrapperNode: null
 	};
 
 	#cssSelectors = {
 		items: '.slider__items',
 		item: '.slider__item',
+		wrapper: '.slider__wrapper',
 		arrowLeft: '.slider__arrow_left',
 		arrowRight: '.slider__arrow_right'
 	};
 
 	#centeringShiftX = 0;
 	#changeSlideShiftX = 0;
+	#moveSlideShiftX = 0;
 	#shiftX = 0;
+	#lastShifX = 0;
+
+	#startMovePos = {
+		x: 0,
+		y: 0
+	};
 
 	#activeItemIndex = 0;
 
@@ -59,6 +68,11 @@ export class Slider {
 			throw new Error(`Slider: по селектору ${this.#cssSelectors.arrowRight} не найден элемент в DOM дереве`);
 		}
 
+		this.#nodes.sliderWrapperNode = this.#nodes.sliderNode.querySelector(this.#cssSelectors.wrapper);
+		if (this.#nodes.sliderWrapperNode === null) {
+			throw new Error(`Slider: по селектору ${this.#cssSelectors.wrapper} не найден элемент в DOM дереве`);
+		}
+
 	}
 
 	#initEventListeners() {
@@ -74,25 +88,49 @@ export class Slider {
 			this.#changeSlide(nextIndex);
 		});
 
-		this.#nodes.sliderItemsNode.addEventListener('pointerdown', this.#dragStart);
-		// document.addEventListener('pointermove', this.#dragging);
+		for (const sliderNode of this.#nodes.sliderItemNodes) {
+			sliderNode.addEventListener('pointerdown', this.#dragStart);
+		}
+
 		document.addEventListener('pointerrawupdate', this.#dragging);
-		this.#nodes.sliderItemsNode.addEventListener('pointerup', this.#dragStop);
+		document.addEventListener('pointerup', this.#dragStop);
+		document.addEventListener('pointerleave', this.#dragStop);
 	}
 
 	#dragStart = (e) => {
+		if (e.button === 2 || e.button === 1) return false; // Если это правая или средняя кнопка мыши, это не тот клик
 		this.#isDragging = true;
+		this.#startMovePos = { x: e.clientX, y: e.clientY };
+		this.#lastShifX = this.#shiftX;
 		console.log('dragStart');
 	}
 
 	#dragStop = (e) => {
 		this.#isDragging = false;
+		if (this.#moveSlideShiftX === 0) return;
+		const dir = this.#moveSlideShiftX < 0 ? 'left' : 'right';
+		console.log(this.#moveSlideShiftX, 'this.#moveSlideShiftX');
+		console.log(dir);
+		const currentSliderNode = this.#nodes.sliderItemNodes[this.#activeItemIndex];
+		console.log(currentSliderNode);
+
+		if (dir === 'left') {
+
+		}
+
+		this.#moveSlideShiftX = 0;
+		this.#calcAndSetShiftX();
 		console.log('dragStop');
 	}
 
 	#dragging = (e) => {
 		if (this.#isDragging === false) return;
 
+		const nextMovePos = { x: e.clientX, y: e.clientY };
+		const diffMovePos = { x: nextMovePos.x - this.#startMovePos.x, y: nextMovePos.y - this.#startMovePos.y };
+
+		this.#moveSlideShiftX = diffMovePos.x;
+		this.#calcMoveSlideShiftX();
 		this.#countDragging++;
 		this.#teamsTitleNode.innerText = `${this.#countDragging} dragging`;
 
@@ -133,6 +171,12 @@ export class Slider {
 		this.#setShiftX();
 	}
 
+	#calcMoveSlideShiftX() {
+		this.#shiftX = this.#lastShifX + this.#moveSlideShiftX;
+
+		this.#nodes.sliderItemsNode.style.transform = `translateX(${this.#shiftX}px)`;
+	}
+
 	#changeSlide(nextIndex) {
 		this.#activeItemIndex = nextIndex;
 		this.#calcAndSetShiftX();
@@ -148,6 +192,36 @@ export class Slider {
 				func.apply(this, args);
 			}, delay);
 		};
+	}
+
+	#throttle(func, ms) {
+
+		let isThrottled = false,
+			savedArgs,
+			savedThis;
+
+		function wrapper() {
+
+			if (isThrottled) { // (2)
+				savedArgs = arguments;
+				savedThis = this;
+				return;
+			}
+
+			func.apply(this, arguments); // (1)
+
+			isThrottled = true;
+
+			setTimeout(function() {
+				isThrottled = false; // (3)
+				if (savedArgs) {
+					wrapper.apply(savedThis, savedArgs);
+					savedArgs = savedThis = null;
+				}
+			}, ms);
+		}
+
+		return wrapper;
 	}
 
 
