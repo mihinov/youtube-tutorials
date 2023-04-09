@@ -264,7 +264,9 @@ export class Slider {
 	}
 
 	#addTransition() {
-		this.#nodes.sliderItemsNode.style.transitionDuration = '0.2s';
+		const noParseTransitionDuration = parseFloat(getComputedStyle(this.#nodes.sliderItemsNode).getPropertyValue('--transitionDurationSeconds'));
+		const transitionDuration = isNaN(noParseTransitionDuration) ? 0.3 : noParseTransitionDuration;
+		this.#nodes.sliderItemsNode.style.transitionDuration = `${transitionDuration}s`;
 	}
 
 	#removeTransition() {
