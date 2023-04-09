@@ -17,11 +17,10 @@ export class Slider {
 		arrowRight: '.slider__arrow_right'
 	};
 
-	#centeringShiftX = 0;
-	#changeSlideShiftX = 0;
 	#moveSlideShiftX = 0;
 	#shiftX = 0;
 	#lastShifX = 0;
+	#objShiftX = {};
 
 	#startMovePos = {
 		x: 0,
@@ -39,7 +38,9 @@ export class Slider {
 	constructor(sliderSelector) {
 		this.#initNodes(sliderSelector);
 		this.#initEventListeners();
-		this.#calcAndSetShiftX();
+		this.#setObjShiftX();
+		this.#addTransition();
+		this.#setShiftX();
 	}
 
 	#initNodes(sliderSelector) {
@@ -76,7 +77,7 @@ export class Slider {
 	}
 
 	#initEventListeners() {
-		window.addEventListener('resize', this.#debounce(this.#calcAndSetShiftX, 50));
+		window.addEventListener('resize', this.#debounce(this.#resizeEvent, 50));
 
 		this.#nodes.sliderArrowLeftNode.addEventListener('click', () => {
 			const nextIndex = this.#getNextIndex(-1);
@@ -92,42 +93,52 @@ export class Slider {
 			sliderNode.addEventListener('pointerdown', this.#dragStart);
 		}
 
-		document.addEventListener('pointerrawupdate', this.#dragging);
+		document.addEventListener('pointermove', this.#dragging);
+		document.addEventListener('pointerout', (event) => {
+			if (event.relatedTarget === null) {
+				console.log("Курсор мыши ушёл из браузера");
+				this.#dragStop(event);
+			}
+		});
+
 		document.addEventListener('pointerup', this.#dragStop);
 		document.addEventListener('pointerleave', this.#dragStop);
 	}
 
+	#resizeEvent = () => {
+		this.#setObjShiftX();
+		this.#setShiftX();
+	}
+
 	#dragStart = (e) => {
+		const x = e?.touches ? e.touches[0].clientX : e.clientX;
+		const y = e?.touches ? e.touches[0].clientY : e.clientY;
 		if (e.button === 2 || e.button === 1) return false; // Если это правая или средняя кнопка мыши, это не тот клик
 		this.#isDragging = true;
-		this.#startMovePos = { x: e.clientX, y: e.clientY };
+		this.#startMovePos = { x: x, y: y };
 		this.#lastShifX = this.#shiftX;
+		this.#removeTransition();
 		console.log('dragStart');
 	}
 
 	#dragStop = (e) => {
 		this.#isDragging = false;
-		if (this.#moveSlideShiftX === 0) return;
-		const dir = this.#moveSlideShiftX < 0 ? 'left' : 'right';
-		console.log(this.#moveSlideShiftX, 'this.#moveSlideShiftX');
-		console.log(dir);
-		const currentSliderNode = this.#nodes.sliderItemNodes[this.#activeItemIndex];
-		console.log(currentSliderNode);
 
-		if (dir === 'left') {
-
-		}
+		this.#addTransition();
+		if (this.#moveSlideShiftX !== 0) this.#autoSlide();
 
 		this.#moveSlideShiftX = 0;
-		this.#calcAndSetShiftX();
 		console.log('dragStop');
 	}
 
 	#dragging = (e) => {
+		const x = e.touches ? e.touches[0].clientX : e.clientX;
+		const y = e.touches ? e.touches[0].clientY : e.clientY;
+
 		if (this.#isDragging === false) return;
 
-		const nextMovePos = { x: e.clientX, y: e.clientY };
-		const diffMovePos = { x: nextMovePos.x - this.#startMovePos.x, y: nextMovePos.y - this.#startMovePos.y };
+		const nextMovePos = { x: x, y: y };
+		const diffMovePos = { x: nextMovePos.x - this.#startMovePos.x, y: nextMovePos.y - this.#startMovePos.y }
 
 		this.#moveSlideShiftX = diffMovePos.x;
 		this.#calcMoveSlideShiftX();
@@ -137,38 +148,170 @@ export class Slider {
 		console.log('dragging');
 	}
 
+	#autoSlide() {
+		const dir = this.#moveSlideShiftX < 0 ? 'left' : 'right';
+
+		// console.log(this.#moveSlideShiftX, 'this.#moveSlideShiftX');
+		// console.log(dir);
+		// console.log('');
+
+		if (dir === 'left') {
+
+			let nextIdx = this.#activeItemIndex + 1;
+			let step = 0;
+			let moveSlideShiftX = Math.abs(this.#moveSlideShiftX);
+
+			// console.log(moveSlideShiftX, 'moveSlideShiftX');
+
+			while (nextIdx < this.#nodes.sliderItemNodes.length) {
+				const currentShiftX = step === 0 ? this.#lastShifX : this.#objShiftX[nextIdx - 1]; // всегда больше число (или равно)
+				const nextShiftX = this.#objShiftX[nextIdx]; // всегда меньше число (или равно)
+				const betweenShiftX = Math.abs(currentShiftX - nextShiftX);
+				moveSlideShiftX = step !== 0 ? moveSlideShiftX - betweenShiftX : Math.abs(this.#moveSlideShiftX);
+
+				const percentMoveShiftX = moveSlideShiftX / betweenShiftX;
+
+				// console.log(currentShiftX, 'currentShiftX');
+				// console.log(nextShiftX, 'nextShiftX');
+				// console.log(moveSlideShiftX, 'moveSlideShiftX');
+				// console.log(betweenShiftX, 'betweenShiftX');
+				// console.log(percentMoveShiftX, 'percentMoveShiftX');
+				// console.log('');
+
+				if (percentMoveShiftX >= 0.5 && percentMoveShiftX <= 1) {
+					this.#activeItemIndex = nextIdx;
+					break;
+				} else if (percentMoveShiftX < 0.5 && step === 0) {
+					break;
+				} else if (percentMoveShiftX < 0.5 && step !== 0) {
+					this.#activeItemIndex = nextIdx - 1;
+					break;
+				}
+				else if (percentMoveShiftX > 1) {
+
+					if (nextIdx + 1 >= this.#nodes.sliderItemNodes.length) {
+						this.#activeItemIndex = nextIdx;
+						break;
+					} else {
+						nextIdx++;
+						step++;
+						continue;
+					}
+				}
+
+			}
+
+			this.#setShiftX(this.#activeItemIndex);
+
+		} else if (dir === 'right') {
+
+			let nextIdx = this.#activeItemIndex - 1;
+			let step = 0;
+			let moveSlideShiftX = this.#moveSlideShiftX;
+
+			while (nextIdx >= 0) {
+				const currentShiftX = step === 0 ? this.#lastShifX : this.#objShiftX[nextIdx + 1]; // всегда больше число (или равно)
+				const nextShiftX = this.#objShiftX[nextIdx]; // всегда меньше число (или равно)
+				const betweenShiftX = Math.abs(currentShiftX - nextShiftX);
+				moveSlideShiftX = step !== 0 ? moveSlideShiftX - betweenShiftX : this.#moveSlideShiftX;
+
+				// const betweenShiftX = Math.abs(currentShiftX - nextShiftX);
+				const percentMoveShiftX = Math.abs(moveSlideShiftX) / betweenShiftX;
+
+				// console.log(currentShiftX, 'currentShiftX');
+				// console.log(nextShiftX, 'nextShiftX');
+				// console.log(moveSlideShiftX, 'moveSlideShiftX');
+				// console.log(betweenShiftX, 'betweenShiftX');
+				// console.log(percentMoveShiftX, 'percentMoveShiftX');
+				// console.log('');
+
+				if (percentMoveShiftX >= 0.5 && percentMoveShiftX <= 1) {
+					this.#activeItemIndex = nextIdx;
+					break;
+				} else if (percentMoveShiftX < 0.5 && step === 0) {
+					break;
+				} else if (percentMoveShiftX < 0.5 && step !== 0) {
+					this.#activeItemIndex = nextIdx + 1;
+					break;
+				}
+				else if (percentMoveShiftX > 1) {
+
+					if (nextIdx - 1 < 0) {
+						this.#activeItemIndex = nextIdx;
+						break;
+					} else {
+						nextIdx--;
+						step++;
+						continue;
+					}
+				}
+
+			}
+
+			this.#setShiftX(this.#activeItemIndex);
+
+
+			// nextIndex = Math.max(0, this.#activeItemIndex - 1);
+			// const currentShiftX = this.#lastShifX; // всегда меньше число (или равно)
+			// const nextShiftX = this.#objShiftX[this.#activeItemIndex]; // всегда больше число (или равно)
+			// const betweenShiftX = nextShiftX - currentShiftX;
+			// const percentMoveShiftX = Math.abs(this.#moveSlideShiftX) / betweenShiftX;
+			// if (percentMoveShiftX > 0.5) {
+			// 	this.#activeItemIndex = nextIndex;
+			// }
+			// this.#setShiftX();
+		}
+	}
+
+	#addTransition() {
+		this.#nodes.sliderItemsNode.style.transitionDuration = '0.2s';
+	}
+
+	#removeTransition() {
+		this.#nodes.sliderItemsNode.style.transitionDuration = '0s';
+	}
+
+	#setObjShiftX() {
+		this.#objShiftX = {};
+		for (let i = 0; i < this.#nodes.sliderItemNodes.length; i++) {
+			this.#objShiftX[i] = this.#getShiftX(i);
+		}
+		console.log(this.#objShiftX);
+	}
+
 	#getNextIndex(dir) {
 		const quantityItems = this.#nodes.sliderItemNodes.length;
 		return (this.#activeItemIndex + dir + quantityItems) % quantityItems;
 	}
 
-	#setCenteringShiftX = () => {
-		const firstSliderItemNode = this.#nodes.sliderItemNodes[this.#activeItemIndex];
+	#getCenteringShiftX = (activeItemIndex = this.#activeItemIndex) => {
+		const firstSliderItemNode = this.#nodes.sliderItemNodes[activeItemIndex];
 		const sliderItemsNode = this.#nodes.sliderItemsNode;
 
 		const widthSlider = sliderItemsNode.offsetWidth;
 		const widthFirstSliderItem = firstSliderItemNode.offsetWidth;
 
-		this.#centeringShiftX = Math.max((widthSlider - widthFirstSliderItem) / 2, 0);
+		const centeringShiftX = Math.max((widthSlider - widthFirstSliderItem) / 2, 0);
+		// this.#centeringShiftX = Math.max((widthSlider - widthFirstSliderItem) / 2, 0);
+		return centeringShiftX;
 	}
 
-	#setChangeSlideShiftX() {
+	#getChangeSlideShiftX(activeItemIndex = this.#activeItemIndex) {
 		const firstRect = this.#nodes.sliderItemNodes[0].getBoundingClientRect();
-		const nextRect = this.#nodes.sliderItemNodes[this.#activeItemIndex].getBoundingClientRect();
+		const nextRect = this.#nodes.sliderItemNodes[activeItemIndex].getBoundingClientRect();
 		const diffLeftNextSlide = nextRect.left - firstRect.left;
 
-		this.#changeSlideShiftX = diffLeftNextSlide;
+		return diffLeftNextSlide;
+		// this.#changeSlideShiftX = diffLeftNextSlide;
 	}
 
-	#setShiftX() {
-		this.#shiftX = this.#centeringShiftX - this.#changeSlideShiftX;
+	#getShiftX(activeItemIndex = this.#activeItemIndex) {
+		return this.#getCenteringShiftX(activeItemIndex) - this.#getChangeSlideShiftX(activeItemIndex);
+	}
+
+	#setShiftX = (activeItemIndex = this.#activeItemIndex) => {
+		this.#shiftX = this.#objShiftX[activeItemIndex];
 		this.#nodes.sliderItemsNode.style.transform = `translateX(${this.#shiftX}px)`;
-	}
-
-	#calcAndSetShiftX = () => {
-		this.#setCenteringShiftX();
-		this.#setChangeSlideShiftX();
-		this.#setShiftX();
 	}
 
 	#calcMoveSlideShiftX() {
@@ -179,7 +322,7 @@ export class Slider {
 
 	#changeSlide(nextIndex) {
 		this.#activeItemIndex = nextIndex;
-		this.#calcAndSetShiftX();
+		this.#setShiftX();
 	}
 
 	#debounce(func, delay) {
@@ -193,38 +336,6 @@ export class Slider {
 			}, delay);
 		};
 	}
-
-	#throttle(func, ms) {
-
-		let isThrottled = false,
-			savedArgs,
-			savedThis;
-
-		function wrapper() {
-
-			if (isThrottled) { // (2)
-				savedArgs = arguments;
-				savedThis = this;
-				return;
-			}
-
-			func.apply(this, arguments); // (1)
-
-			isThrottled = true;
-
-			setTimeout(function() {
-				isThrottled = false; // (3)
-				if (savedArgs) {
-					wrapper.apply(savedThis, savedArgs);
-					savedArgs = savedThis = null;
-				}
-			}, ms);
-		}
-
-		return wrapper;
-	}
-
-
 
 }
 

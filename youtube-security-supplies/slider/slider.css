@@ -17,6 +17,10 @@
 	align-items: center;
 	gap: 50px;
 	user-select: none;
+	transition-property: transform;
+	transition-timing-function: linear;
+	transition-duration: 0s;
+	touch-action: pan-y;
 }
 
 .slider__wrapper img {
