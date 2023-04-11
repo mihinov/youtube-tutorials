@@ -5,8 +5,7 @@ export class Slider {
 		sliderItemsNode: null,
 		sliderItemNodes: [],
 		sliderArrowLeftNode: null,
-		sliderArrowRightNode: null,
-		sliderWrapperNode: null
+		sliderArrowRightNode: null
 	};
 
 	#cssSelectors = {
@@ -69,11 +68,6 @@ export class Slider {
 			throw new Error(`Slider: по селектору ${this.#cssSelectors.arrowRight} не найден элемент в DOM дереве`);
 		}
 
-		this.#nodes.sliderWrapperNode = this.#nodes.sliderNode.querySelector(this.#cssSelectors.wrapper);
-		if (this.#nodes.sliderWrapperNode === null) {
-			throw new Error(`Slider: по селектору ${this.#cssSelectors.wrapper} не найден элемент в DOM дереве`);
-		}
-
 	}
 
 	#initEventListeners() {
@@ -107,7 +101,9 @@ export class Slider {
 
 	#resizeEvent = () => {
 		this.#setObjShiftX();
+		this.#removeTransition();
 		this.#setShiftX();
+		this.#addTransition();
 	}
 
 	#dragStart = (e) => {
@@ -168,7 +164,6 @@ export class Slider {
 				const nextShiftX = this.#objShiftX[nextIdx]; // всегда меньше число (или равно)
 				const betweenShiftX = Math.abs(currentShiftX - nextShiftX);
 				moveSlideShiftX = step !== 0 ? moveSlideShiftX - betweenShiftX : Math.abs(this.#moveSlideShiftX);
-
 				const percentMoveShiftX = moveSlideShiftX / betweenShiftX;
 
 				// console.log(currentShiftX, 'currentShiftX');
@@ -215,7 +210,6 @@ export class Slider {
 				const betweenShiftX = Math.abs(currentShiftX - nextShiftX);
 				moveSlideShiftX = step !== 0 ? moveSlideShiftX - betweenShiftX : this.#moveSlideShiftX;
 
-				// const betweenShiftX = Math.abs(currentShiftX - nextShiftX);
 				const percentMoveShiftX = Math.abs(moveSlideShiftX) / betweenShiftX;
 
 				// console.log(currentShiftX, 'currentShiftX');
@@ -249,17 +243,6 @@ export class Slider {
 			}
 
 			this.#setShiftX(this.#activeItemIndex);
-
-
-			// nextIndex = Math.max(0, this.#activeItemIndex - 1);
-			// const currentShiftX = this.#lastShifX; // всегда меньше число (или равно)
-			// const nextShiftX = this.#objShiftX[this.#activeItemIndex]; // всегда больше число (или равно)
-			// const betweenShiftX = nextShiftX - currentShiftX;
-			// const percentMoveShiftX = Math.abs(this.#moveSlideShiftX) / betweenShiftX;
-			// if (percentMoveShiftX > 0.5) {
-			// 	this.#activeItemIndex = nextIndex;
-			// }
-			// this.#setShiftX();
 		}
 	}
 

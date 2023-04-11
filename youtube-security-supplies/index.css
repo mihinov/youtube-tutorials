@@ -2,10 +2,6 @@
 	box-sizing: inherit;
 }
 
-:root {
-	--maxWidthContainer: 1094px;
-}
-
 html {
 	box-sizing: border-box;
 }
@@ -23,7 +19,7 @@ img {
 }
 
 .container {
-	max-width: var(--maxWidthContainer);
+	max-width: 1094px;
 	display: block;
 	margin: 0 auto;
 	padding: 0 1em;
@@ -413,14 +409,17 @@ img {
 		margin-bottom: 20px;
 	}
 
-	.teams__slider-item {
-		--width: max(75%, 400px);
-		padding: 2em 4.5em;
-	}
+  .teams__slider-item {
+    --width: max(75%, 300px);
+    padding: 1em 2em;
+  }
+  .teams__slider-text {
+    font-size: 1em;
+  }
 
-	.teams__slider-text {
-		font-size: 1.5em;
-	}
+  .teams__slider-review-text {
+    font-size: 0.8em;
+  }
 
 
 }
