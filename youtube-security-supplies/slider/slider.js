@@ -31,6 +31,14 @@ export class Slider {
 	#isDragging = false;
 	#countDragging = 0;
 
+	#thresholdObj = {
+		threshold: 100,
+		startX: 0,
+		endX: 0,
+		startTime: 0,
+		endTime: 0
+	};
+
 	#teamsTitleNode = document.querySelector('.teams__title');
 
 
@@ -113,6 +121,10 @@ export class Slider {
 		this.#isDragging = true;
 		this.#startMovePos = { x: x, y: y };
 		this.#lastShifX = this.#shiftX;
+		this.#thresholdObj.startX = x;
+		this.#thresholdObj.startTime = new Date().getTime();
+		// startX = e.clientX;
+		// startTime = new Date().getTime();
 		this.#removeTransition();
 		console.log('dragStart');
 	}
@@ -147,103 +159,39 @@ export class Slider {
 	#autoSlide() {
 		const dir = this.#moveSlideShiftX < 0 ? 'left' : 'right';
 
-		// console.log(this.#moveSlideShiftX, 'this.#moveSlideShiftX');
-		// console.log(dir);
-		// console.log('');
+		let nextIndex = this.#activeItemIndex + (dir === 'left' ? 1 : -1);
+		let remainingShiftX = Math.abs(this.#moveSlideShiftX);
+		const loopBool = dir === 'left' ? nextIndex < this.#nodes.sliderItemNodes.length : nextIndex >= 0;
 
-		if (dir === 'left') {
+		for (let step = 0; loopBool; step++) {
+			const lastIndex = nextIndex + (dir === 'left' ? -1 : 1);
+			const currentShiftX = step === 0 ? this.#lastShifX : this.#objShiftX[lastIndex];
+			const nextShiftX = this.#objShiftX[nextIndex];
+			const distanceBetweenSlides = Math.abs(currentShiftX - nextShiftX);
+			const percentMoved = remainingShiftX / distanceBetweenSlides;
 
-			let nextIdx = this.#activeItemIndex + 1;
-			let step = 0;
-			let moveSlideShiftX = Math.abs(this.#moveSlideShiftX);
+			if (percentMoved >= 0.5 && percentMoved <= 1) {
+				this.#activeItemIndex = nextIndex;
+				break;
+			} else if (percentMoved < 0.5 && step === 0) {
+				break;
+			} else if (percentMoved < 0.5 && step !== 0) {
+				this.#activeItemIndex = lastIndex;
+				break;
+			} else if (percentMoved > 1) {
+				const isLastSlide = dir === 'left' ? nextIndex + 1 >= this.#nodes.sliderItemNodes.length : nextIndex - 1 < 0;
 
-			// console.log(moveSlideShiftX, 'moveSlideShiftX');
-
-			while (nextIdx < this.#nodes.sliderItemNodes.length) {
-				const currentShiftX = step === 0 ? this.#lastShifX : this.#objShiftX[nextIdx - 1]; // всегда больше число (или равно)
-				const nextShiftX = this.#objShiftX[nextIdx]; // всегда меньше число (или равно)
-				const betweenShiftX = Math.abs(currentShiftX - nextShiftX);
-				moveSlideShiftX = step !== 0 ? moveSlideShiftX - betweenShiftX : Math.abs(this.#moveSlideShiftX);
-				const percentMoveShiftX = moveSlideShiftX / betweenShiftX;
-
-				// console.log(currentShiftX, 'currentShiftX');
-				// console.log(nextShiftX, 'nextShiftX');
-				// console.log(moveSlideShiftX, 'moveSlideShiftX');
-				// console.log(betweenShiftX, 'betweenShiftX');
-				// console.log(percentMoveShiftX, 'percentMoveShiftX');
-				// console.log('');
-
-				if (percentMoveShiftX >= 0.5 && percentMoveShiftX <= 1) {
-					this.#activeItemIndex = nextIdx;
+				if (isLastSlide) {
+					this.#activeItemIndex = nextIndex;
 					break;
-				} else if (percentMoveShiftX < 0.5 && step === 0) {
-					break;
-				} else if (percentMoveShiftX < 0.5 && step !== 0) {
-					this.#activeItemIndex = nextIdx - 1;
-					break;
+				} else {
+					nextIndex += dir === 'left' ? 1 : -1;
+					remainingShiftX -= distanceBetweenSlides;
+					continue;
 				}
-				else if (percentMoveShiftX > 1) {
-
-					if (nextIdx + 1 >= this.#nodes.sliderItemNodes.length) {
-						this.#activeItemIndex = nextIdx;
-						break;
-					} else {
-						nextIdx++;
-						step++;
-						continue;
-					}
-				}
-
 			}
-
-			this.#setShiftX(this.#activeItemIndex);
-
-		} else if (dir === 'right') {
-
-			let nextIdx = this.#activeItemIndex - 1;
-			let step = 0;
-			let moveSlideShiftX = this.#moveSlideShiftX;
-
-			while (nextIdx >= 0) {
-				const currentShiftX = step === 0 ? this.#lastShifX : this.#objShiftX[nextIdx + 1]; // всегда больше число (или равно)
-				const nextShiftX = this.#objShiftX[nextIdx]; // всегда меньше число (или равно)
-				const betweenShiftX = Math.abs(currentShiftX - nextShiftX);
-				moveSlideShiftX = step !== 0 ? moveSlideShiftX - betweenShiftX : this.#moveSlideShiftX;
-
-				const percentMoveShiftX = Math.abs(moveSlideShiftX) / betweenShiftX;
-
-				// console.log(currentShiftX, 'currentShiftX');
-				// console.log(nextShiftX, 'nextShiftX');
-				// console.log(moveSlideShiftX, 'moveSlideShiftX');
-				// console.log(betweenShiftX, 'betweenShiftX');
-				// console.log(percentMoveShiftX, 'percentMoveShiftX');
-				// console.log('');
-
-				if (percentMoveShiftX >= 0.5 && percentMoveShiftX <= 1) {
-					this.#activeItemIndex = nextIdx;
-					break;
-				} else if (percentMoveShiftX < 0.5 && step === 0) {
-					break;
-				} else if (percentMoveShiftX < 0.5 && step !== 0) {
-					this.#activeItemIndex = nextIdx + 1;
-					break;
-				}
-				else if (percentMoveShiftX > 1) {
-
-					if (nextIdx - 1 < 0) {
-						this.#activeItemIndex = nextIdx;
-						break;
-					} else {
-						nextIdx--;
-						step++;
-						continue;
-					}
-				}
-
-			}
-
-			this.#setShiftX(this.#activeItemIndex);
 		}
+		this.#setShiftX(this.#activeItemIndex);
 	}
 
 	#addTransition() {
@@ -282,6 +230,7 @@ export class Slider {
 	}
 
 	#getChangeSlideShiftX(activeItemIndex = this.#activeItemIndex) {
+		console.log('getChangeSlideShiftX');
 		const firstRect = this.#nodes.sliderItemNodes[0].getBoundingClientRect();
 		const nextRect = this.#nodes.sliderItemNodes[activeItemIndex].getBoundingClientRect();
 		const diffLeftNextSlide = nextRect.left - firstRect.left;
@@ -312,7 +261,7 @@ export class Slider {
 
 	#debounce(func, delay) {
 		let timeoutId;
-		return function(...args) {
+		return function (...args) {
 			if (timeoutId) {
 				clearTimeout(timeoutId);
 			}
