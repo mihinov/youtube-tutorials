@@ -1,0 +1,39 @@
+*, *::before, *::after {
+	box-sizing: inherit;
+}
+
+:root {
+	--bgColor: white;
+	--color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bgColor: #222;
+		--color: white;
+	}
+}
+
+html {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	background-color: var(--bgColor);
+	color: var(--color);
+}
+
+html, body {
+	height: 100%;
+}
+
+.canvas {
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	touch-action: none;
+}

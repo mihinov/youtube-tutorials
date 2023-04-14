@@ -2,17 +2,19 @@
   "name": "youtube-tutorials",
   "version": "1.0.0",
   "description": "",
+	"type": "module",
   "scripts": {
-		"build:gsap-circle": "parcel build ./youtube-gsap-circle/index.html --public-url ./ --dist-dir dist/youtube-gsap-circle",
-		"build:perspective-card": "parcel build youtube-perspective-card/index.html --public-url ./ --dist-dir dist/youtube-perspective-card",
-		"build:angular-tree": "cd ./youtube-angular-tree && ng build --configuration github",
-		"build:security-supplies": "parcel build youtube-security-supplies/index.html --public-url ./ --dist-dir dist/youtube-security-supplies",
-		"build:readme": "node ./copyReadme.js",
-    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:angular-tree && npm run build:readme"
+    "build:gsap-circle": "parcel build ./youtube-gsap-circle/index.html --public-url ./ --dist-dir dist/youtube-gsap-circle",
+    "build:perspective-card": "parcel build youtube-perspective-card/index.html --public-url ./ --dist-dir dist/youtube-perspective-card",
+    "build:angular-tree": "cd ./youtube-angular-tree && ng build --configuration github",
+    "build:security-supplies": "parcel build youtube-security-supplies/index.html --public-url ./ --dist-dir dist/youtube-security-supplies",
+    "build:pointer-events": "parcel build pointer-events/index.html --public-url ./ --dist-dir dist/pointer-events",
+    "build:readme": "node ./copyReadme.js",
+    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && build:pointer-events && npm run build:angular-tree && npm run build:readme"
   },
   "author": "",
   "license": "ISC",
-	"dependencies": {
+  "dependencies": {
     "@angular/animations": "^15.2.0",
     "@angular/common": "^15.2.0",
     "@angular/compiler": "^15.2.0",
@@ -37,7 +39,8 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "typescript": "~4.9.4",
-		"parcel": "^2.8.3"
+    "markdown-table": "^3.0.3",
+    "parcel": "^2.8.3",
+    "typescript": "~4.9.4"
   }
 }
