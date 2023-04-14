@@ -2,7 +2,6 @@
   "name": "youtube-tutorials",
   "version": "1.0.0",
   "description": "",
-	"type": "module",
   "scripts": {
     "build:gsap-circle": "parcel build ./youtube-gsap-circle/index.html --public-url ./ --dist-dir dist/youtube-gsap-circle",
     "build:perspective-card": "parcel build youtube-perspective-card/index.html --public-url ./ --dist-dir dist/youtube-perspective-card",
