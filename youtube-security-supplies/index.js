@@ -56,7 +56,10 @@ const swiper = new Swiper(teamsSliderNode, {
 });
 
 
-animateOnScroll(teamsSliderNode, 'right');
+animateOnScroll({
+	node: teamsSliderNode,
+	direction: 'right',
+});
 
 window.animateOnScroll = animateOnScroll;
 

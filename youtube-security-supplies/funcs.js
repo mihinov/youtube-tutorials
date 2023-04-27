@@ -34,7 +34,7 @@ function observeElement({ node, cb, cbOnce }) {
 }
 
 
-export function animateOnScroll(node, direction, cb = () => {}) {
+export function animateOnScroll({node, direction, cb = () => {}, duration = 1}) {
 	const coordsAnim = {};
 
 	const shift = 200;
@@ -63,7 +63,7 @@ export function animateOnScroll(node, direction, cb = () => {}) {
 				opacity: 1,
 				y: 0,
 				x: 0,
-				duration: 1.5
+				duration: duration
 			});
 		},
 	});
