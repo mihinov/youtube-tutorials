@@ -31,14 +31,6 @@ export class Slider {
 	#isDragging = false;
 	#countDragging = 0;
 
-	#thresholdObj = {
-		threshold: 100,
-		startX: 0,
-		endX: 0,
-		startTime: 0,
-		endTime: 0
-	};
-
 	#teamsTitleNode = document.querySelector('.teams__title');
 
 
@@ -121,8 +113,6 @@ export class Slider {
 		this.#isDragging = true;
 		this.#startMovePos = { x: x, y: y };
 		this.#lastShifX = this.#shiftX;
-		this.#thresholdObj.startX = x;
-		this.#thresholdObj.startTime = new Date().getTime();
 		// startX = e.clientX;
 		// startTime = new Date().getTime();
 		this.#removeTransition();

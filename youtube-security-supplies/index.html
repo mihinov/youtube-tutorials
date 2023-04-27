@@ -6,8 +6,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+	<!-- <link rel="stylesheet" href="./slider/slider.css"> -->
 	<link rel="stylesheet" href="./index.css">
-	<link rel="stylesheet" href="./slider/slider.css">
 </head>
 
 <body>
@@ -156,10 +157,10 @@
 		<div class="container">
 			<div class="teams__wrapper">
 				<h2 class="teams__title">Trusted by top teams</h2>
-				<div class="teams__slider slider">
-					<div class="slider__items teams__slider-items">
+				<div class="swiper teams__slider">
+					<div class="swiper-wrapper teams__slider-items">
 
-						<div class="slider__item teams__slider-item">
+						<div class="swiper-slide teams__slider-item">
 
 							<div class="teams__slider-item-img-wrapper">
 								<img src="./img/teams-slider-logo.png" alt="" class="teams__slider-item-img">
@@ -177,9 +178,9 @@
 								</div>
 							</div>
 
-						</div> <!-- .slider__item.teams__slider-item -->
+						</div> <!-- .swiper-slide.teams__slider-item -->
 
-						<div class="slider__item teams__slider-item">
+						<div class="swiper-slide teams__slider-item">
 
 							<div class="teams__slider-item-img-wrapper">
 								<img src="./img/teams-slider-logo.png" alt="" class="teams__slider-item-img">
@@ -198,9 +199,9 @@
 
 							</div>
 
-						</div> <!-- .slider__item.teams__slider-item -->
+						</div> <!-- .swiper-slide.teams__slider-item -->
 
-						<div class="slider__item teams__slider-item">
+						<div class="swiper-slide teams__slider-item">
 
 							<div class="teams__slider-item-img-wrapper">
 								<img src="./img/teams-slider-logo.png" alt="" class="teams__slider-item-img">
@@ -219,9 +220,9 @@
 
 							</div>
 
-						</div> <!-- .slider__item.teams__slider-item -->
+						</div> <!-- .swiper-slide.teams__slider-item -->
 
-						<div class="slider__item teams__slider-item">
+						<div class="swiper-slide teams__slider-item">
 
 							<div class="teams__slider-item-img-wrapper">
 								<img src="./img/teams-slider-logo.png" alt="" class="teams__slider-item-img">
@@ -240,9 +241,9 @@
 
 							</div>
 
-						</div> <!-- .slider__item.teams__slider-item -->
+						</div> <!-- .swiper-slide.teams__slider-item -->
 
-						<div class="slider__item teams__slider-item">
+						<div class="swiper-slide teams__slider-item">
 
 							<div class="teams__slider-item-img-wrapper">
 								<img src="./img/teams-slider-logo.png" alt="" class="teams__slider-item-img">
@@ -261,9 +262,9 @@
 
 							</div>
 
-						</div> <!-- .slider__item.teams__slider-item -->
+						</div> <!-- .swiper-slide.teams__slider-item -->
 
-						<div class="slider__item teams__slider-item">
+						<div class="swiper-slide teams__slider-item">
 
 							<div class="teams__slider-item-img-wrapper">
 								<img src="./img/teams-slider-logo.png" alt="" class="teams__slider-item-img">
@@ -282,21 +283,50 @@
 
 							</div>
 
-						</div> <!-- .slider__item.teams__slider-item -->
+						</div> <!-- .swiper-slide.teams__slider-item -->
 
-					</div> <!-- .slider__items teams__slider-items -->
+					</div> <!-- .swiper-wrapper.teams__slider-items -->
 
-					<div class="slider__arrows">
-						<img src="./img/arrow-left.svg" class="slider__arrow slider__arrow_left">
-						<img src="./img/arrow-right.svg" class="slider__arrow slider__arrow_right">
+					<div class="teams__slider-arrows">
+						<!-- <img src="./img/arrow-left.svg" class="slider__arrow slider__arrow_left">
+						<img src="./img/arrow-right.svg" class="slider__arrow slider__arrow_right"> -->
+						<img src="./img/arrow-left.svg" class="teams__slider__arrow teams__slider__arrow_left">
+						<img src="./img/arrow-right.svg" class="teams__slider__arrow teams__slider__arrow_right">
 					</div>
 
-				</div> <!-- .teams__slider slider -->
+				</div> <!-- .swiper.teams__slider -->
 			</div> <!-- .teams__wrapper -->
 	</section>
 
+	<section class="security">
+		<div class="container">
+			<div class="security__wrapper">
+				<!-- <h2 class="security__title">
+					Everything you need to get security reviews done fast and done right
+				</h2> -->
+
+				<div class="section-header">
+					<h2 class="section-header__title security__title">Everything you need to get security reviews done fast and done right</h2>
+					<a href="" class="section-header__btn btn btn_green link">Get a Demo</a>
+				</div>
+
+				<img src="./img/security-section.svg" alt="" class="security__img-bg">
+
+			</div> <!-- .security__wrapper -->
+		</div> <!-- .container -->
+
+	</section>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer__wrapper">
+
+			</div>
+		</div>
+	</footer>
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
-	<script type="module" src="./slider/slider.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 	<script type="module" src="./index.js"></script>
 </body>
 
