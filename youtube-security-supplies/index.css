@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
 	box-sizing: inherit;
 }
 
@@ -213,11 +215,11 @@ img {
 
 .lines-text__item {
 	padding: 0.8em 0;
-	border-top: 1px solid  #273720;
+	border-top: 1px solid #273720;
 }
 
 .lines-text__item:last-child {
-	border-bottom: 1px solid  #273720;
+	border-bottom: 1px solid #273720;
 }
 
 .deals__two {
@@ -310,7 +312,7 @@ img {
 	overflow: hidden;
 }
 
- /* нечётные */
+/* нечётные */
 /* .teams__slider-item:nth-of-type(2n + 1) {
 	background-color: white;
 } */
@@ -320,11 +322,13 @@ img {
 	background-color: #D2EBD5;
 } */
 
-.teams__slider-item_odd { /* нечётные */
+.teams__slider-item_odd {
+	/* нечётные */
 	background-color: white;
 }
 
-.teams__slider-item_even { /* чётные */
+.teams__slider-item_even {
+	/* чётные */
 	background-color: #D2EBD5;
 }
 
@@ -407,6 +411,48 @@ img {
 /* .security */
 
 
+/* .footer */
+
+.footer {
+	padding: 80px 0;
+	background-color: rgb(39, 55, 32);
+	color: white;
+}
+
+.footer__wrapper {
+	display: flex;
+	justify-content: space-between;
+}
+
+.footer__columns {
+	display: flex;
+	justify-content: space-between;
+	gap: 4em;
+	padding-right: 10vw;
+}
+
+.footer__column {
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+}
+
+.footer__column-item {
+	display: flex;
+	gap: 1.5em;
+}
+
+.footer__column-item_head {
+	font-size: 2em;
+}
+
+.footer__logo-wrapper {
+	min-width: max-content;
+}
+
+/* .footer */
+
+
 
 
 
@@ -438,7 +484,7 @@ img {
 @media (max-width: 720px) {
 	.header__wrapper {
 		grid-template-areas: "header__nav"
-												 "header__btns";
+			"header__btns";
 		grid-template-columns: auto;
 		gap: 2em;
 	}
@@ -485,17 +531,32 @@ img {
 		margin-bottom: 20px;
 	}
 
-  .teams__slider-item {
-    --width: max(75%, 300px);
-    padding: 1em 2em;
-  }
-  .teams__slider-text {
-    font-size: 1em;
-  }
+	.teams__slider-item {
+		--width: max(75%, 300px);
+		padding: 1em 2em;
+	}
 
-  .teams__slider-review-text {
-    font-size: 0.8em;
-  }
+	.teams__slider-text {
+		font-size: 1em;
+	}
+
+	.teams__slider-review-text {
+		font-size: 0.8em;
+	}
 
 
+}
+
+@media (max-width: 680px) {
+	.footer__wrapper {
+		flex-direction: column;
+		align-items: center;
+		gap: 4em;
+	}
+
+	.footer__columns {
+		padding-right: 0;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
 }

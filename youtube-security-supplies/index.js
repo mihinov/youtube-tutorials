@@ -47,6 +47,7 @@ const swiper = new Swiper(teamsSliderNode, {
 	slidesPerView: 'auto',
 	// loop: true,
 	spaceBetween: 30,
+	loop: true,
 	roundLengths: true,
 	centeredSlides: true,
 	navigation: {
