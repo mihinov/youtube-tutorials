@@ -114,7 +114,7 @@ export class ExperienceBar {
 		if (nextGrade !== undefined) {
 			this._nodes.balanceGradeEndNode.textContent = nextGrade.name;
 		} else {
-			this._nodes.balanceGradeEndNode.textContent = '-';
+			this._nodes.balanceGradeEndNode.textContent = '∞';
 		}
 
 	}

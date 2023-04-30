@@ -100,7 +100,6 @@ body {
 	border-radius: var(--borderRadius);
 	background-color: var(--balanceBgColor);
 	overflow: hidden;
-	transition: value 0.5s ease-in-out;
 
 	--borderRadius: 20px;
 }
