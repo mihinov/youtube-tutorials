@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+*, *::before, *::after {
+	box-sizing: inherit;
+}
+
+html {
+	box-sizing: border-box;
+}
+
+:root {
+	--bgColorLight: white;
+	--colorLight: rgb(34, 34, 34);
+	--inputBgColorLight: white;
+  --inputTextColorLight: rgb(51, 51, 51);
+  --inputBorderColorLight: rgb(204, 204, 204);
+	--balanceBgColorLight: #EEE;
+	--balanceColorLight: #333;
+	--balanceProgressBgColorLight: #DDD;
+	--balanceProgressBgColorActiveLight: #222;
+
+	--bgColorDark: rgb(34, 34, 34);
+	--colorDark: white;
+	--inputBgColorDark: rgb(51, 51, 51);
+  --inputTextColorDark: white;
+  --inputBorderColorDark: white;
+	--balanceBgColorDark: #575757;
+	--balanceColorDark: white;
+	--balanceProgressBgColorDark: #DDD;
+	--balanceProgressBgColorActiveDark: #222;
+
+
+	--bgColor: var(--bgColorLight);
+	--color: var(--colorLight);
+	--inputBgColor: var(--inputBgColorLight);
+	--inputTextColor: var(--inputTextColorLight);
+	--inputBorderColor: var(--inputBorderColorLight);
+	--balanceBgColor: var(--balanceBgColorLight);
+	--balanceColor: var(--balanceColorLight);
+	--balanceProgressBgColor: var(--balanceProgressBgColorLight);
+	--balanceProgressBgColorActive: var(--balanceProgressBgColorActiveLight);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bgColor: var(--bgColorDark);
+		--color: var(--colorDark);
+		--inputBgColor: var(--inputBgColorDark);
+		--inputTextColor: var(--inputTextColorDark);
+		--inputBorderColor: var(--inputBorderColorDark);
+		--balanceBgColor: var(--balanceBgColorDark);
+		--balanceColor: var(--balanceColorDark);
+		--balanceProgressBgColor: var(--balanceProgressBgColorDark);
+		--balanceProgressBgColorActive: var(--balanceProgressBgColorActiveDark);
+	}
+}
+
+body {
+	margin: 0;
+	color: var(--color);
+	background-color: var(--bgColor);
+	font-family: 'Ubuntu', sans-serif;
+
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+
+
+/* .balance */
+
+.balance {
+	background-color: var(--balanceBgColor);
+	color: var(--balanceColor);
+	padding: 40px;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5em;
+	max-width: 580px;
+	width: 100%;
+}
+
+.balance__text {
+	text-align: center;
+	font-size: 1.5em;
+	white-space: nowrap;
+}
+
+.balance__progress {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+
+	height: 20px;
+	width: 100%;
+	border: none;
+	touch-action: pan-y;
+	border-radius: var(--borderRadius);
+	background-color: var(--balanceBgColor);
+	overflow: hidden;
+	transition: value 0.5s ease-in-out;
+
+	--borderRadius: 20px;
+}
+
+.balance__progress::-webkit-progress-bar {
+  background-color: var(--balanceProgressBgColor);
+	border-radius: var(--borderRadius);
+}
+
+.balance__progress::-moz-progress-bar {
+	background-color: var(--balanceProgressBgColorActive);
+	border-radius: var(--borderRadius);
+}
+
+.balance__progress::-webkit-progress-value {
+	background-color: var(--balanceProgressBgColorActive);
+	border-radius: var(--borderRadius);
+}
+
+.balance__grades {
+	display: flex;
+	justify-content: space-between;
+	font-size: 1.5em;
+	gap: 1em
+}
+
+
+.balance__grade {
+	text-transform: uppercase;
+}
+
+/* .balance */
+
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4rem;
+}
+
+.input-aurum {
+  background-color: var(--inputBgColor);
+  color: var(--inputTextColor);
+  border: 2px solid var(--inputBorderColor);
+	outline: none;
+	padding: 10px;
+	font-family: inherit;
+	font-size: 1.2rem;
+}
+
+.injected-bar {
+	width: 580px;
+}

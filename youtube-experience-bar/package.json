@@ -1,0 +1,10 @@
+{
+  "name": "youtube-experience-bar",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel ./index.html"
+  },
+  "author": "",
+  "license": "ISC"
+}
