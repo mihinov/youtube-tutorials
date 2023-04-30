@@ -8,3 +8,4 @@
 | youtube-angular-tree |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-angular-tree/)   |  [Видео](https://www.youtube.com/watch?v=_wlc7C-xMb0) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-angular-tree)  |
 | youtube-security-supplies(верстка) |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-security-supplies/)   |  [Видео(ещё нет)]() |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-security-supplies)  |
 | pointer-events |    [Сайт](https://mihinov.github.io/youtube-tutorials/pointer-events/)   |  [Видео](https://www.youtube.com/watch?v=rt_LeOLVgLo) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/pointer-events)  |
+| youtube-experience-bar |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-experience-bar/)   |  [Видео нет]() |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-experience-bar)  |
