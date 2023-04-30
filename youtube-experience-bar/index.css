@@ -152,5 +152,6 @@ body {
 }
 
 .injected-bar {
-	width: 580px;
+	max-width: 580px;
+	width: 100%;
 }
