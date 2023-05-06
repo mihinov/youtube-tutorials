@@ -18,3 +18,29 @@ const game = new GameOfLife({
 });
 
 (window as any).game = game;
+
+const worker = new Worker(new URL('workers/worker-init-fields.js', import.meta.url));
+
+worker.postMessage({
+	type: 'start',
+	payload: {
+		color: 'red'
+	}
+});
+
+worker.onmessage = (event) => {
+  const message = event.data;
+	console.log(message);
+
+  if (message.type === 'result') {
+    // обрабатываем результаты расчетов
+  }
+};
+
+worker.postMessage({
+	type: 'start',
+	payload: {
+		color: 'white'
+	}
+});
+

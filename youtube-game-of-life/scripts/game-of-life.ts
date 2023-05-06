@@ -75,12 +75,6 @@ export class GameOfLife {
 		// this.nodes.popupRestartNode.addEventListener('click', this.reStart);
 		this.nodes.popupGenerateNode.addEventListener('click', this.generateNewFields);
 
-		// this.nodes.canvasNode.addEventListener('click', (event) => {
-		// 	// this.lastIsDragging = this.isDragging;
-		// 	// this.isDragging = false;
-		// 	this.generateCellByClick(event, false);
-		// });
-
 		this.nodes.canvasNode.addEventListener('pointerdown', (event) => {
 			this.isDragging = true;
 			this.isRealDragging = false;
@@ -100,25 +94,6 @@ export class GameOfLife {
 			this.isRealDragging = false;
 		});
 
-		// document.addEventListener('pointerup', (event) => {
-		// 	// if (this.isRealDragging === false) this.generateCellByClick(event, false);
-		// 	// this.isDragging = false;
-		// 	// this.isRealDragging = false;
-
-		// 	this.isDragging = false;
-		// 	if (this.isRealDragging === false) {
-		// 		setTimeout(() => {
-		// 			if (this.isRealDragging === false) {
-		// 				this.generateCellByClick(event, false);
-		// 				this.isRealDragging = false;
-		// 			}
-		// 		}, 20);
-		// 	} else {
-		// 		this.isRealDragging = false;
-		// 	}
-
-		// });
-
 		this.nodes.popupRandomCheckboxNode.addEventListener('input', () => {
 			this.random = !this.random;
 			if (this.localStorageUse) this.setLocalStorage('random', this.random);
@@ -129,6 +104,10 @@ export class GameOfLife {
 		this.nodes.popupClearNode.addEventListener('click', this.clear);
 
 		this.nodes.popupStepNode.addEventListener('click', this.stepGame);
+
+		this.nodes.popupNode.addEventListener('click', (event) => {
+			event.stopPropagation(); // не работает
+		});
 	}
 
 	private generateCellByClick = (event: MouseEvent, moved: boolean = false): void => {
@@ -236,6 +215,7 @@ export class GameOfLife {
 
 	private generateNewFields = (): void => {
 		this.initFields(true);
+		this.cycles = 0;
 		this.drawField();
 		this.renderPopup();
 	}
