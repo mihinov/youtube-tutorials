@@ -88,6 +88,8 @@ export class GameOfLife {
 		});
 
 		document.addEventListener('pointerup', (event) => {
+			const clickOnPopupBool = this.isClickOnElement(event, this.nodes.popupNode);
+			if (clickOnPopupBool === true) return;
 			if (this.isRealDragging === false) this.generateCellByClick(event, false);
 
 			this.isDragging = false;
@@ -105,9 +107,25 @@ export class GameOfLife {
 
 		this.nodes.popupStepNode.addEventListener('click', this.stepGame);
 
-		this.nodes.popupNode.addEventListener('click', (event) => {
-			event.stopPropagation(); // не работает
-		});
+		// this.nodes.popupNode.addEventListener('click', (event) => {
+		// 	event.stopPropagation(); // не работает
+		// });
+	}
+
+	private isClickOnElement(event: MouseEvent, element: HTMLElement): boolean {
+		const target = event.target as HTMLElement; // Получаем целевой элемент клика
+
+		// Проверяем, является ли целевой элемент или его родительские элементы равным заданному элементу
+		let currentNode: HTMLElement | null = target;
+		while (currentNode != null) {
+			if (currentNode === element) {
+				return true;
+			}
+			currentNode = currentNode.parentElement;
+		}
+
+		// Если не было найдено совпадений, возвращаем false
+		return false;
 	}
 
 	private generateCellByClick = (event: MouseEvent, moved: boolean = false): void => {
