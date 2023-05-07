@@ -29,6 +29,7 @@ body {
 	color: var(--color);
 	background-color: var(--bgColor);
 	font-family: 'Ubuntu', sans-serif;
+	overflow: hidden;
 }
 
 .wrapper-canvas {
@@ -60,6 +61,36 @@ body {
 	flex-direction: column;
 	align-items: flex-start;
 	font-size: 1.5rem;
+
+	transition-timing-function: ease-in-out;
+	transition-duration: 0.2s;
+	transition-property: opacity;
+}
+
+/* .popup_load {
+	opacity: 0.8;
+	pointer-events: none;
+} */
+
+.popup__play,
+.popup__clear,
+.popup__step,
+.popup__generate,
+.popup__speed-range,
+.popup__random-checkbox-item {
+	transition-timing-function: ease-in-out;
+	transition-duration: 0.2s;
+	transition-property: opacity;
+}
+
+.popup_load .popup__play,
+.popup_load .popup__clear,
+.popup_load .popup__step,
+.popup_load .popup__generate,
+.popup_load .popup__speed-range,
+.popup_load .popup__random-checkbox-item {
+	opacity: 0.5;
+	pointer-events: none;
 }
 
 .popup__item {
@@ -86,4 +117,21 @@ body {
 
 .wrapper-canvas {
 	touch-action: none;
+}
+
+.popup__load {
+	position: absolute;
+	right: 0.5rem;
+	top: 0.5rem;
+	font-size: 0.8em;
+	opacity: 0;
+	visibility: hidden;
+	transition-timing-function: ease-in-out;
+	transition-duration: 0.5s;
+	transition-property: opacity, visibility;
+}
+
+.popup__load_active {
+	opacity: 1;
+	visibility: visible;
 }

@@ -23,9 +23,18 @@ export interface GameOfLifeNodes {
 	popupSpeedRangeNode: HTMLInputElement;
 	popupClearNode: HTMLElement;
 	popupStepNode: HTMLElement;
+	popupLoadNode: HTMLElement;
 }
 
 export interface GameOfLifeLocalStorage {
 	random: boolean | undefined;
 	speed: number | undefined;
+}
+
+export interface GameOfLifeWorkerResult {
+	cols: number;
+	rows: number;
+	activeCells: number;
+	field: Map<string, boolean>;
+	buffer: Map<string, boolean>;
 }

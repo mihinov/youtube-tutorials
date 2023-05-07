@@ -9,8 +9,8 @@ if (canvasNode === null || popupNode === null) {
 
 const game = new GameOfLife({
 	canvasNode: canvasNode,
-	cellsCountX: 10,
-	cellsCountY: 10,
+	cellsCountX: 100,
+	cellsCountY: 100,
 	popupNode: popupNode,
 	random: false,
 	speed: 1,
@@ -19,28 +19,28 @@ const game = new GameOfLife({
 
 (window as any).game = game;
 
-const worker = new Worker(new URL('workers/worker-init-fields.js', import.meta.url));
+// const worker = new Worker(new URL('workers/worker-game-of-life-logic.js', import.meta.url));
 
-worker.postMessage({
-	type: 'start',
-	payload: {
-		color: 'red'
-	}
-});
+// worker.postMessage({
+// 	type: 'start',
+// 	payload: {
+// 		color: 'red'
+// 	}
+// });
 
-worker.onmessage = (event) => {
-  const message = event.data;
-	console.log(message);
+// worker.onmessage = (event) => {
+//   const message = event.data;
+// 	console.log(message);
 
-  if (message.type === 'result') {
-    // обрабатываем результаты расчетов
-  }
-};
+//   if (message.type === 'result') {
+//     // обрабатываем результаты расчетов
+//   }
+// };
 
-worker.postMessage({
-	type: 'start',
-	payload: {
-		color: 'white'
-	}
-});
+// worker.postMessage({
+// 	type: 'start',
+// 	payload: {
+// 		color: 'white'
+// 	}
+// });
 

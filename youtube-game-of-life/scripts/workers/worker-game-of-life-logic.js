@@ -1,0 +1,209 @@
+class GameLifeLogic {
+	#activeCells = 0;
+
+	get activeCells() {
+		return this.#activeCells;
+	}
+
+	/**
+	 * Хранит состояние поля в виде карты, где ключ - строка с координатами ячейки, значение - булево значение,
+	 * показывающее, жива ли ячейка
+	 * @type {Map<string, boolean>}
+	 */
+	#field = new Map();
+
+	get field() {
+		return this.#field;
+	}
+
+	/**
+	 * Хранит временное состояние поля в виде карты, где ключ - строка с координатами ячейки,
+	 * значение - булево значение, показывающее, жива ли ячейка
+	 * @type {Map<string, boolean>}
+	 */
+	#buffer = new Map();
+
+	get buffer() {
+		return this.#buffer;
+	}
+
+
+	#rows = 10;
+	#cols = 10;
+
+	get rows() {
+		return this.#rows;
+	}
+
+	get cols() {
+		return this.#cols;
+	}
+
+	constructor() {
+
+	}
+
+	/**
+	 * Приватная функция
+	 * Создаёт поле с нуля
+	 * @param {boolean} random - рандомно генерировать элементы или нет
+	 * @returns {void}
+	 */
+	#initFields(random) {
+		this.#field = new Map();
+		this.#buffer = new Map();
+
+		this.#activeCells = 0;
+
+		for (let i = 0; i < this.#rows; i++) {
+			for (let j = 0; j < this.#cols; j++) {
+				const key = this.#getKey(i, j);
+				const fieldVal = Math.round(Math.random()) === 1;
+				const val = random === true ? fieldVal : false;
+				if (val === true) this.#activeCells++;
+				this.#field.set(key, val);
+			}
+		}
+	}
+
+	/**
+	 * Публичная функция
+	 * Создаёт поле с нуля
+	 * @param {boolean} random - рандомно генерировать элементы или нет
+	 * @param {number} rows - количество строк поля
+	 * @param {number} cols - количество столбцов поля
+	 * @returns {void}
+	 */
+	initFields(random, rows, cols) {
+		this.#rows = rows;
+		this.#cols = cols
+		this.#initFields(random);
+
+		return {
+			cols: this.cols,
+			rows: this.rows,
+			activeCells: this.activeCells,
+			field: this.field,
+			buffer: this.buffer
+		}
+	}
+
+	/**
+	 * Возвращает ключ в формате строки для определенной строки и столбца
+	 * @param {number} row - номер строки
+	 * @param {number} col - номер столбца
+	 * @returns {string} - ключ в формате строки
+	 */
+	#getKey(row, col) {
+		return `${row}-${col}`;
+	}
+
+	/**
+	 * Возвращает количество соседей для определенной ячейки
+	 * @param {number} row - номер строки
+	 * @param {number} col - номер столбца
+	 * @returns {number} - количество соседей
+	 */
+	#countNeighbours(row, col) {
+		let count = 0;
+
+		for (let i = -1; i <= 1; i++) {
+			for (let j = -1; j <= 1; j++) {
+				if (i === 0 && j === 0) continue;
+				const r = row + i;
+				const c = col + j;
+				const key = this.#getKey(r, c);
+				if (this.#field.get(key)) count++;
+			}
+		}
+
+		return count;
+	}
+
+	#updateField() {
+		this.#activeCells = 0;
+
+		for (let i = 0; i < this.#rows; i++) {
+			for (let j = 0; j < this.#cols; j++) {
+				const neighbours = this.#countNeighbours(i, j);
+				const key = this.#getKey(i, j);
+
+				if (this.#field.get(key)) {
+					if (neighbours < 2 || neighbours > 3) {
+						this.#buffer.set(key, false);
+					} else {
+						this.#activeCells++;
+						this.#buffer.set(key, true);
+					}
+				} else {
+					if (neighbours === 3) {
+						this.#activeCells++;
+						this.#buffer.set(key, true);
+					} else {
+						this.#buffer.set(key, false);
+					}
+				}
+			}
+		}
+
+		[this.#field, this.#buffer] = [this.#buffer, this.#field];
+	}
+
+	updateField() {
+		this.#updateField();
+
+		return {
+			cols: this.cols,
+			rows: this.rows,
+			activeCells: this.activeCells,
+			field: this.field,
+			buffer: this.buffer
+		}
+	}
+
+	/**
+	 * Возвращает количество соседей для определенной ячейки
+	 * @param {'delete' | 'create'} typeAction - номер строки
+	 * @param {string} key - номер столбца
+	 */
+	deleteOrCreateCell(typeAction, key) {
+		if (typeAction === 'delete') {
+			this.#activeCells--;
+			this.#field.set(key, false);
+		} else if (typeAction === 'create') {
+			this.#activeCells++
+			this.#field.set(key, true);
+		}
+	}
+}
+
+const gameOfLife = new GameLifeLogic();
+
+onmessage = function(event) {
+	const data = event.data;
+	const type = data.type;
+	const payload = data.payload;
+
+	if (type === 'initFields') {
+		const dataToSend = gameOfLife.initFields(payload.random, payload.rows, payload.cols);
+
+		postMessage({
+			type: 'result: initFields',
+			data: dataToSend
+		});
+	} else if (type === 'updateField') {
+		const dataToSend = gameOfLife.updateField();
+
+		postMessage({
+			type: 'result: updateField',
+			data: dataToSend
+		});
+	} else if (type === 'deleteOrCreateCell') {
+		const dataToSend = gameOfLife.deleteOrCreateCell(payload.typeAction, payload.key);
+
+		postMessage({
+			type: 'result: deleteOrCreateCell',
+			data: dataToSend
+		});
+	}
+};

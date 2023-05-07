@@ -1,4 +1,4 @@
-import { GameOfLifeLocalStorage, GameOfLifeNodes, GameOfLifeParams } from "../interfacesOrTypes";
+import { GameOfLifeLocalStorage, GameOfLifeNodes, GameOfLifeParams, GameOfLifeWorkerResult } from "../interfacesOrTypes";
 import { debounce } from "./functions/debounce";
 import { requestInterval } from "./functions/request-interval";
 
@@ -25,6 +25,8 @@ export class GameOfLife {
 	private isDragging: boolean = false;
 	private isRealDragging: boolean = false;
 	private animationTimeId: { id: number };
+	private worker: Worker = new Worker(new URL('workers/worker-game-of-life-logic.js', import.meta.url));
+	private loading: boolean = false;
 
 	constructor({ canvasNode, popupNode, cellsCountX, cellsCountY, random, speed, localStorageUse }: GameOfLifeParams) {
 		if (speed < 1) {
@@ -46,10 +48,69 @@ export class GameOfLife {
 		this.initCalcSpeed();
 		this.setCanvasSize();
 		this.setColorCell();
-		this.initFields();
-		this.initEventListeners();
-		this.drawField();
-		this.renderPopup();
+
+		this.sendWorkerInitFields({
+			random: this.random,
+			rows: this.rows,
+			cols: this.cols
+		})
+		.then(({ activeCells, field, buffer }) => {
+			this.initEventListeners();
+			this.drawField();
+			this.renderPopup();
+		});
+		// this.initFields();
+	}
+
+	private sendWorkerInitFields({
+		random, rows, cols
+	}: { random: boolean; rows: number; cols: number }): Promise<GameOfLifeWorkerResult> {
+
+		this.load();
+
+		this.worker.postMessage({
+			type: 'initFields',
+			payload: {
+				random: random,
+				rows: rows,
+				cols: cols
+			}
+		});
+
+		const resultWorker = new Promise<GameOfLifeWorkerResult>((resolve, reject) => {
+			this.worker.onmessage = (event) => {
+				const message = event.data;
+
+				this.loadComplete();
+
+				if (message.type === 'result: initFields') {
+					const data: GameOfLifeWorkerResult = message.data;
+					const { activeCells, field, buffer } = data;
+
+					this.activeCells = activeCells;
+					this.field = field;
+					this.buffer = buffer;
+
+					resolve(data);
+				}
+
+				reject(false);
+			};
+		});
+
+		return resultWorker;
+	}
+
+	private load(): void {
+		this.loading = true;
+		this.nodes.popupLoadNode.classList.add('popup__load_active');
+		this.nodes.popupNode.classList.add('popup_load');
+	}
+
+	private loadComplete(): void {
+		this.loading = false;
+		this.nodes.popupLoadNode.classList.remove('popup__load_active');
+		this.nodes.popupNode.classList.remove('popup_load');
 	}
 
 	private initEventListeners(): void {
@@ -76,21 +137,25 @@ export class GameOfLife {
 		this.nodes.popupGenerateNode.addEventListener('click', this.generateNewFields);
 
 		this.nodes.canvasNode.addEventListener('pointerdown', (event) => {
+			if (this.loading === true) return;
+			if (event.button === 2 || event.button === 1) return false; // Если это правая или средняя кнопка мыши, это не тот клик
 			this.isDragging = true;
 			this.isRealDragging = false;
 		});
 
 		this.nodes.canvasNode.addEventListener('pointermove', (event) => {
-			if (this.isDragging === true) {
+			if (event.button === 2 || event.button === 1) return false; // Если это правая или средняя кнопка мыши, это не тот клик
+			if (this.isDragging === true && this.loading === false) {
 				this.isRealDragging = true;
 				this.generateCellByClick(event, true)
 			};
 		});
 
 		document.addEventListener('pointerup', (event) => {
+			if (event.button === 2 || event.button === 1) return false; // Если это правая или средняя кнопка мыши, это не тот клик
 			const clickOnPopupBool = this.isClickOnElement(event, this.nodes.popupNode);
 			if (clickOnPopupBool === true) return;
-			if (this.isRealDragging === false) this.generateCellByClick(event, false);
+			if (this.isRealDragging === false && this.loading === false) this.generateCellByClick(event, false);
 
 			this.isDragging = false;
 			this.isRealDragging = false;
@@ -106,17 +171,13 @@ export class GameOfLife {
 		this.nodes.popupClearNode.addEventListener('click', this.clear);
 
 		this.nodes.popupStepNode.addEventListener('click', this.stepGame);
-
-		// this.nodes.popupNode.addEventListener('click', (event) => {
-		// 	event.stopPropagation(); // не работает
-		// });
 	}
 
-	private isClickOnElement(event: MouseEvent, element: HTMLElement): boolean {
-		const target = event.target as HTMLElement; // Получаем целевой элемент клика
+	private isClickOnElement(event: MouseEvent, element: Element): boolean {
+		const target = event.target as Element; // Получаем целевой элемент клика
 
 		// Проверяем, является ли целевой элемент или его родительские элементы равным заданному элементу
-		let currentNode: HTMLElement | null = target;
+		let currentNode: Element | null = target;
 		while (currentNode != null) {
 			if (currentNode === element) {
 				return true;
@@ -126,6 +187,35 @@ export class GameOfLife {
 
 		// Если не было найдено совпадений, возвращаем false
 		return false;
+	}
+
+	private sendWorkerDeleteOrCreateCell(typeAction: 'delete' | 'create', key: string) {
+		this.load();
+
+		this.worker.postMessage({
+			type: 'deleteOrCreateCell',
+			payload: {
+				typeAction: typeAction,
+				key: key
+			}
+		});
+
+		const resultWorker = new Promise<GameOfLifeWorkerResult>((resolve, reject) => {
+			this.worker.onmessage = (event) => {
+				const message = event.data;
+
+				this.loadComplete();
+
+				if (message.type === 'result: deleteOrCreateCell') {
+					const data: GameOfLifeWorkerResult = message.data;
+					resolve(data);
+				}
+
+				reject(false);
+			};
+		});
+
+		return resultWorker;
 	}
 
 	private generateCellByClick = (event: MouseEvent, moved: boolean = false): void => {
@@ -144,11 +234,13 @@ export class GameOfLife {
 		const deleteCell = () => {
 			this.activeCells--;
 			this.field.set(key, false);
+			this.sendWorkerDeleteOrCreateCell('delete', key).then();
 		};
 
 		const createCell = () => {
 			this.activeCells++;
 			this.field.set(key, true);
+			this.sendWorkerDeleteOrCreateCell('create', key).then();
 		}
 
 		if (isCellAlive === false && moved === true) {
@@ -208,15 +300,24 @@ export class GameOfLife {
 	}
 
 	private clear = (): void => {
+		if (this.loading === true) false;
+
 		this.stopGame();
 		this.gameTime = 0;
 		this.gameLastTime = 0;
 		this.gameStartTime = 0;
 		this.cycles = 0;
-		this.initFields(false);
-		this.drawField();
-		this.renderTime();
-		this.renderPopup();
+		// this.initFields(false);
+
+		this.sendWorkerInitFields({
+			random: false,
+			rows: this.rows,
+			cols: this.cols
+		}).then(data => {
+			this.drawField();
+			this.renderTime();
+			this.renderPopup();
+		});
 	}
 
 	// private reStart = (): void => {
@@ -232,10 +333,17 @@ export class GameOfLife {
 	// }
 
 	private generateNewFields = (): void => {
-		this.initFields(true);
-		this.cycles = 0;
-		this.drawField();
-		this.renderPopup();
+		if (this.loading === true) false;
+		// this.initFields(true);
+		this.sendWorkerInitFields({
+			random: true,
+			rows: this.rows,
+			cols: this.cols
+		}).then(data => {
+			this.cycles = 0;
+			this.drawField();
+			this.renderPopup();
+		});
 	}
 
 	private initNodes(canvasNode: HTMLCanvasElement, popupNode: HTMLElement): void {
@@ -251,6 +359,7 @@ export class GameOfLife {
 		const popupSpeedInfoNode = this._querySelector<HTMLElement>(popupNode, '.popup__speed-info');
 		const popupClearNode = this._querySelector<HTMLElement>(popupNode, '.popup__clear');
 		const popupStepNode = this._querySelector<HTMLElement>(popupNode, '.popup__step');
+		const popupLoadNode = this._querySelector<HTMLElement>(popupNode, '.popup__load');
 
 		this.nodes = {
 			canvasNode: canvasNode,
@@ -266,7 +375,8 @@ export class GameOfLife {
 			popupSpeedRangeNode: popupSpeedRangeNode,
 			popupSpeedInfoNode: popupSpeedInfoNode,
 			popupClearNode: popupClearNode,
-			popupStepNode: popupStepNode
+			popupStepNode: popupStepNode,
+			popupLoadNode: popupLoadNode
 		}
 	}
 
@@ -313,22 +423,22 @@ export class GameOfLife {
 		this.nodes.wrapperCanvasNode.style.padding = `${yPadding}px ${xPadding}px`;
 	}
 
-	private initFields(random = this.random): void {
-		this.field = new Map<string, boolean>();
-		this.buffer = new Map<string, boolean>();
+	// private initFields(random = this.random): void {
+	// 	this.field = new Map<string, boolean>();
+	// 	this.buffer = new Map<string, boolean>();
 
-		this.activeCells = 0;
+	// 	this.activeCells = 0;
 
-		for (let i = 0; i < this.rows; i++) {
-			for (let j = 0; j < this.cols; j++) {
-				const key = this.getKey(i, j);
-				const fieldVal = Math.round(Math.random()) === 1;
-				const val = random === true ? fieldVal : false;
-				if (val === true) this.activeCells++;
-				this.field.set(key, val);
-			}
-		}
-	}
+	// 	for (let i = 0; i < this.rows; i++) {
+	// 		for (let j = 0; j < this.cols; j++) {
+	// 			const key = this.getKey(i, j);
+	// 			const fieldVal = Math.round(Math.random()) === 1;
+	// 			const val = random === true ? fieldVal : false;
+	// 			if (val === true) this.activeCells++;
+	// 			this.field.set(key, val);
+	// 		}
+	// 	}
+	// }
 
 	private getKey(row: number, col: number): string {
 		return `${row}-${col}`;
@@ -350,49 +460,81 @@ export class GameOfLife {
 		}
 	}
 
-	private countNeighbours(row: number, col: number): number {
-		let count = 0;
+	// private countNeighbours(row: number, col: number): number {
+	// 	let count = 0;
 
-		for (let i = -1; i <= 1; i++) {
-			for (let j = -1; j <= 1; j++) {
-				if (i === 0 && j === 0) continue;
-				const r = row + i;
-				const c = col + j;
-				const key = this.getKey(r, c);
-				if (this.field.get(key)) count++;
-			}
-		}
+	// 	for (let i = -1; i <= 1; i++) {
+	// 		for (let j = -1; j <= 1; j++) {
+	// 			if (i === 0 && j === 0) continue;
+	// 			const r = row + i;
+	// 			const c = col + j;
+	// 			const key = this.getKey(r, c);
+	// 			if (this.field.get(key)) count++;
+	// 		}
+	// 	}
 
-		return count;
-	}
+	// 	return count;
+	// }
 
-	private updateField(): void {
-		this.activeCells = 0;
+	private sendWorkerUpdateField(): Promise<GameOfLifeWorkerResult> {
+		this.load();
 
-		for (let i = 0; i < this.rows; i++) {
-			for (let j = 0; j < this.cols; j++) {
-				const neighbours = this.countNeighbours(i, j);
-				const key = this.getKey(i, j);
-				if (this.field.get(key)) {
-					if (neighbours < 2 || neighbours > 3) {
-						this.buffer.set(key, false);
-					} else {
-						this.activeCells++;
-						this.buffer.set(key, true);
-					}
-				} else {
-					if (neighbours === 3) {
-						this.activeCells++;
-						this.buffer.set(key, true);
-					} else {
-						this.buffer.set(key, false);
-					}
+		this.worker.postMessage({
+			type: 'updateField',
+			payload: {}
+		});
+
+		const resultWorker = new Promise<GameOfLifeWorkerResult>((resolve, reject) => {
+			this.worker.onmessage = (event) => {
+				const message = event.data;
+
+				this.loadComplete();
+
+				if (message.type === 'result: updateField') {
+					const data: GameOfLifeWorkerResult = message.data;
+					const { activeCells, field, buffer } = data;
+
+					this.activeCells = activeCells;
+					this.field = field;
+					this.buffer = buffer;
+
+					resolve(data);
 				}
-			}
-		}
 
-		[this.field, this.buffer] = [this.buffer, this.field];
+				reject(false);
+			};
+		});
+
+		return resultWorker;
 	}
+
+	// private updateField(): void {
+	// 	this.activeCells = 0;
+
+	// 	for (let i = 0; i < this.rows; i++) {
+	// 		for (let j = 0; j < this.cols; j++) {
+	// 			const neighbours = this.countNeighbours(i, j);
+	// 			const key = this.getKey(i, j);
+	// 			if (this.field.get(key)) {
+	// 				if (neighbours < 2 || neighbours > 3) {
+	// 					this.buffer.set(key, false);
+	// 				} else {
+	// 					this.activeCells++;
+	// 					this.buffer.set(key, true);
+	// 				}
+	// 			} else {
+	// 				if (neighbours === 3) {
+	// 					this.activeCells++;
+	// 					this.buffer.set(key, true);
+	// 				} else {
+	// 					this.buffer.set(key, false);
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+
+	// 	[this.field, this.buffer] = [this.buffer, this.field];
+	// }
 
 	private renderPopup(): void {
 		this.renderPopulation();
@@ -406,6 +548,7 @@ export class GameOfLife {
 		let gameTime = Date.now() - this.gameStartTime + this.gameLastTime;
 		if (this.gameStartTime === 0) gameTime = 0;
 		this.gameTime = gameTime;
+
 		this.nodes.popupTimeNode.textContent = (this.gameTime / 1000).toFixed(1);
 	}
 
@@ -422,10 +565,15 @@ export class GameOfLife {
 	}
 
 	private stepGame = (): void => {
-		this.updateField();
-		this.drawField();
-		this.cycles = this.cycles + 1;
-		this.renderPopup();
+		if (this.loading === true) return;
+		// this.updateField();
+
+		this.sendWorkerUpdateField()
+		.then(data => {
+			this.drawField();
+			this.cycles = this.cycles + 1;
+			this.renderPopup();
+		});
 	}
 
 	private startGame(): void {
