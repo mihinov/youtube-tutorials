@@ -184,7 +184,6 @@ class GameLifeLogic {
 	 * Изменяет размеры игрового поля
 	 * @param {number} newRows - количество строк
 	 * @param {number} newCols - количество стобцов
-	 * @param {boolean} random - рандомно генерировать ячейки или нет
 	 */
 	#resizeField(newRows, newCols) {
 		if (newRows === this.#rows && newCols === this.#cols) return;

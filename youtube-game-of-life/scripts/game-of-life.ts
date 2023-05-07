@@ -65,7 +65,6 @@ export class GameOfLife {
 			this.drawField();
 			this.renderPopup();
 		});
-		// this.initFields();
 	}
 
 	private initInputNodes(): void {
@@ -165,7 +164,6 @@ export class GameOfLife {
 			this.startGame();
 		});
 
-		// this.nodes.popupRestartNode.addEventListener('click', this.reStart);
 		this.nodes.popupGenerateNode.addEventListener('click', this.generateNewFields);
 
 		this.nodes.canvasNode.addEventListener('pointerdown', (event) => {
@@ -445,8 +443,6 @@ export class GameOfLife {
 		if (lastLocalStorage.popupHidden !== undefined) {
 			this.popupHidden = lastLocalStorage.popupHidden;
 		}
-
-		// this.setLocalStorage('popup-hidden', this.popupHidden);
 	}
 
 	private clear = (): void => {
@@ -459,7 +455,6 @@ export class GameOfLife {
 		this.cycles = 0;
 
 		this.disableInputs();
-		// this.initFields(false);
 
 		this.sendWorkerInitFields({
 			random: false,
@@ -473,21 +468,9 @@ export class GameOfLife {
 		});
 	}
 
-	// private reStart = (): void => {
-	// 	this.stopGame();
-	// this.gameTime = 0;
-	// this.gameLastTime = 0;
-	// this.gameStartTime = 0;
-	// this.cycles = 0;
-	// 	this.initFields();
-	// 	this.drawField();
-	// 	this.renderPopup();
-	// 	this.startGame();
-	// }
-
 	private generateNewFields = (): void => {
 		if (this.loading === true) false;
-		// this.initFields(true);
+
 		this.sendWorkerInitFields({
 			random: true,
 			rows: this.rows,
@@ -582,23 +565,6 @@ export class GameOfLife {
 		this.nodes.wrapperCanvasNode.style.padding = `${yPadding}px ${xPadding}px`;
 	}
 
-	// private initFields(random = this.random): void {
-	// 	this.field = new Map<string, boolean>();
-	// 	this.buffer = new Map<string, boolean>();
-
-	// 	this.activeCells = 0;
-
-	// 	for (let i = 0; i < this.rows; i++) {
-	// 		for (let j = 0; j < this.cols; j++) {
-	// 			const key = this.getKey(i, j);
-	// 			const fieldVal = Math.round(Math.random()) === 1;
-	// 			const val = random === true ? fieldVal : false;
-	// 			if (val === true) this.activeCells++;
-	// 			this.field.set(key, val);
-	// 		}
-	// 	}
-	// }
-
 	private getKey(row: number, col: number): string {
 		return `${row}-${col}`;
 	}
@@ -622,22 +588,6 @@ export class GameOfLife {
 
 		this.loadComplete();
 	}
-
-	// private countNeighbours(row: number, col: number): number {
-	// 	let count = 0;
-
-	// 	for (let i = -1; i <= 1; i++) {
-	// 		for (let j = -1; j <= 1; j++) {
-	// 			if (i === 0 && j === 0) continue;
-	// 			const r = row + i;
-	// 			const c = col + j;
-	// 			const key = this.getKey(r, c);
-	// 			if (this.field.get(key)) count++;
-	// 		}
-	// 	}
-
-	// 	return count;
-	// }
 
 	private sendWorkerUpdateField(): Promise<GameOfLifeWorkerResult> {
 		this.load();
@@ -671,39 +621,10 @@ export class GameOfLife {
 		return resultWorker;
 	}
 
-	// private updateField(): void {
-	// 	this.activeCells = 0;
-
-	// 	for (let i = 0; i < this.rows; i++) {
-	// 		for (let j = 0; j < this.cols; j++) {
-	// 			const neighbours = this.countNeighbours(i, j);
-	// 			const key = this.getKey(i, j);
-	// 			if (this.field.get(key)) {
-	// 				if (neighbours < 2 || neighbours > 3) {
-	// 					this.buffer.set(key, false);
-	// 				} else {
-	// 					this.activeCells++;
-	// 					this.buffer.set(key, true);
-	// 				}
-	// 			} else {
-	// 				if (neighbours === 3) {
-	// 					this.activeCells++;
-	// 					this.buffer.set(key, true);
-	// 				} else {
-	// 					this.buffer.set(key, false);
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-
-	// 	[this.field, this.buffer] = [this.buffer, this.field];
-	// }
-
 	private renderPopup(): void {
 		this.renderPopulation();
 		this.renderRandom();
 		this.nodes.popupCyclesNode.textContent = String(this.cycles);
-		// this.nodes.popupTimeNode.textContent = (this.gameTime / 1000).toFixed(1);
 		this.nodes.popupRandomCheckboxNode.checked = this.random;
 	}
 
@@ -729,7 +650,6 @@ export class GameOfLife {
 
 	private stepGame = (): Promise<GameOfLifeWorkerResult> | undefined => {
 		if (this.loading === true) return;
-		// this.updateField();
 
 		return this.sendWorkerUpdateField()
 		.then(data => {
