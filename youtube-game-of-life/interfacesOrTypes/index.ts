@@ -6,6 +6,7 @@ export interface GameOfLifeParams {
 	random: boolean;
 	speed: number;
 	localStorageUse: boolean;
+	popupHidden: boolean;
 }
 
 export interface GameOfLifeNodes {
@@ -24,11 +25,17 @@ export interface GameOfLifeNodes {
 	popupClearNode: HTMLElement;
 	popupStepNode: HTMLElement;
 	popupLoadNode: HTMLElement;
+	popupInputRowsNode: HTMLInputElement;
+	popupInputColsNode: HTMLInputElement;
+	popupCloseNode: HTMLElement;
 }
 
 export interface GameOfLifeLocalStorage {
 	random: boolean | undefined;
 	speed: number | undefined;
+	rows: number | undefined;
+	cols: number | undefined;
+	popupHidden: boolean | undefined;
 }
 
 export interface GameOfLifeWorkerResult {

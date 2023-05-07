@@ -1,5 +1,6 @@
 class GameLifeLogic {
 	#activeCells = 0;
+	#random = false;
 
 	get activeCells() {
 		return this.#activeCells;
@@ -76,7 +77,8 @@ class GameLifeLogic {
 	 */
 	initFields(random, rows, cols) {
 		this.#rows = rows;
-		this.#cols = cols
+		this.#cols = cols;
+		this.#random = random;
 		this.#initFields(random);
 
 		return {
@@ -122,6 +124,7 @@ class GameLifeLogic {
 
 	#updateField() {
 		this.#activeCells = 0;
+		this.#buffer = new Map();
 
 		for (let i = 0; i < this.#rows; i++) {
 			for (let j = 0; j < this.#cols; j++) {
@@ -175,6 +178,87 @@ class GameLifeLogic {
 			this.#field.set(key, true);
 		}
 	}
+
+	/**
+	 * Приватная функция
+	 * Изменяет размеры игрового поля
+	 * @param {number} newRows - количество строк
+	 * @param {number} newCols - количество стобцов
+	 * @param {boolean} random - рандомно генерировать ячейки или нет
+	 */
+	#resizeField(newRows, newCols) {
+		if (newRows === this.#rows && newCols === this.#cols) return;
+
+		const oldField = this.#field;
+		const oldRows = this.#rows;
+		const oldCols = this.#cols;
+
+		this.#rows = newRows;
+		this.#cols = newCols;
+		this.#field = new Map();
+		this.#buffer = new Map();
+		this.#activeCells = 0;
+
+		for (let i = 0; i < newRows; i++) {
+			for (let j = 0; j < newCols; j++) {
+				const key = this.#getKey(i, j);
+				const val = oldField.get(key) || false;
+				if (val === true) this.#activeCells++;
+				this.#field.set(key, val);
+			}
+		}
+
+		if (newRows > oldRows || newCols > oldCols) {
+			for (let i = 0; i < newRows; i++) {
+				for (let j = 0; j < newCols; j++) {
+					const key = this.#getKey(i, j);
+					if (!oldField.has(key)) {
+						const fieldVal = Math.round(Math.random()) === 1;
+						const val = this.#random === true ? fieldVal : false;
+						if (val === true) this.#activeCells++;
+						this.#field.set(key, val);
+					}
+				}
+			}
+		}
+
+		if (newRows < oldRows || newCols < oldCols) {
+			for (let i = 0; i < newRows; i++) {
+				for (let j = 0; j < newCols; j++) {
+					const key = this.#getKey(i, j);
+					const val = !!oldField.get(key);
+
+					if (val === true) this.#activeCells++;
+
+					this.#buffer.set(key, val);
+				}
+			}
+			this.#field = this.#buffer;
+			this.#buffer = oldField;
+		}
+	}
+
+	/**
+	 * Публичная функция
+	 * Изменяет размеры игрового поля
+	 * @param {number} newRows - количество строк
+	 * @param {number} newCols - количество стобцов
+	 * @param {boolean} random - рандомно генерировать ячейки или нет
+	 */
+	resizeField(newRows, newCols, random) {
+		this.#random = random;
+		this.#resizeField(newRows, newCols);
+
+		return {
+			cols: this.cols,
+			rows: this.rows,
+			activeCells: this.activeCells,
+			field: this.field,
+			buffer: this.buffer
+		}
+	}
+
+
 }
 
 const gameOfLife = new GameLifeLogic();
@@ -191,6 +275,7 @@ onmessage = function(event) {
 			type: 'result: initFields',
 			data: dataToSend
 		});
+
 	} else if (type === 'updateField') {
 		const dataToSend = gameOfLife.updateField();
 
@@ -198,6 +283,7 @@ onmessage = function(event) {
 			type: 'result: updateField',
 			data: dataToSend
 		});
+
 	} else if (type === 'deleteOrCreateCell') {
 		const dataToSend = gameOfLife.deleteOrCreateCell(payload.typeAction, payload.key);
 
@@ -205,5 +291,14 @@ onmessage = function(event) {
 			type: 'result: deleteOrCreateCell',
 			data: dataToSend
 		});
+
+	} else if (type === 'resizeField') {
+		const dataToSend = gameOfLife.resizeField(payload.newRows, payload.newCols, payload.random);
+
+		postMessage({
+			type: 'result: resizeField',
+			data: dataToSend
+		});
+
 	}
 };

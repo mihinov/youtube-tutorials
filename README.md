@@ -9,3 +9,4 @@
 | youtube-security-supplies(верстка) |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-security-supplies/)   |  [Видео(ещё нет)]() |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-security-supplies)  |
 | pointer-events |    [Сайт](https://mihinov.github.io/youtube-tutorials/pointer-events/)   |  [Видео](https://www.youtube.com/watch?v=rt_LeOLVgLo) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/pointer-events)  |
 | youtube-experience-bar |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-experience-bar/)   |  [Видео](https://youtu.be/FSVwqwOcQ0Y) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-experience-bar)  |
+| youtube-game-of-life |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-game-of-life/)   |  [Видео(нету)]() |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-game-of-life)  |

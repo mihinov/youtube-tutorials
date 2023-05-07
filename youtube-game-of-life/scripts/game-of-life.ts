@@ -1,6 +1,7 @@
 import { GameOfLifeLocalStorage, GameOfLifeNodes, GameOfLifeParams, GameOfLifeWorkerResult } from "../interfacesOrTypes";
 import { debounce } from "./functions/debounce";
 import { requestInterval } from "./functions/request-interval";
+import { restrictInputValue } from "./functions/restrict-input";
 
 export class GameOfLife {
 	private ctx: CanvasRenderingContext2D;
@@ -27,8 +28,10 @@ export class GameOfLife {
 	private animationTimeId: { id: number };
 	private worker: Worker = new Worker(new URL('workers/worker-game-of-life-logic.js', import.meta.url));
 	private loading: boolean = false;
+	private focusedInput: HTMLInputElement | null = null;
+	private popupHidden: boolean = false;
 
-	constructor({ canvasNode, popupNode, cellsCountX, cellsCountY, random, speed, localStorageUse }: GameOfLifeParams) {
+	constructor({ canvasNode, popupNode, cellsCountX, cellsCountY, random, speed, localStorageUse, popupHidden }: GameOfLifeParams) {
 		if (speed < 1) {
 			throw new Error('GameOfLife: speed не может быть меньше 1');
 		}
@@ -42,12 +45,15 @@ export class GameOfLife {
 		this.random = random;
 		this.speed = speed;
 		this.localStorageUse = localStorageUse;
+		this.popupHidden = popupHidden;
 
 		this.initNodes(canvasNode, popupNode);
 		if (this.localStorageUse) this.useLocalStorage();
 		this.initCalcSpeed();
 		this.setCanvasSize();
 		this.setColorCell();
+		this.initInputNodes();
+		this.initPopupHidden();
 
 		this.sendWorkerInitFields({
 			random: this.random,
@@ -62,11 +68,36 @@ export class GameOfLife {
 		// this.initFields();
 	}
 
+	private initInputNodes(): void {
+		this.nodes.popupInputRowsNode.value = String(this.rows);
+		this.nodes.popupInputColsNode.value = String(this.cols);
+	}
+
+	private initPopupHidden(): void {
+		this.togglePopup(this.popupHidden);
+	}
+
+	private disableInputs(): void {
+		this.nodes.popupInputRowsNode.disabled = true;
+		this.nodes.popupInputColsNode.disabled = true;
+	}
+
+	private enableInputs(): void {
+		this.nodes.popupInputRowsNode.disabled = false;
+		this.nodes.popupInputColsNode.disabled = false;
+
+		if (this.focusedInput !== null) {
+			this.focusedInput.focus();
+			this.focusedInput = null;
+		}
+	}
+
 	private sendWorkerInitFields({
 		random, rows, cols
 	}: { random: boolean; rows: number; cols: number }): Promise<GameOfLifeWorkerResult> {
 
 		this.load();
+		this.disableInputs();
 
 		this.worker.postMessage({
 			type: 'initFields',
@@ -82,6 +113,7 @@ export class GameOfLife {
 				const message = event.data;
 
 				this.loadComplete();
+				this.enableInputs();
 
 				if (message.type === 'result: initFields') {
 					const data: GameOfLifeWorkerResult = message.data;
@@ -170,7 +202,110 @@ export class GameOfLife {
 		this.nodes.popupSpeedRangeNode.addEventListener('input', this.calcSpeedInputChange);
 		this.nodes.popupClearNode.addEventListener('click', this.clear);
 
-		this.nodes.popupStepNode.addEventListener('click', this.stepGame);
+		this.nodes.popupStepNode.addEventListener('click', () => {
+			this.disableInputs();
+			this.stepGame()?.then(data => {
+				this.enableInputs();
+			});
+		});
+
+		this.nodes.popupInputRowsNode.addEventListener('input', () => {
+			const newRows = restrictInputValue(this.nodes.popupInputRowsNode, 0, 2000);
+			if (this.localStorageUse) this.setLocalStorage('rows', newRows);
+
+			this.focusedInput = this.nodes.popupInputRowsNode;
+			this.resizeFieldRows(newRows);
+		});
+
+		this.nodes.popupInputColsNode.addEventListener('input', () => {
+			const newCols = restrictInputValue(this.nodes.popupInputColsNode, 0, 2000);
+			if (this.localStorageUse) this.setLocalStorage('cols', newCols);
+
+			this.focusedInput = this.nodes.popupInputColsNode;
+			this.resizeFieldCols(newCols);
+		});
+
+		this.nodes.popupCloseNode.addEventListener('click', () => {
+			this.popupHidden = !this.popupHidden;
+			this.togglePopup(this.popupHidden);
+		});
+	}
+
+	private togglePopup = (popupHidden: boolean): void => {
+		if (this.localStorageUse === true) this.setLocalStorage('popupHidden', this.popupHidden);
+
+		if (this.popupHidden === true) {
+			this.nodes.popupNode.classList.add('popup_hidden');
+			this.nodes.popupCloseNode.textContent = 'Открыть';
+		} else {
+			this.nodes.popupNode.classList.remove('popup_hidden');
+			this.nodes.popupCloseNode.textContent = 'Скрыть';
+		}
+	}
+
+	private resizeFieldRows(newRows: number): void {
+		if (this.loading === true) return;
+
+		this.sendWorkerResizeField(newRows, this.cols, this.random)
+		.then((data) => {
+			this.setCanvasSize();
+			this.drawField();
+			this.renderTime();
+			this.renderPopup();
+		});
+	}
+
+	private resizeFieldCols(newCols: number): void {
+		if (this.loading === true) return;
+
+		this.sendWorkerResizeField(this.rows, newCols, this.random)
+		.then((data) => {
+			this.setCanvasSize();
+			this.drawField();
+			this.renderTime();
+			this.renderPopup();
+		});
+	}
+
+	private sendWorkerResizeField(newRows: number, newCols: number, random: boolean): Promise<void | GameOfLifeWorkerResult> {
+		this.load();
+		this.disableInputs();
+
+		this.worker.postMessage({
+			type: 'resizeField',
+			payload: {
+				newRows: newRows,
+				newCols: newCols,
+				random: random
+			}
+		});
+
+		const resultWorker = new Promise<GameOfLifeWorkerResult>((resolve, reject) => {
+			this.worker.onmessage = (event) => {
+				const message = event.data;
+
+				this.loadComplete();
+				this.enableInputs();
+
+
+				if (message.type === 'result: resizeField') {
+					const data: GameOfLifeWorkerResult = message.data;
+					const { field, buffer, activeCells, rows, cols } = data;
+
+					this.field = field;
+					this.buffer = buffer;
+					this.activeCells = activeCells;
+					this.rows = rows;
+					this.cols = cols;
+
+					resolve(data);
+				}
+
+				reject(false);
+			};
+		}).catch(() => {});
+
+		return resultWorker;
 	}
 
 	private isClickOnElement(event: MouseEvent, element: Element): boolean {
@@ -189,7 +324,7 @@ export class GameOfLife {
 		return false;
 	}
 
-	private sendWorkerDeleteOrCreateCell(typeAction: 'delete' | 'create', key: string) {
+	private sendWorkerDeleteOrCreateCell(typeAction: 'delete' | 'create', key: string): Promise<GameOfLifeWorkerResult> {
 		this.load();
 
 		this.worker.postMessage({
@@ -294,9 +429,24 @@ export class GameOfLife {
 		if (lastLocalStorage.random !== undefined) {
 			this.random = lastLocalStorage.random;
 		}
+
 		if (lastLocalStorage.speed !== undefined) {
 			this.speed = lastLocalStorage.speed;
 		}
+
+		if (lastLocalStorage.rows !== undefined) {
+			this.rows = lastLocalStorage.rows;
+		}
+
+		if (lastLocalStorage.cols !== undefined) {
+			this.cols = lastLocalStorage.cols;
+		}
+
+		if (lastLocalStorage.popupHidden !== undefined) {
+			this.popupHidden = lastLocalStorage.popupHidden;
+		}
+
+		// this.setLocalStorage('popup-hidden', this.popupHidden);
 	}
 
 	private clear = (): void => {
@@ -307,6 +457,8 @@ export class GameOfLife {
 		this.gameLastTime = 0;
 		this.gameStartTime = 0;
 		this.cycles = 0;
+
+		this.disableInputs();
 		// this.initFields(false);
 
 		this.sendWorkerInitFields({
@@ -317,6 +469,7 @@ export class GameOfLife {
 			this.drawField();
 			this.renderTime();
 			this.renderPopup();
+			this.enableInputs();
 		});
 	}
 
@@ -360,6 +513,9 @@ export class GameOfLife {
 		const popupClearNode = this._querySelector<HTMLElement>(popupNode, '.popup__clear');
 		const popupStepNode = this._querySelector<HTMLElement>(popupNode, '.popup__step');
 		const popupLoadNode = this._querySelector<HTMLElement>(popupNode, '.popup__load');
+		const popupInputRowsNode = this._querySelector<HTMLInputElement>(popupNode, '.popup__rows');
+		const popupInputColsNode = this._querySelector<HTMLInputElement>(popupNode, '.popup__cols');
+		const popupCloseNode = this._querySelector<HTMLInputElement>(popupNode, '.popup__close');
 
 		this.nodes = {
 			canvasNode: canvasNode,
@@ -376,7 +532,10 @@ export class GameOfLife {
 			popupSpeedInfoNode: popupSpeedInfoNode,
 			popupClearNode: popupClearNode,
 			popupStepNode: popupStepNode,
-			popupLoadNode: popupLoadNode
+			popupLoadNode: popupLoadNode,
+			popupInputRowsNode: popupInputRowsNode,
+			popupInputColsNode: popupInputColsNode,
+			popupCloseNode: popupCloseNode
 		}
 	}
 
@@ -445,6 +604,8 @@ export class GameOfLife {
 	}
 
 	private drawField(): void {
+		this.load();
+
 		this.ctx.clearRect(0, 0, this.nodes.canvasNode.width, this.nodes.canvasNode.height);
 		const cellSize = this.cellSize;
 
@@ -458,6 +619,8 @@ export class GameOfLife {
 				}
 			}
 		}
+
+		this.loadComplete();
 	}
 
 	// private countNeighbours(row: number, col: number): number {
@@ -564,19 +727,21 @@ export class GameOfLife {
 		this.nodes.popupPopulationNode.textContent = String(this.activeCells);
 	}
 
-	private stepGame = (): void => {
+	private stepGame = (): Promise<GameOfLifeWorkerResult> | undefined => {
 		if (this.loading === true) return;
 		// this.updateField();
 
-		this.sendWorkerUpdateField()
+		return this.sendWorkerUpdateField()
 		.then(data => {
 			this.drawField();
 			this.cycles = this.cycles + 1;
 			this.renderPopup();
+			return data;
 		});
 	}
 
 	private startGame(): void {
+		this.disableInputs();
 		this.played = true;
 		this.gameStartTime = Date.now();
 		this.animationObj = requestInterval(this.stepGame, this.interval / this.speed ** 1.5);
@@ -593,6 +758,7 @@ export class GameOfLife {
 		this.gameLastTime = this.gameTime;
 		cancelAnimationFrame(this.animationObj.id);
 		cancelAnimationFrame(this.animationTimeId.id);
+		this.enableInputs();
 	}
 
 	private getLocalStorage(): GameOfLifeLocalStorage {

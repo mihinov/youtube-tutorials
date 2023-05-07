@@ -14,33 +14,8 @@ const game = new GameOfLife({
 	popupNode: popupNode,
 	random: false,
 	speed: 1,
-	localStorageUse: true
+	localStorageUse: true,
+	popupHidden: false
 });
 
 (window as any).game = game;
-
-// const worker = new Worker(new URL('workers/worker-game-of-life-logic.js', import.meta.url));
-
-// worker.postMessage({
-// 	type: 'start',
-// 	payload: {
-// 		color: 'red'
-// 	}
-// });
-
-// worker.onmessage = (event) => {
-//   const message = event.data;
-// 	console.log(message);
-
-//   if (message.type === 'result') {
-//     // обрабатываем результаты расчетов
-//   }
-// };
-
-// worker.postMessage({
-// 	type: 'start',
-// 	payload: {
-// 		color: 'white'
-// 	}
-// });
-

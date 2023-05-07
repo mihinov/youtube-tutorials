@@ -10,8 +10,9 @@
     "build:security-supplies": "parcel build youtube-security-supplies/index.html --public-url ./ --dist-dir dist/youtube-security-supplies",
     "build:pointer-events": "parcel build pointer-events/index.html --public-url ./ --dist-dir dist/pointer-events",
 		"build:youtube-experience-bar": "parcel build youtube-experience-bar/index.html --public-url ./ --dist-dir dist/youtube-experience-bar",
+		"build:youtube-game-of-life": "parcel build youtube-game-of-life/index.html --public-url ./ --dist-dir dist/youtube-game-of-life",
     "build:readme": "node ./copyReadme.js",
-    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:angular-tree && npm run build:readme"
+    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:youtube-game-of-life && npm run build:angular-tree && npm run build:readme"
   },
   "author": "",
   "license": "ISC",

@@ -72,6 +72,10 @@ body {
 	pointer-events: none;
 } */
 
+.popup_hidden > *:not(.popup__close) {
+	display: none;
+}
+
 .popup__play,
 .popup__clear,
 .popup__step,
@@ -93,13 +97,18 @@ body {
 	pointer-events: none;
 }
 
+.popup__inputs[disabled] {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
 .popup__item {
 	display: flex;
 	gap: 0.3rem;
 }
 
 .popup__population {
-	width: 3rem;
+	width: min-content;
 }
 
 .popup__generate {
@@ -134,4 +143,12 @@ body {
 .popup__load_active {
 	opacity: 1;
 	visibility: visible;
+}
+
+.popup__item_inputs {
+	flex-direction: column;
+}
+
+.popup__close {
+	align-self: flex-end;
 }
