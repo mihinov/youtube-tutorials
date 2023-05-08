@@ -58,8 +58,8 @@ class GameLifeLogic {
 		for (let i = 0; i < this.#rows; i++) {
 			for (let j = 0; j < this.#cols; j++) {
 				const key = this.#getKey(i, j);
-				const fieldVal = Math.round(Math.random()) === 1;
-				const val = random === true ? fieldVal : false;
+				const rndVal = Math.round(Math.random()) === 1;
+				const val = random === true ? rndVal : false;
 				if (val === true) this.#activeCells++;
 				this.#field.set(key, val);
 			}
@@ -210,8 +210,8 @@ class GameLifeLogic {
 				for (let j = 0; j < newCols; j++) {
 					const key = this.#getKey(i, j);
 					if (!oldField.has(key)) {
-						const fieldVal = Math.round(Math.random()) === 1;
-						const val = this.#random === true ? fieldVal : false;
+						const rndVal = Math.round(Math.random()) === 1;
+						const val = this.#random === true ? rndVal : false;
 						if (val === true) this.#activeCells++;
 						this.#field.set(key, val);
 					}
