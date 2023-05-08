@@ -1,5 +1,3 @@
-import { GameOfLifeLocalStorage, GameOfLifeNodes, GameOfLifeParams, GameOfLifeWorkerResult } from "../interfacesOrTypes";
-import { debounce } from "./functions/debounce";
 import { requestInterval } from "./functions/request-interval";
 import { restrictInputValue } from "./functions/restrict-input";
 
