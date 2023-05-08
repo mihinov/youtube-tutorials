@@ -53,7 +53,6 @@ class GameLifeLogic {
 	#initFields(random) {
 		this.#field = new Map();
 		this.#buffer = new Map();
-
 		this.#activeCells = 0;
 
 		for (let i = 0; i < this.#rows; i++) {
@@ -79,6 +78,7 @@ class GameLifeLogic {
 		this.#rows = rows;
 		this.#cols = cols;
 		this.#random = random;
+
 		this.#initFields(random);
 
 		return {
@@ -192,8 +192,6 @@ class GameLifeLogic {
 		const oldRows = this.#rows;
 		const oldCols = this.#cols;
 
-		this.#rows = newRows;
-		this.#cols = newCols;
 		this.#field = new Map();
 		this.#buffer = new Map();
 		this.#activeCells = 0;
@@ -246,6 +244,9 @@ class GameLifeLogic {
 	 */
 	resizeField(newRows, newCols, random) {
 		this.#random = random;
+		this.#rows = newRows;
+		this.#cols = newCols;
+
 		this.#resizeField(newRows, newCols);
 
 		return {
