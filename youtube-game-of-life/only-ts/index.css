@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+*, *::before, *::after {
+	box-sizing: inherit;
+}
+
+html {
+	box-sizing: border-box;
+}
+
+:root {
+	--bgColor: white;
+	--color: rgb(34, 34, 34);
+	--light: 0;
+	--popupBg: calc(var(--light) * 34);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bgColor: rgb(34, 34, 34);
+		--color: white;
+		--light: 1;
+		--popupBg: calc(var(--light) * 255);
+	}
+}
+
+body {
+	margin: 0;
+	color: var(--color);
+	background-color: var(--bgColor);
+	font-family: 'Ubuntu', sans-serif;
+	overflow: hidden;
+}
+
+.wrapper-canvas {
+	width: 100%;
+	height: 100vh;
+}
+
+.canvas {
+	width: 100%;
+	height: 100%;
+	display: block;
+	border: 1px solid var(--color);
+}
+
+.wrapper {
+	position: relative;
+}
+
+.popup {
+	position: absolute;
+	top: 1rem;
+	right: 1rem;
+	cursor: default;
+	user-select: none;
+	padding: 1rem;
+	background-color: color-mix(in srgb, var(--bgColor) 50%, rgba(var(--popupBg), var(--popupBg), var(--popupBg), 0.5));
+	color: var(--color);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	font-size: 1.5rem;
+
+	transition-timing-function: ease-in-out;
+	transition-duration: 0.2s;
+	transition-property: opacity;
+}
+
+/* .popup_load {
+	opacity: 0.8;
+	pointer-events: none;
+} */
+
+.popup_hidden > *:not(.popup__close) {
+	display: none;
+}
+
+.popup__play,
+.popup__clear,
+.popup__step,
+.popup__generate,
+.popup__speed-range,
+.popup__random-checkbox-item {
+	transition-timing-function: ease-in-out;
+	transition-duration: 0.2s;
+	transition-property: opacity;
+}
+
+.popup_load .popup__play,
+.popup_load .popup__clear,
+.popup_load .popup__step,
+.popup_load .popup__generate,
+.popup_load .popup__speed-range,
+.popup_load .popup__random-checkbox-item {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.popup__inputs[disabled] {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.popup__item {
+	display: flex;
+	gap: 0.3rem;
+}
+
+.popup__population {
+	width: min-content;
+}
+
+.popup__generate {
+	opacity: 0;
+	visibility: hidden;
+	transition-timing-function: ease-in-out;
+	transition-duration: 0.2s;
+	transition-property: opacity, visibility;
+}
+
+.popup__generate_active {
+	opacity: 1;
+	visibility: visible;
+}
+
+.wrapper-canvas {
+	touch-action: none;
+}
+
+.popup__load {
+	position: absolute;
+	right: 0.5rem;
+	top: 0.5rem;
+	font-size: 0.8em;
+	opacity: 0;
+	visibility: hidden;
+	transition-timing-function: ease-in-out;
+	transition-duration: 0.5s;
+	transition-property: opacity, visibility;
+}
+
+.popup__load_active {
+	opacity: 1;
+	visibility: visible;
+}
+
+.popup__item_inputs {
+	flex-direction: column;
+}
+
+.popup__close {
+	align-self: flex-end;
+}
