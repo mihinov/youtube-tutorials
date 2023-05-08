@@ -184,14 +184,18 @@ class GameLifeLogic {
 	 * Изменяет размеры игрового поля
 	 * @param {number} newRows - количество строк
 	 * @param {number} newCols - количество стобцов
+	 * @param {boolean} random - рандомно генерировать ячейки или нет
 	 */
-	#resizeField(newRows, newCols) {
+	#resizeField(newRows, newCols, random) {
 		if (newRows === this.#rows && newCols === this.#cols) return;
 
 		const oldField = this.#field;
 		const oldRows = this.#rows;
 		const oldCols = this.#cols;
 
+		this.#random = random;
+		this.#rows = newRows;
+		this.#cols = newCols;
 		this.#field = new Map();
 		this.#buffer = new Map();
 		this.#activeCells = 0;
@@ -243,11 +247,7 @@ class GameLifeLogic {
 	 * @param {boolean} random - рандомно генерировать ячейки или нет
 	 */
 	resizeField(newRows, newCols, random) {
-		this.#random = random;
-		this.#rows = newRows;
-		this.#cols = newCols;
-
-		this.#resizeField(newRows, newCols);
+		this.#resizeField(newRows, newCols, random);
 
 		return {
 			cols: this.cols,
