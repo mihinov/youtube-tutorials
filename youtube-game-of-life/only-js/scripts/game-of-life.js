@@ -29,7 +29,7 @@ export class GameOfLife {
 	focusedInput = null;
 	popupHidden = false;
 
-	constructor({ canvasNode, popupNode, cellsCountX, cellsCountY, random, speed, localStorageUse, popupHidden }) {
+	constructor({ injectedNode, cellsCountX, cellsCountY, random, speed, localStorageUse, popupHidden }) {
 		if (speed < 1) {
 			throw new Error('GameOfLife: speed не может быть меньше 1');
 		}
@@ -37,7 +37,6 @@ export class GameOfLife {
 			throw new Error('GameOfLife: speed не может быть больше 10');
 		}
 
-		this.ctx = canvasNode.getContext("2d");
 		this.rows = cellsCountX;
 		this.cols = cellsCountY;
 		this.random = random;
@@ -45,7 +44,8 @@ export class GameOfLife {
 		this.localStorageUse = localStorageUse;
 		this.popupHidden = popupHidden;
 
-		this.initNodes(canvasNode, popupNode);
+		this.initNodes(injectedNode);
+		this.ctx = this.nodes.canvasNode.getContext("2d");
 		if (this.localStorageUse) this.useLocalStorage();
 		this.initCalcSpeed();
 		this.setCanvasSize();
@@ -480,14 +480,61 @@ export class GameOfLife {
 		});
 	}
 
-	initNodes(canvasNode, popupNode) {
+	initNodes(injectedNode) {
+
+		injectedNode.innerHTML = `
+			<div class="wrapper">
+				<div class="wrapper-canvas">
+					<canvas class="canvas"></canvas>
+				</div>
+
+				<div class="popup">
+					<div class="popup__item popup__play">Play</div>
+					<div class="popup__item popup__pause">Пауза</div>
+					<div class="popup__item popup__clear">Очистить</div>
+					<div class="popup__item popup__step">Шаг</div>
+					<div class="popup__item popup__generate">Сгенерировать</div>
+					<label class="popup__item popup__random-checkbox-item">
+						<input type="checkbox" class="popup__random-checkbox">
+						<span>Рандом</span>
+					</label>
+					<div class="popup__item">
+						Время:
+						<span class="popup__time">0.0</span>
+					</div>
+					<div class="popup__item">Поколение: <span class="popup__cycles">0</span></div>
+					<div class="popup__item">Население: <span class="popup__population">0</span></div>
+					<div class="popup__item">
+						<span>Скорость: </span>
+						<span class="popup__speed-info">1</span>
+					</div>
+					<div class="popup__item">
+						<input class="popup__speed-range" type="range" min="0" max="100" value="50">
+					</div>
+
+					<div class="popup__item popup__item_inputs">
+						<input type="number" class="popup__rows popup__inputs" placeholder="rows" min="0" max="2000">
+						<input type="number" class="popup__cols popup__inputs" placeholder="cols" min="0" max="2000">
+					</div>
+
+					<div class="popup__item popup__close">Скрыть</div>
+
+					<div class="popup__item popup__load">Загрузка</div>
+
+				</div>
+
+			</div>
+		`;
+
+		const popupNode = this._querySelector(injectedNode, '.popup');
+		const canvasNode = this._querySelector(injectedNode, '.canvas');
+		const wrapperCanvasNode = this._querySelector(injectedNode, '.wrapper-canvas');
 		const popupPlayNode = this._querySelector(popupNode, '.popup__play');
 		const popupPauseNode = this._querySelector(popupNode, '.popup__pause');
 		const popupTimeNode = this._querySelector(popupNode, '.popup__time');
 		const popupPopulationNode = this._querySelector(popupNode, '.popup__population');
 		const popupCyclesNode = this._querySelector(popupNode, '.popup__cycles');
 		const popupGenerateNode = this._querySelector(popupNode, '.popup__generate');
-		const wrapperCanvasNode = this._querySelector(document, '.wrapper-canvas');
 		const popupRandomCheckboxNode = this._querySelector(popupNode, '.popup__random-checkbox');
 		const popupSpeedRangeNode = this._querySelector(popupNode, '.popup__speed-range');
 		const popupSpeedInfoNode = this._querySelector(popupNode, '.popup__speed-info');

@@ -9,47 +9,7 @@
 </head>
 <body>
 
-	<div class="wrapper">
-		<div class="wrapper-canvas">
-			<canvas class="canvas"></canvas>
-		</div>
-
-		<div class="popup">
-			<div class="popup__item popup__play">Play</div>
-			<div class="popup__item popup__pause">Пауза</div>
-			<div class="popup__item popup__clear">Очистить</div>
-			<div class="popup__item popup__step">Шаг</div>
-			<div class="popup__item popup__generate">Сгенерировать</div>
-			<label class="popup__item popup__random-checkbox-item">
-				<input type="checkbox" class="popup__random-checkbox">
-				<span>Рандом</span>
-			</label>
-			<div class="popup__item">
-				Время:
-				<span class="popup__time">0.0</span>
-			</div>
-			<div class="popup__item">Поколение: <span class="popup__cycles">0</span></div>
-			<div class="popup__item">Население: <span class="popup__population">0</span></div>
-			<div class="popup__item">
-				<span>Скорость: </span>
-				<span class="popup__speed-info">1</span>
-			</div>
-			<div class="popup__item">
-				<input class="popup__speed-range" type="range" min="0" max="100" value="50">
-			</div>
-
-			<div class="popup__item popup__item_inputs">
-				<input type="number" class="popup__rows popup__inputs" placeholder="rows" min="0" max="2000">
-				<input type="number" class="popup__cols popup__inputs" placeholder="cols" min="0" max="2000">
-			</div>
-
-			<div class="popup__item popup__close">Скрыть</div>
-
-			<div class="popup__item popup__load">Загрузка</div>
-
-		</div>
-
-	</div>
+	<div class="injected-game-life"></div>
 
 	<script src="./scripts/index.ts" type="module"></script>
 </body>

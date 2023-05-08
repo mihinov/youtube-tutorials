@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "parcel ./index.html",
+    "start": "parcel ./only-ts/index.html",
 		"start:no-error": "parcel ./only-ts/index.html --no-hmr"
   },
   "author": "",

@@ -1,6 +1,5 @@
 export interface GameOfLifeParams {
-	canvasNode: HTMLCanvasElement;
-	popupNode: HTMLElement;
+	injectedNode: HTMLElement;
 	cellsCountX: number;
 	cellsCountY: number;
 	random: boolean;
