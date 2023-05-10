@@ -102,20 +102,23 @@ class GameLifeLogic {
 
 	/**
 	 * Возвращает количество соседей для определенной ячейки
-	 * @param {number} row - номер строки
-	 * @param {number} col - номер столбца
+	 * @param {number} i - номер строки
+	 * @param {number} j - номер столбца
 	 * @returns {number} - количество соседей
 	 */
-	#countNeighbours(row, col) {
+	#countNeighbours(i, j) {
 		let count = 0;
 
-		for (let i = -1; i <= 1; i++) {
-			for (let j = -1; j <= 1; j++) {
-				if (i === 0 && j === 0) continue;
-				const r = row + i;
-				const c = col + j;
-				const key = this.#getKey(r, c);
-				if (this.#field.get(key)) count++;
+		for (let x = -1; x <= 1; x++) {
+			for (let y = -1; y <= 1; y++) {
+				if (x === 0 && y === 0) continue; // Пропустить текущую ячейку
+				const row = (i + x + this.#rows) % this.#rows; // Использование операции % для циклической границы
+				const col = (j + y + this.#cols) % this.#cols; // Использование операции % для циклической границы
+				const key = this.#getKey(row, col);
+
+				if (this.#field.get(key)) {
+					count++;
+				}
 			}
 		}
 
