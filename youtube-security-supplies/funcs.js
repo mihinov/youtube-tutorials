@@ -34,10 +34,14 @@ function observeElement({ node, cb, cbOnce }) {
 }
 
 
-export function animateOnScroll({node, direction, cb = () => {}, duration = 1}) {
+export function animateOnScroll({node, direction = null, cb = () => {}, cbOnce = () => {}, duration = 1}) {
 	const coordsAnim = {};
-
 	const shift = 200;
+	const notAnimDefault = direction === null;
+
+	if (!Element.prototype.isPrototypeOf(node)) {
+		throw new Error('node не является узлом DOM');
+	}
 
 	if (direction === 'left') {
 		coordsAnim.x = -shift;
@@ -52,13 +56,18 @@ export function animateOnScroll({node, direction, cb = () => {}, duration = 1}) 
 	observeElement({
 		node: node,
 		cbOnce: () => {
+			cbOnce();
+			if (notAnimDefault === true) return;
+
 			gsap.set(node, {
 				opacity: 0,
 				...coordsAnim
 			});
+
 		},
 		cb: () => {
 			cb(node);
+			if (notAnimDefault === true) return;
 			gsap.to(node, {
 				opacity: 1,
 				y: 0,
