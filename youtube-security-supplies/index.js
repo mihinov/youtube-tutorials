@@ -224,7 +224,6 @@ function initSwiperSlider() {
 
 	const swiper = new Swiper(teamsSliderNode, {
 		slidesPerView: 'auto',
-		// loop: true,
 		spaceBetween: 30,
 		loop: true,
 		roundLengths: true,
@@ -239,4 +238,3 @@ function initSwiperSlider() {
 
 initSwiperSlider();
 gsapAnims();
-
