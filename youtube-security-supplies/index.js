@@ -60,7 +60,7 @@ function gsapAnims() {
 		animateOnScroll({
 			node: teamsSliderNode,
 			cbOnce: () => {
-				gsap.set(teamsSliderNode, { opacity: 0, x: -400 });
+				gsap.set(teamsSliderNode, { opacity: 0, x: '-80%' });
 			},
 			cb: () => {
 				gsap.to(teamsSliderNode, { opacity: 1, x: 0, delay: 0.5 });
