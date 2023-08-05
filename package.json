@@ -2,7 +2,6 @@
   "name": "youtube-tutorials",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
   "scripts": {
     "build:gsap-circle": "parcel build ./youtube-gsap-circle/index.html --public-url ./ --dist-dir dist/youtube-gsap-circle",
     "build:perspective-card": "parcel build youtube-perspective-card/index.html --public-url ./ --dist-dir dist/youtube-perspective-card",
@@ -11,7 +10,7 @@
     "build:pointer-events": "parcel build pointer-events/index.html --public-url ./ --dist-dir dist/pointer-events",
     "build:youtube-experience-bar": "parcel build youtube-experience-bar/index.html --public-url ./ --dist-dir dist/youtube-experience-bar",
     "build:youtube-game-of-life": "parcel build youtube-game-of-life/only-ts/index.html --public-url ./ --dist-dir dist/youtube-game-of-life && parcel build youtube-game-of-life/only-js/index.html --public-url ./ --dist-dir dist/youtube-game-of-life/only-js",
-		"build:youtube-css-paint-api": "cd ./youtube-css-paint-api && npm run build",
+    "build:youtube-css-paint-api": "vite build",
     "build:readme": "node ./copyReadme.js",
     "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:youtube-game-of-life && npm run build:angular-tree && npm run build:youtube-css-paint-api && npm run build:readme"
   },
