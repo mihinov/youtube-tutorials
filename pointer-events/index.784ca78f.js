@@ -1,0 +1,2 @@
+function e(){!function(){let{width:e,height:n}=t.getBoundingClientRect();t.width=e,t.height=n}(),n.fillStyle=o(),n.fillRect(0,0,window.innerWidth,window.innerHeight)}const t=document.querySelector(".canvas"),n=t.getContext("2d"),i=window.document.documentElement,o=()=>getComputedStyle(i).getPropertyValue("--bgColor");e(),window.addEventListener("resize",function(t){e()}),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{e()});
+//# sourceMappingURL=index.784ca78f.js.map
