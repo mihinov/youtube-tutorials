@@ -39,7 +39,7 @@ export class Ring {
 		this.addListeners();
 	}
 
-	public drawRing() {
+	public drawRing(): void {
 		// Рисуем первую часть кольца
 		this.ctx.beginPath();
 		this.ctx.arc(this.x, this.y, this.radius, this.startAngle1, this.endAngle1);
@@ -59,7 +59,7 @@ export class Ring {
 		percent2 = this.percent2,
 		color1 = this.color1,
 		color2 = this.color2
-	} = {}) {
+	} = {}): void {
 		this.percent1 = percent1;
 		this.percent2 = percent2;
 		this.endAngle1 = this.startAngle1 + (2 * Math.PI * this.percent1 / 100);
@@ -80,7 +80,7 @@ export class Ring {
 		color1 = this.color1,
 		color2 = this.color2,
 		delay = 0
-	} = {}) {
+	} = {}): gsap.core.Timeline {
 
 		const tl = gsap.timeline()
 			.to(this, {
@@ -98,7 +98,7 @@ export class Ring {
 		return tl;
 	}
 
-	private addListeners() {
+	private addListeners(): void {
 		window.addEventListener('resize', () => {
 			this.calcSize();
 
@@ -108,7 +108,7 @@ export class Ring {
 		});
 	}
 
-	private calcSize() {
+	private calcSize(): void {
 		const { width, height } = this.canvas.getBoundingClientRect();
 
 		const dpi = window.devicePixelRatio || 1;

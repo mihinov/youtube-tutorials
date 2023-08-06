@@ -32,7 +32,7 @@ export class WorkletRing {
 	 defined for the element, return them in the specified array
 */
 
-	static get inputProperties() {
+	static get inputProperties(): string[] {
 		return [
 			'--colorRing1',
 			'--colorRing2',

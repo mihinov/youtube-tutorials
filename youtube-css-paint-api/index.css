@@ -43,10 +43,6 @@ body {
 	justify-content: center;
 }
 
-._hidden {
-	display: none;
-}
-
 .canvas {
 	border: 1px solid var(--color);
 	width: 48vw;
@@ -131,3 +127,6 @@ body {
   }
 }
 
+._hidden {
+	display: none;
+}
