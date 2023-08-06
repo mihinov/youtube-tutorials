@@ -10,5 +10,5 @@
 | pointer-events |    [Сайт](https://mihinov.github.io/youtube-tutorials/pointer-events/)   |  [Видео](https://www.youtube.com/watch?v=rt_LeOLVgLo) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/pointer-events)  |
 | youtube-experience-bar |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-experience-bar/)   |  [Видео](https://youtu.be/FSVwqwOcQ0Y) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-experience-bar)  |
 | youtube-game-of-life |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-game-of-life/)   |  [Видео](https://www.youtube.com/watch?v=AA_-NpBdH1k) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-game-of-life)  |
-| youtube-css-paint-api |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-css-paint-api)   |  [Видео нету]() |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-css-paint-api)  |
+| youtube-css-paint-api |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-css-paint-api)   |  [Видео](https://youtu.be/df6kKb2rz0k) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-css-paint-api)  |
 
