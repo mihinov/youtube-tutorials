@@ -111,8 +111,10 @@ export class Ring {
 	private calcSize() {
 		const { width, height } = this.canvas.getBoundingClientRect();
 
-		this.width = width;
-		this.height = height;
+		const dpi = window.devicePixelRatio || 1;
+
+		this.width = width * dpi;
+		this.height = height * dpi;
 
 		this.x = this.width / 2;
 		this.y = this.height / 2;
@@ -122,6 +124,7 @@ export class Ring {
 
 		this.lineWidth = Math.min(this.width, this.height) * 0.15;
     this.radius = Math.min(this.width, this.height) * 0.3;
+		this.ctx.imageSmoothingEnabled = true;
 	}
 
 }

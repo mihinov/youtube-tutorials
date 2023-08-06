@@ -28,7 +28,10 @@ const renderBaseRing = (canvasNode: HTMLCanvasElement | null) => {
 
 const renderPaintNode = () => {
 	paintNode?.classList.remove('_hidden');
-	CSS.paintWorklet.addModule(new URL("worklet-ring.ts", import.meta.url));
+
+	if (CSS.paintWorklet) {
+		CSS.paintWorklet.addModule(new URL("worklet-ring.ts", import.meta.url));
+	}
 };
 
 renderPaintNode();
