@@ -1,3 +1,5 @@
+import { canvasNode, dragMove, dragStart, dragStop } from "./index.js";
+
 canvasNode.addEventListener('pointerdown', dragStart);
 canvasNode.addEventListener('pointerup', dragStop);
 canvasNode.addEventListener('pointermove', dragMove);

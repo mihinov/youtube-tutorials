@@ -1,4 +1,4 @@
-const dragStart = (e) => {
+export const dragStart = (e) => {
 	if (isDrawing === true) return;
 
 	isDrawing = true;
@@ -7,14 +7,14 @@ const dragStart = (e) => {
 	drawPoint(lastX, lastY);
 };
 
-const dragMove = (e) => {
+export const dragMove = (e) => {
 	if (isDrawing === false) return;
 	drawLine(lastX, lastY, e.clientX, e.clientY);
 	lastX = e.clientX;
 	lastY = e.clientY;
 };
 
-const dragStop = (e) => {
+export const dragStop = (e) => {
 	if (isDrawing === false) return;
 	isDrawing = false;
 	drawSquare(e.clientX, e.clientY);
@@ -68,7 +68,7 @@ function drawSquare(x, y) {
 	ctx.fill();
 }
 
-const canvasNode = document.querySelector('.canvas');
+export const canvasNode = document.querySelector('.canvas');
 const ctx = canvasNode.getContext('2d');
 const htmlNode = window.document.documentElement;
 const getBgColor = () => getComputedStyle(htmlNode).getPropertyValue('--bgColor');
