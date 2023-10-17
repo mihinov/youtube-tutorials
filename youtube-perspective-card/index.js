@@ -17,10 +17,14 @@ window.addEventListener('pointermove', onMove);
 window.addEventListener('resize', onResize);
 
 function onResize(e) {
-	const lastTargetXPercent = window.innerWidth / targetX;
-	const lastTargetYPercent = window.innerHeight / targetY;
+	const lastWindowWidthPercent = windowWidth / window.innerWidth;
+	const lastWindowHeightPercent = windowHeight / window.innerHeight;
 
-	console.log(lastTargetXPercent);
+	targetX = Math.min(Math.max(targetX * lastWindowWidthPercent, 0), window.innerWidth);
+	targetY = Math.min(Math.max(targetY * lastWindowHeightPercent, 0), window.innerHeight);
+
+	windowWidth = window.innerWidth;
+	windowHeight = window.innerHeight;
 }
 
 function onMove(e) {
