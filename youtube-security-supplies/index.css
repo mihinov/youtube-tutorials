@@ -284,6 +284,10 @@ img {
 	overflow-x: hidden;
 }
 
+.teams__slider {
+	width: 100%;
+}
+
 .teams__wrapper {
 	display: flex;
 	flex-direction: column;
