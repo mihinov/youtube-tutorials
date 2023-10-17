@@ -68,6 +68,7 @@ img {
 	background-color: rgb(67, 81, 61);
 	color: white;
 	padding: 25px 0;
+	overflow-x: hidden;
 }
 
 .header__wrapper {
@@ -304,6 +305,7 @@ img {
 .teams__slider-wrapper {
 	display: flex;
 	align-items: center;
+	touch-action: pan-y;
 }
 
 .teams__slider-item {
