@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+*, *::before, *::after {
+	box-sizing: inherit;
+}
+
+html {
+	box-sizing: border-box;
+	overflow-x: hidden;
+	width: 100%;
+}
+
+:root {
+	--bgColor: white;
+	--color: rgb(34, 34, 34);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bgColor: rgb(34, 34, 34);
+		--color: white;
+	}
+}
+
+.container {
+	max-width: 1000px;
+	padding: 0 15px;
+	margin: 0 auto;
+	display: block;
+	width: 100%;
+}
+
+body {
+	margin: 0;
+	color: var(--color);
+	background-color: var(--bgColor);
+	font-family: 'Ubuntu', sans-serif;
+	display: flow-root;
+	font-size: 20px;
+}
+
+img {
+	display: flex;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+main {
+	padding-bottom: 1.5rem;
+}
+
+.progress {
+	position: fixed;
+	z-index: 2;
+	background-color: red;
+	height: 2vmin;
+	left: 0;
+	top: 0;
+	width: 100%;
+	transform-origin: 0 50%;
+	animation: animation-x auto linear;
+	animation-timeline: scroll(root block);
+}
+
+
+@keyframes animation-x {
+	0% {
+		scale: 0 1;
+	}
+	100% {
+		scale: 1 1;
+	}
+}
+
+@property --y {
+	syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+.block {
+	--y: 0;
+	border: 3px solid orange;
+	width: 400px;
+	height: 200px;
+	overflow-y: auto;
+	scroll-timeline: --scroll-block;
+}
+
+@keyframes animation-y {
+	0% {
+		scale: 1 0;
+	}
+	100% {
+		scale: 1 1;
+	}
+}
+
+.block__wrapper {
+	position: relative;
+	padding: 0.5rem;
+}
+
+.block__wrapper::before {
+	content: "";
+	display: inline-block;
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 100%;
+	width: 2vmin;
+	background-color: color-mix(in srgb, var(--color) 50%, var(--bgColor));;
+	color: var(--bgColor);
+	padding: 0.4rem;
+	transform-origin: right top;
+	animation: animation-y auto linear;
+	animation-timeline: --scroll-block;
+}
+
+.height-auto {
+	height: auto;
+}

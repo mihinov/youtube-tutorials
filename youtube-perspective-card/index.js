@@ -6,11 +6,16 @@ let currentX = 0;
 let currentY = 0;
 let targetX = 0;
 let targetY = 0;
-let moved = false;
+let animated = false;
 const ease = 0.05; // значение, определяющее скорость анимации или изменения координат
 
-window.addEventListener('mousemove', onMove);
+window.addEventListener('pointermove', onMove);
 window.addEventListener('touchmove', onMove);
+// window.addEventListener('resize')
+
+function onResize(e) {
+
+}
 
 function onMove(e) {
   targetX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -21,18 +26,21 @@ function onMove(e) {
 	targetY = Math.min(Math.max(targetY, 0), window.innerHeight);
 	// это сделано, чтобы не выходить за пределы экрана браузера
 
-	moved = true;
+	console.log(targetX);
+
+	animated = true;
 }
 
 function animate() {
-	
-	if (moved === false) {
+
+	if (animated === false) {
 		targetX = defaultMouseX * window.innerWidth;
 		targetY = defaultMouseY * window.innerHeight;
 		currentX = targetX;
 		currentY = targetY;
+		animated = true;
 	}
-	
+
 	currentX = currentX + ((targetX - currentX) * ease);
 	currentY = currentY + ((targetY - currentY) * ease);
 

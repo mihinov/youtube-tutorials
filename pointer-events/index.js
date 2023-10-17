@@ -68,12 +68,6 @@ function drawSquare(x, y) {
 	ctx.fill();
 }
 
-
-
-
-
-
-
 const canvasNode = document.querySelector('.canvas');
 const ctx = canvasNode.getContext('2d');
 const htmlNode = window.document.documentElement;
