@@ -19,9 +19,6 @@ window.addEventListener('resize', onResize);
 function onResize(e) {
 	targetX = targetXPercent * window.innerWidth;
 	targetY = targetYPercent * window.innerHeight;
-
-	targetXPercent = targetX / window.innerWidth;
-	targetYPercent = targetY / window.innerHeight;
 }
 
 function onMove(e) {
