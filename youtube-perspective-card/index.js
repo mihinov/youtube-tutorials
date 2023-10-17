@@ -8,46 +8,43 @@ let lastCurrentX = 0;
 let lastCurrentY = 0;
 let targetX = 0;
 let targetY = 0;
+let targetXPercent = 0;
+let targetYPercent = 0;
 let animated = false;
-let windowWidth = window.innerWidth;
-let windowHeight = window.innerHeight;
 const ease = 0.05; // значение, определяющее скорость анимации или изменения координат
 
 window.addEventListener('pointermove', onMove);
 window.addEventListener('resize', onResize);
 
 function onResize(e) {
-	const lastWindowWidthPercent = windowWidth / window.innerWidth;
-	const lastWindowHeightPercent = windowHeight / window.innerHeight;
+	targetX = targetXPercent * window.innerWidth;
+	targetY = targetYPercent * window.innerHeight;
 
-	targetX = Math.min(Math.max(targetX * lastWindowWidthPercent, 0), window.innerWidth);
-	targetY = Math.min(Math.max(targetY * lastWindowHeightPercent, 0), window.innerHeight);
-
-	windowWidth = window.innerWidth;
-	windowHeight = window.innerHeight;
+	targetXPercent = targetX / window.innerWidth;
+	targetYPercent = targetY / window.innerHeight;
 }
 
 function onMove(e) {
-	windowWidth = window.innerWidth;
-	windowHeight = window.innerHeight;
   targetX = e.touches ? e.touches[0].clientX : e.clientX;
   targetY = e.touches ? e.touches[0].clientY : e.clientY;
 
 	// это сделано, чтобы не выходить за пределы экрана браузера
-	targetX = Math.min(Math.max(targetX, 0), windowWidth);
-	targetY = Math.min(Math.max(targetY, 0), windowHeight);
+	targetX = Math.min(Math.max(targetX, 0), window.innerWidth);
+	targetY = Math.min(Math.max(targetY, 0), window.innerHeight);
 	// это сделано, чтобы не выходить за пределы экрана браузера
+
+	targetXPercent = targetX / window.innerWidth;
+	targetYPercent = targetY / window.innerHeight;
 
 	animated = true;
 }
 
 function animate() {
-	windowWidth = window.innerWidth;
-	windowHeight = window.innerHeight;
-
 	if (animated === false) {
-		targetX = defaultMouseX * windowWidth;
-		targetY = defaultMouseY * windowHeight;
+		targetX = defaultMouseX * window.innerWidth;
+		targetY = defaultMouseY * window.innerHeight;
+		targetXPercent = targetX / window.innerWidth;
+		targetYPercent = targetY / window.innerHeight;
 		currentX = targetX;
 		currentY = targetY;
 		animated = true;
@@ -57,14 +54,12 @@ function animate() {
 	currentY = currentY + ((targetY - currentY) * ease);
 
 	// преобразуем координаты в диапазон от 0 до 1
-	let x = currentX / windowWidth;
-	let y = currentY / windowHeight;
+	let x = currentX / window.innerWidth;
+	let y = currentY / window.innerHeight;
 
 	// округляем до 3 чисел после запятой
 	x = parseFloat(x.toFixed(3));
 	y = parseFloat(y.toFixed(3));
-
-  // Получаем прошлые CSS значения x и y, если они не равнялись прошлым, то перезаписать их
 
 	// устанавливаем соответствующие CSS-переменные
   if (x !== lastCurrentX) {
