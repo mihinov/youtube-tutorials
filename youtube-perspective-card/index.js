@@ -22,8 +22,8 @@ function onResize(e) {
 }
 
 function onMove(e) {
-  targetX = e.touches ? e.touches[0].clientX : e.clientX;
-  targetY = e.touches ? e.touches[0].clientY : e.clientY;
+  targetX = e.clientX;
+  targetY = e.clientY;
 
 	// это сделано, чтобы не выходить за пределы экрана браузера
 	targetX = Math.min(Math.max(targetX, 0), window.innerWidth);
