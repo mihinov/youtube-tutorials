@@ -2,14 +2,20 @@
 	box-sizing: inherit;
 }
 
+@property --transitionDurationS {
+	syntax: "<number>";
+  inherits: false;
+  initial-value: 0.2;
+}
+
 :root {
 	--white: white;
 	--dark: rgb(34, 34, 34);
 	--darkWhite: rgb(100, 100, 100);
 	--darkWhiteWhite: rgb(130, 130, 130);
-	--backgroundColor: var(--dark);
+	--bgColor: var(--dark);
 	--color: var(--white);
-	--inputColor: var(--backgroundColor);
+	--inputColor: var(--bgColor);
 	--btnBgColor: var(--darkWhite);
 	--btnBgColorHover: var(--darkWhiteWhite);
 	--btnBgColorActive: var(--white);
@@ -19,18 +25,23 @@
 	--btnBorderColorFocusActive: black;
 	--btnColor: var(--white);
 	--btnColorActive: var(--dark);
-	--transitionDuration: 0.2s;
+	--modalBgContentColor: var(--darkWhite);
+	--modalBgColor: var(--dark);
+	--modalColor: var(--color);
+	--transitionDurationS: 0.2;
+	--transitionDuration: calc( var(--transitionDurationS) * 1s );
 	--transitionTimingFunction: ease;
 }
 
 @media (prefers-color-scheme: light) {
 	:root {
-		--backgroundColor: var(--white);
+		--bgColor: var(--white);
 		--color: var(--dark);
 		--inputColor: var(--color);
 		--btnBorderColor: var(--darkWhite);
 		--btnBorderColorHover: var(--darkWhiteWhite);
 		--btnBorderColorFocus: var(--dark);
+		--modalColor: var(--white);
 	}
 }
 
@@ -40,7 +51,7 @@ html {
 }
 
 body {
-	background-color: var(--backgroundColor) !important;
+	background-color: var(--bgColor) !important;
 	color: var(--color) !important;
 	font-family: sans-serif !important;
 	font-size: 20px !important;

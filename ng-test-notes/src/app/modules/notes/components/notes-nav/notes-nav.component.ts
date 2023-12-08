@@ -15,5 +15,6 @@ export class NotesNavComponent {
 
 	constructor(
 		private readonly notesService: NotesService
-	) { }
+	) {
+	}
 }
