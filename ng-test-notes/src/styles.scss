@@ -1,0 +1,61 @@
+*, *::after, *::before {
+	box-sizing: inherit;
+}
+
+:root {
+	--white: white;
+	--dark: rgb(34, 34, 34);
+	--darkWhite: rgb(100, 100, 100);
+	--darkWhiteWhite: rgb(130, 130, 130);
+	--backgroundColor: var(--dark);
+	--color: var(--white);
+	--inputColor: var(--backgroundColor);
+	--btnBgColor: var(--darkWhite);
+	--btnBgColorHover: var(--darkWhiteWhite);
+	--btnBgColorActive: var(--white);
+	--btnBorderColor: transparent;
+	--btnBorderColorHover: transparent;
+	--btnBorderColorFocus: var(--darkWhiteWhite);
+	--btnBorderColorFocusActive: black;
+	--btnColor: var(--white);
+	--btnColorActive: var(--dark);
+	--transitionDuration: 0.2s;
+	--transitionTimingFunction: ease;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--backgroundColor: var(--white);
+		--color: var(--dark);
+		--inputColor: var(--color);
+		--btnBorderColor: var(--darkWhite);
+		--btnBorderColorHover: var(--darkWhiteWhite);
+		--btnBorderColorFocus: var(--dark);
+	}
+}
+
+html {
+	box-sizing: border-box;
+	color-scheme: light dark;
+}
+
+body {
+	background-color: var(--backgroundColor);
+	color: var(--color);
+	font-family: sans-serif;
+	font-size: 20px;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+.container {
+	max-width: 1000px;
+	padding: 0 15px;
+	margin: 0 auto;
+	display: block;
+	width: 100%;
+}

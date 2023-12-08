@@ -1,0 +1,40 @@
+.notes-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.notes-nav-item {
+	outline: none;
+	display: block;
+	background-color: var(--btnBgColor);
+	color: var(--btnColor);
+	padding: 10px 20px;
+	transition-duration: var(--transitionDuration);
+	transition-timing-function: var(--transitionTimingFunction);
+	border: 2px solid var(--btnBorderColor);
+	border-radius: 8px;
+	transition-property: background-color, color, border-color;
+}
+
+.notes-nav-item:active {
+	border-color: var(--btnBgBorderColorHover);
+}
+
+.notes-nav-item:hover {
+	background-color: var(--btnBgColorHover);
+	border-color: var(--btnBorderColorHover);
+}
+
+.notes-nav-item:focus {
+	border-color: var(--btnBorderColorFocus);
+}
+
+.notes-nav-item:focus:active {
+	border-color: var(--btnBorderColorFocusActive);
+}
+
+.notes-nav-item.notes-nav-item_active {
+	background-color: var(--btnBgColorActive);
+	color: var(--btnColorActive);
+}

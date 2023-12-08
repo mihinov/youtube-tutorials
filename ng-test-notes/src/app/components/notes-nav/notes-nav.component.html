@@ -1,0 +1,11 @@
+@if (notes$ | async; as notes) {
+	<div class="notes-nav">
+		@for (note of notes; track note.id) {
+			<a
+				class="notes-nav-item"
+				routerLinkActive="notes-nav-item_active"
+				[routerLink]="'/notes/' + note.id"
+			> {{ note.title }} </a>
+		}
+	</div> <!-- .notes-nav -->
+}

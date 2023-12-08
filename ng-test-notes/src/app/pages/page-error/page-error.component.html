@@ -1,0 +1,10 @@
+@if (lastUrl$ | async; as lastUrl) {
+	@if (secondsLeft$ | async; as secondsLeft) {
+		<div class="container">
+			<p>
+				Вы перешли по некорректному адресу {{ lastUrl }}, переадресация на главную страницу через {{ secondsLeft }} сек.
+			</p>
+		</div>
+	}
+}
+
