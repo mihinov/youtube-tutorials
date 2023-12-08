@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { NotesItem } from '../../models';
+import { NotesItem } from '../../../../models';
 
 @Component({
   selector: 'note-atom',

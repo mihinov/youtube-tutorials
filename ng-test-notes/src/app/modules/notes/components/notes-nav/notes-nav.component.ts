@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NotesService } from '../../services/notes.service';
 import { Observable } from 'rxjs';
-import { NotesItem } from '../../models';
+import { NotesItem } from '../../../../models';
 import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
