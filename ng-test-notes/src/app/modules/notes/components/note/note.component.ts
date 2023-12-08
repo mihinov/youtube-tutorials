@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotesService } from '../../services/notes.service';
-import { NotesItem } from '../../../../models';
-import { filter, map, tap } from 'rxjs/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
+import { NotesItem } from '../../models';
 
 
 @Component({

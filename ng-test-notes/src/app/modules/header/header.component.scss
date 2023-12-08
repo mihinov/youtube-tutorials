@@ -1,0 +1,14 @@
+:host {
+	display: flow-root;
+}
+
+.header {
+	border-bottom: 3px solid var(--color);
+	padding: 30px 0;
+}
+
+.header__wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}

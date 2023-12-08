@@ -4,14 +4,19 @@ import { NoteWrapperComponent } from "./components/note-wrapper/note-wrapper.com
 import { NoteEmptyComponent } from "./components/note-empty/note-empty.component";
 import { NoteComponent } from "./components/note/note.component";
 import { PageNotesComponent } from "./pages/page-notes/page-notes.component";
+import { LayoutNotesComponent } from "./layouts/layout-notes/layout-notes.component";
 
 const routes: Routes = [
-	{ path: '', component: PageNotesComponent, children: [
-		{ path: '', component: NoteWrapperComponent, children: [
-			{ path: '', component: NoteEmptyComponent },
-			{ path: ':id', component: NoteComponent }
+
+	{ path: '', component: LayoutNotesComponent, children: [
+		{ path: '', redirectTo: 'notes', pathMatch: 'full' },
+		{ path: 'notes', component: PageNotesComponent, children: [
+			{ path: '', component: NoteWrapperComponent, children: [
+				{ path: '', component: NoteEmptyComponent },
+				{ path: ':id', component: NoteComponent }
+			] },
 		] },
-	] },
+	]},
 ];
 
 @NgModule({

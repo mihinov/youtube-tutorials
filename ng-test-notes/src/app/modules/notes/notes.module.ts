@@ -7,8 +7,8 @@ import { NoteComponent } from './components/note/note.component';
 import { NotesNavComponent } from './components/notes-nav/notes-nav.component';
 import { PageNotesComponent } from './pages/page-notes/page-notes.component';
 import { NotesRoutingModule } from './notes-routing.module';
-
-
+import { LayoutNotesComponent } from './layouts/layout-notes/layout-notes.component';
+import { HeaderModule } from '../header/header.module';
 
 @NgModule({
   declarations: [
@@ -17,11 +17,13 @@ import { NotesRoutingModule } from './notes-routing.module';
 		NoteComponent,
 		NoteWrapperComponent,
 		NoteEmptyComponent,
-		NoteAtomComponent
+		NoteAtomComponent,
+  	LayoutNotesComponent
 	],
   imports: [
     CommonModule,
-		NotesRoutingModule
+		NotesRoutingModule,
+		HeaderModule,
   ]
 })
 export class NotesModule { }

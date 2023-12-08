@@ -40,11 +40,11 @@ html {
 }
 
 body {
-	background-color: var(--backgroundColor);
-	color: var(--color);
-	font-family: sans-serif;
-	font-size: 20px;
-	margin: 0;
+	background-color: var(--backgroundColor) !important;
+	color: var(--color) !important;
+	font-family: sans-serif !important;
+	font-size: 20px !important;
+	margin: 0 !important;
 }
 
 a {
@@ -58,4 +58,45 @@ a {
 	margin: 0 auto;
 	display: block;
 	width: 100%;
+}
+
+h1 {
+	margin: 0;
+}
+
+.btn {
+	font-size: inherit;
+	cursor: pointer;
+	outline: none;
+	display: block;
+	background-color: var(--btnBgColor);
+	color: var(--btnColor);
+	padding: 10px 20px;
+	transition-duration: var(--transitionDuration);
+	transition-timing-function: var(--transitionTimingFunction);
+	border: 2px solid var(--btnBorderColor);
+	border-radius: 8px;
+	transition-property: background-color, color, border-color;
+}
+
+.btn:active {
+	border-color: var(--btnBgBorderColorHover);
+}
+
+.btn:hover {
+	background-color: var(--btnBgColorHover);
+	border-color: var(--btnBorderColorHover);
+}
+
+.btn:focus {
+	border-color: var(--btnBorderColorFocus);
+}
+
+.btn:focus:active {
+	border-color: var(--btnBorderColorFocusActive);
+}
+
+.btn.btn_active {
+	background-color: var(--btnBgColorActive);
+	color: var(--btnColorActive);
 }

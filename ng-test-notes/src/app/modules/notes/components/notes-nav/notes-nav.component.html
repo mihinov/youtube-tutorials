@@ -2,8 +2,8 @@
 	<div class="notes-nav">
 		@for (note of notes; track note.id) {
 			<a
-				class="notes-nav-item"
-				routerLinkActive="notes-nav-item_active"
+				class="btn"
+				routerLinkActive="btn_active"
 				[routerLink]="'/notes/' + note.id"
 			> {{ note.title }} </a>
 		}
