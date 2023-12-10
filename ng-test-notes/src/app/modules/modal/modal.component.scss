@@ -1,4 +1,12 @@
-:host.modal_open .modal {
+:host {
+	opacity: 0;
+  visibility: hidden;
+	transition-property: visibility, opacity;
+  transition-timing-function: var(--transitionTimingFunction);
+  transition-duration: var(--transitionDuration);
+}
+
+:host.modal_open {
   opacity: 1;
   visibility: visible;
 }
@@ -12,20 +20,20 @@
   width: 100%;
   height: 100%;
   z-index: 10;
-  overflow: auto;
-  opacity: 0;
-  visibility: hidden;
-  transition-property: visibility, opacity;
-  transition-timing-function: var(--transitionTimingFunction);
-  transition-duration: var(--transitionDuration);
+	overflow-y: auto;
+	overflow-x: hidden;
+	color: var(--modalColor);
 }
 
 .modal__body {
-  padding: 40px;
-  background-color: var(--modalBgContentColor);
-  margin: 40px;
   position: relative;
-	border-radius: 20px;
+	padding: 30px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100%;
+	z-index: 2;
 }
 
 .modal__background {
@@ -38,17 +46,25 @@
   opacity: 0.95;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  z-index: 1;
 }
 
 .modal__close {
 	user-select: none;
   position: absolute;
-  right: 15px;
-  top: 15px;
+  right: 20px;
+  top: 20px;
 	--width: 35px;
   width: var(--width);
   height: var(--width);
   cursor: pointer;
-  --colorModalClose: var(--modalColor);
+  --colorModalClose: var(--white);
+}
+
+.modal__content {
+	position: relative;
+	background-color: var(--modalBgContentColor);
+	margin: 0 auto;
+	border-radius: 20px;
+	padding: 40px;
 }

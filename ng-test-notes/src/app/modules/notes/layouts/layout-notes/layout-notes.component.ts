@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { NoteAtomComponent } from '../../components/note-atom/note-atom.component';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ModalService } from '../../../modal/modal.service';
 import { NotesNavComponent } from '../../components/notes-nav/notes-nav.component';
+import { ModalCreateNoteComponent } from '../../components/modal-create-note/modal-create-note.component';
 
 @Component({
   selector: 'app-layout-notes',
@@ -12,13 +12,17 @@ import { NotesNavComponent } from '../../components/notes-nav/notes-nav.componen
 export class LayoutNotesComponent implements OnInit {
 
 	constructor(
-		private readonly modalService: ModalService
+		private readonly modalService: ModalService,
 	) {}
 
 	ngOnInit(): void {
 	}
 
 	public clickHeaderBtn(): void {
-		this.modalService.open(NotesNavComponent);
+		const modalRef = this.modalService.open(ModalCreateNoteComponent, {
+			data: {
+				key: 'dsadasdsada'
+			}
+		});
 	}
 }

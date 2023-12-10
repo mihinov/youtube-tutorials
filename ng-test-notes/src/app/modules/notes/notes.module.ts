@@ -9,6 +9,7 @@ import { PageNotesComponent } from './pages/page-notes/page-notes.component';
 import { NotesRoutingModule } from './notes-routing.module';
 import { LayoutNotesComponent } from './layouts/layout-notes/layout-notes.component';
 import { HeaderModule } from '../header/header.module';
+import { ModalService } from '../modal/modal.service';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,9 @@ import { HeaderModule } from '../header/header.module';
     CommonModule,
 		NotesRoutingModule,
 		HeaderModule,
-  ]
+  ],
+	providers: [
+		ModalService
+	]
 })
 export class NotesModule { }

@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ModalComponent } from './modal.component';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [
     ModalComponent
   ],
   imports: [
-    CommonModule
+		BrowserModule
   ]
 })
 export class ModalModule { }

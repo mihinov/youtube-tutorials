@@ -11,6 +11,7 @@
 :root {
 	--white: white;
 	--dark: rgb(34, 34, 34);
+	--darkDark: rgb(28, 28, 28);
 	--darkWhite: rgb(100, 100, 100);
 	--darkWhiteWhite: rgb(130, 130, 130);
 	--bgColor: var(--dark);
@@ -25,10 +26,9 @@
 	--btnBorderColorFocusActive: black;
 	--btnColor: var(--white);
 	--btnColorActive: var(--dark);
-	--modalBgContentColor: var(--darkWhite);
-	--modalBgColor: var(--dark);
+	--modalBgContentColor: var(--darkDark);
+	--modalBgColor: var(--darkWhite);
 	--modalColor: var(--color);
-	--transitionDurationS: 0.2;
 	--transitionDuration: calc( var(--transitionDurationS) * 1s );
 	--transitionTimingFunction: ease;
 }
@@ -41,7 +41,9 @@
 		--btnBorderColor: var(--darkWhite);
 		--btnBorderColorHover: var(--darkWhiteWhite);
 		--btnBorderColorFocus: var(--dark);
-		--modalColor: var(--white);
+		--modalBgContentColor: var(--white);
+		--modalBgColor: var(--dark);
+		--modalColor: var(--dark);
 	}
 }
 
@@ -51,11 +53,18 @@ html {
 }
 
 body {
-	background-color: var(--bgColor) !important;
-	color: var(--color) !important;
-	font-family: sans-serif !important;
-	font-size: 20px !important;
-	margin: 0 !important;
+	background-color: var(--bgColor);
+	color: var(--color);
+	font-family: sans-serif;
+	font-size: 20px;
+	margin: 0;
+	transition-timing-function: var(--transitionTimingFunction);
+	transition-duration: var(--transitionDuration);
+	transition-property: padding-right;
+}
+
+.overflowHidden {
+	overflow: hidden;
 }
 
 a {

@@ -14,7 +14,9 @@ export class NotesNavComponent {
 	public notes$: Observable<NotesItem[]> = this.notesService.notes$;
 
 	constructor(
-		private readonly notesService: NotesService
+		private readonly notesService: NotesService,
+		// @Inject(MODAL_DATA) public data: any,
 	) {
+		// console.log(1);
 	}
 }
