@@ -67,8 +67,6 @@ export class NotesService {
 	}
 
 	public get(id: string): NotesItem | null {
-
-
 		const stateNotes = this.stateNotes.value;
 		const notesItem = stateNotes.get(id);
 

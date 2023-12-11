@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { ModalService } from '../../../modal/modal.service';
 import { ModalCreateNoteComponent } from '../../components/modal-create-note/modal-create-note.component';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { MODAL_DATA, MODAL_REF } from '../../../modal/modal.tokens';
 
 @Component({
   selector: 'app-layout-notes',
@@ -11,19 +11,23 @@ import { BehaviorSubject, Subject } from 'rxjs';
 })
 export class LayoutNotesComponent {
 	constructor(
-		private readonly modalService: ModalService,
-	) {}
+		private readonly modalService: ModalService
+	) {
+
+	}
 
 	public clickHeaderBtn(): void {
+
+
 		const modalRef = this.modalService.open(ModalCreateNoteComponent, {
 			data: {
 				key: 'dsadasdsada'
 			}
 		});
 
-		(window as any).modalRef = modalRef;
+		// (window as any).modalRef = modalRef;
 
-		modalRef.afterClosed().subscribe(() => console.log('afterClosed'));
-		modalRef.afterOpened().subscribe(() => console.log('afterOpened'));
+		// modalRef.afterClosed().subscribe(() => console.log('afterClosed'));
+		// modalRef.afterOpened().subscribe(() => console.log('afterOpened'));
 	}
 }

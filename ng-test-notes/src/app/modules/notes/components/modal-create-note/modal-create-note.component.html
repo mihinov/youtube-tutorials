@@ -1,4 +1,9 @@
-<form [formGroup]="form">
-	<input type="text" [formControl]="form.controls.text" name="text">
-	<input type="text" [formControl]="form.controls.text1" name="text1">
+<h2>Создать заметку</h2>
+
+<form [formGroup]="form" (ngSubmit)="submitForm()">
+	<input type="text" [formControl]="form.controls.title" name="title" placeholder="название">
+	<input type="text" [formControl]="form.controls.description" name="description" placeholder="описание">
+	<button class="btn" type="submit">
+		Создать
+	</button>
 </form>

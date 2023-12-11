@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Injector, Input, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
-import { InternalModalConfig } from './modal.models';
-import { MODAL_DATA } from './modal.tokens';
+import { InternalModalConfig, ModalRef } from './modal.models';
+import { MODAL_DATA, MODAL_REF } from './modal.tokens';
 
 @Component({
   selector: 'app-modal',
@@ -13,12 +13,13 @@ import { MODAL_DATA } from './modal.tokens';
   ],
 })
 export class ModalComponent implements AfterViewInit {
-	@Input() public componentModalContent: Type<any> | null = null;
-	@ViewChild('modalContent', { read: ViewContainerRef }) vcrModalContent: ViewContainerRef | null = null;
-	@ViewChild('modalRef', { static: false }) modalRef: ElementRef<HTMLDivElement> | null = null;
-	@Output() public close = new EventEmitter<void>();
-	public element: HTMLElement;
 	public modalConfig: InternalModalConfig | null = null;
+	@Input() public componentModalContent: Type<any> | null = null;
+	@Output() public close = new EventEmitter<void>();
+	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent: ViewContainerRef | null = null;
+	@ViewChild('modalRef', { static: false }) private modalRef: ElementRef<HTMLDivElement> | null = null;
+	private element: HTMLElement;
+	private returnRef: ModalRef | null = null;
 
 	constructor(
 		private readonly el: ElementRef,
@@ -39,14 +40,15 @@ export class ModalComponent implements AfterViewInit {
 		this.el.nativeElement.style.transitionDuration = `${this.modalConfig.transitionDurationS}s`;
 	}
 
-	public createAndOpenModal(config: InternalModalConfig): void {
-		this.openModal(config);
+	public createAndOpenModal(config: InternalModalConfig, returnRef: ModalRef): void {
+		this.openModal(config, returnRef);
 		this.renderModalContent();
   }
 
-	public openModal(config: InternalModalConfig): void {
+	public openModal(config: InternalModalConfig, returnRef: ModalRef): void {
 		const scrollbarWidth = this.getScrollbarWidth();
 
+		this.returnRef = returnRef;
 		this.modalConfig = config;
 		this.document.body.style.paddingRight = `${scrollbarWidth}px`;
     this.document.body.classList.add('overflowHidden');
@@ -97,16 +99,19 @@ export class ModalComponent implements AfterViewInit {
 	private renderModalContent(): void {
 		if (this.vcrModalContent === null) return;
 		if (this.componentModalContent === null) return;
+		if (this.returnRef === null) return;
 
 		this.vcrModalContent.clear();
     this.vcrModalContent.createComponent(this.componentModalContent, {
 			injector: Injector.create({
 				parent: this.injector,
 				providers: [
-					{ provide: MODAL_DATA, useValue: this.modalConfig?.data }
+					{ provide: MODAL_DATA, useValue: this.modalConfig?.data },
+					{ provide: MODAL_REF, useValue: this.returnRef }
 				]
 			}),
 		});
+
 		this.cdr.detectChanges();
 	}
 

@@ -1,5 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NotesService } from '../../services/notes.service';
+import { AddedNotesItem } from '../../models';
+import { MODAL_DATA, MODAL_REF } from '../../../modal/modal.tokens';
+import { ModalRef } from '../../../modal/modal.models';
 
 @Component({
   selector: 'app-modal-create-note',
@@ -10,14 +14,23 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class ModalCreateNoteComponent {
 
 	form = new FormGroup({
-		text: new FormControl('hello'),
-		text1: new FormControl('hello')
+		title: new FormControl('', [Validators.required]),
+		description: new FormControl('', [Validators.required])
 	});
 
 	constructor(
-		// @Inject(MODAL_DATA) public data: any,
+		private notesService: NotesService,
+		@Inject(MODAL_REF) private modalRef: ModalRef
 	) {
-		// console.log(data);
+	}
+
+	public submitForm(): void {
+		if (this.form.valid === false) return;
+
+		const formValue = this.form.value as AddedNotesItem;
+
+		this.notesService.add(formValue);
+		this.modalRef.destroy();
 	}
 
 }

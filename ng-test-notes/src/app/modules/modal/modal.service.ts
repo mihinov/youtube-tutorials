@@ -2,11 +2,11 @@ import { Injectable, ComponentFactoryResolver, ComponentRef, Type, ApplicationRe
 import { ModalComponent } from './modal.component';
 import { Observable, ReplaySubject, Subject, take, timer } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
-import { InternalModalConfig, ModalConfig } from './modal.models';
+import { InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { ModalModule } from './modal.module';
 
 @Injectable({
-  providedIn: ModalModule
+	providedIn: ModalModule
 })
 export class ModalService {
   private modalComponentRef: ComponentRef<ModalComponent> | null = null;
@@ -17,8 +17,9 @@ export class ModalService {
 	private currentConfig: InternalModalConfig | null = null;
 	private stateAfterClosed: Subject<any> = new Subject<any>();
 	private stateAfterOpened: Subject<any> = new ReplaySubject<any>(1);
-	private afterClosed$: Observable<any> = this.stateAfterClosed.asObservable();
-	private afterOpened$: Observable<any> = this.stateAfterOpened.asObservable();
+	private afterClosed$: Observable<any> = this.stateAfterClosed.pipe(take(1));
+	private afterOpened$: Observable<any> = this.stateAfterOpened.pipe(take(1));
+	private returnRef: ModalRef | null = null;
 
   constructor(
     private readonly componentFactoryResolver: ComponentFactoryResolver,
@@ -29,7 +30,7 @@ export class ModalService {
 
 	}
 
-  public open(component: Type<any>, config: ModalConfig = this.defaultConfig) {
+  public open(component: Type<any>, config: ModalConfig = this.defaultConfig): ModalRef {
 		// Если модальное окно уже создано
 		if (this.modalComponentRef?.instance.componentModalContent === component) {
 			return this._open(config);
@@ -70,38 +71,39 @@ export class ModalService {
 		});
 	}
 
-	private _create(component: Type<any>, config: ModalConfig) {
+	private _create(component: Type<any>, config: ModalConfig): ModalRef {
 		this.currentConfig = this.createConfig(config);
 		this.modalComponentRef = this.componentFactoryResolver.resolveComponentFactory(ModalComponent).create(this.injector);
 		this.appRef.attachView(this.modalComponentRef.hostView);
 		this.document.body.appendChild(this.modalComponentRef.location.nativeElement);
 
     this.modalComponentRef.instance.componentModalContent = component;
-		this.modalComponentRef.instance.createAndOpenModal(this.currentConfig);
 		this.modalComponentRef.instance.close
 			.pipe(take(1))
 			.subscribe(() => this._close());
 
 		this.setObserversAndStates();
 		this.stateAfterOpened.next(null);
+		this.returnRef = this.getReturnObj();
+		this.modalComponentRef.instance.createAndOpenModal(this.currentConfig, this.returnRef);
 
-		return this.getReturnObj();
+		return this.returnRef;
 	}
 
-	private getReturnObj() {
+	private getReturnObj(): ModalRef {
 		return {
 			afterClosed: () => this.afterClosed$,
 			afterOpened: () => this.afterOpened$,
 			close: () => this._close(),
 			destroy: () => this.closeAndDestroy(),
 			open: () => this._open(this.currentConfig)
-		}
+		};
 	}
 
-	private _open(config: ModalConfig | null) {
-		if (this.modalComponentRef !== null && config !== null) {
+	private _open(config: ModalConfig | null): ModalRef {
+		if (this.modalComponentRef !== null && config !== null && this.returnRef !== null) {
 			this.currentConfig = this.createConfig(config);
-			this.modalComponentRef.instance.openModal(this.currentConfig);
+			this.modalComponentRef.instance.openModal(this.currentConfig, this.returnRef);
 			this.setObserversAndStates();
 			this.stateAfterOpened.next(null);
 
@@ -145,7 +147,7 @@ export class ModalService {
 	private setObserversAndStates(): void {
 		this.stateAfterClosed = new Subject();
 		this.stateAfterOpened = new ReplaySubject(1);
-		this.afterClosed$ = this.stateAfterClosed.asObservable();
-		this.afterOpened$ = this.stateAfterOpened.asObservable();
+		this.afterClosed$ = this.stateAfterClosed.pipe(take(1));
+		this.afterOpened$ = this.stateAfterOpened.pipe(take(1));
 	}
 }

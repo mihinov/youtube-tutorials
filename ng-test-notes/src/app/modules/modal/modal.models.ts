@@ -1,3 +1,5 @@
+import { Observable } from "rxjs";
+
 export interface ModalConfig {
 	maxWidth?: number;
 	minWidth?: number;
@@ -10,4 +12,12 @@ export interface InternalModalConfig {
 	minWidth: number;
 	transitionDurationS: number;
 	data?: any;
+}
+
+export interface ModalRef {
+	afterClosed: () => Observable<any>;
+	afterOpened: () => Observable<any>;
+	close: () => void,
+	destroy: () => void,
+	open: () => void
 }
