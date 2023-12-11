@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotesService } from '../../services/notes.service';
-import { map, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { NotesItem } from '../../models';
 
@@ -13,15 +13,20 @@ import { NotesItem } from '../../models';
   styleUrl: './note.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NoteComponent implements OnInit {
+export class NoteComponent {
 
+	private notesItem: NotesItem | null = null;
 	private id$: Observable<string | undefined> = this.route.params.pipe(
 		map(params => params['id']),
 	);
 	public notesItem$: Observable<NotesItem | null> = this.id$.pipe(
-		map(id => this.notesService.get(id || '')),
+		switchMap((id) => {
+			if (id === undefined) return of(null);
+			return this.notesService.get(id);
+		}),
 		tap(notesItem => {
 			if (notesItem === null) this.router.navigate(['notes']);
+			this.notesItem = notesItem;
 		})
 	);
 
@@ -31,8 +36,9 @@ export class NoteComponent implements OnInit {
 		private readonly notesService: NotesService
 	) { }
 
-	ngOnInit(): void {
-
+	public clickDeleteBtn(): void {
+		if (this.notesItem === null) return;
+		this.notesService.delete(this.notesItem.id);
 	}
 
 }

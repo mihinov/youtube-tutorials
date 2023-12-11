@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { ModalService } from '../../../modal/modal.service';
 import { ModalCreateNoteComponent } from '../../components/modal-create-note/modal-create-note.component';
-import { MODAL_DATA, MODAL_REF } from '../../../modal/modal.tokens';
 
 @Component({
   selector: 'app-layout-notes',
@@ -17,8 +16,6 @@ export class LayoutNotesComponent {
 	}
 
 	public clickHeaderBtn(): void {
-
-
 		const modalRef = this.modalService.open(ModalCreateNoteComponent, {
 			data: {
 				key: 'dsadasdsada'

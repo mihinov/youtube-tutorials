@@ -8,9 +8,6 @@ import { MODAL_DATA, MODAL_REF } from './modal.tokens';
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-	providers: [
-    { provide: 'Window', useValue: window }
-  ],
 })
 export class ModalComponent implements AfterViewInit {
 	public modalConfig: InternalModalConfig | null = null;
@@ -25,7 +22,6 @@ export class ModalComponent implements AfterViewInit {
 		private readonly el: ElementRef,
 		private readonly cdr: ChangeDetectorRef,
 		@Inject(DOCUMENT) private readonly document: Document,
-		@Inject('Window') private readonly window: Window,
 		private readonly injector: Injector
 	) {
     this.element = this.el.nativeElement;
@@ -36,8 +32,6 @@ export class ModalComponent implements AfterViewInit {
 
 		if (this.modalRef === null) return;
 		if (this.modalConfig === null) return;
-
-		this.el.nativeElement.style.transitionDuration = `${this.modalConfig.transitionDurationS}s`;
 	}
 
 	public createAndOpenModal(config: InternalModalConfig, returnRef: ModalRef): void {
@@ -50,8 +44,9 @@ export class ModalComponent implements AfterViewInit {
 
 		this.returnRef = returnRef;
 		this.modalConfig = config;
-		this.document.body.style.paddingRight = `${scrollbarWidth}px`;
+		if (scrollbarWidth !== 0) this.document.body.style.paddingRight = `${scrollbarWidth}px`;
     this.document.body.classList.add('overflowHidden');
+		this.el.nativeElement.style.transitionDuration = `${this.modalConfig.transitionDurationS}s`;
 		this.element.classList.add('modal_open');
 	}
 
@@ -90,7 +85,7 @@ export class ModalComponent implements AfterViewInit {
 		this.document.body.removeChild(scrollDiv);
 
 		// Проверка наличия прокрутки на данный момент
-		const hasScrollbar = this.window.innerWidth > this.document.documentElement.clientWidth;
+		const hasScrollbar = window.innerWidth > this.document.documentElement.clientWidth;
 
 		// Возвращение ширины скроллбара, если он есть, иначе 0
 		return hasScrollbar ? scrollbarWidth : 0;
@@ -100,6 +95,7 @@ export class ModalComponent implements AfterViewInit {
 		if (this.vcrModalContent === null) return;
 		if (this.componentModalContent === null) return;
 		if (this.returnRef === null) return;
+		if (this.modalConfig === null) return;
 
 		this.vcrModalContent.clear();
     this.vcrModalContent.createComponent(this.componentModalContent, {

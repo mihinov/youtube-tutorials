@@ -11,7 +11,7 @@
 .wrapper {
 	display: grid;
 	grid-template-rows: 1fr;
-	grid-template-columns: auto 1fr;
+	grid-template-columns: 200px 1fr;
 	--paddingX: 30px;
 	--paddingY: 30px;
 }
@@ -19,7 +19,6 @@
 .wrapper__left {
 	padding-right: var(--paddingX);
 	padding-top: var(--paddingY);
-	max-width: 200px;
 }
 
 .wrapper__right {

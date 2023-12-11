@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { NotesItem } from '../../models';
+import { NotesService } from '../../services/notes.service';
 
 @Component({
   selector: 'note-atom',
@@ -8,5 +9,9 @@ import { NotesItem } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoteAtomComponent {
-	@Input({ required: true }) notesItem!: NotesItem;
+	@Input({ required: true }) public notesItem!: NotesItem;
+
+	constructor(
+		private readonly notesService: NotesService
+	) {}
 }

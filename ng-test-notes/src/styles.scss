@@ -89,6 +89,7 @@ h1 {
 }
 
 .btn {
+	user-select: none;
 	font-size: inherit;
 	cursor: pointer;
 	outline: none;
@@ -100,7 +101,7 @@ h1 {
 	transition-timing-function: var(--transitionTimingFunction);
 	border: 2px solid var(--btnBorderColor);
 	border-radius: 8px;
-	transition-property: background-color, color, border-color;
+	transition-property: background-color, color, border-color, opacity;
 }
 
 .btn:active {
@@ -124,3 +125,29 @@ h1 {
 	background-color: var(--btnBgColorActive);
 	color: var(--btnColorActive);
 }
+
+.btn_delete {
+	--btnBgColor: #dc3545;
+}
+
+.btn_delete:hover {
+	--btnBgColorHover: #c82333;
+}
+
+.btn_delete:focus {
+	--btnBorderColorFocus: transparent;
+}
+
+.btn_delete:active {
+	--btnBgBorderColorHover: transparent;
+}
+
+.btn_delete:focus:active {
+	--btnBorderColorFocusActive: #6d0610;
+}
+
+.btn[disabled] {
+	opacity: 0.5;
+	pointer-events: none;
+}
+

@@ -1,3 +1,6 @@
+<button class="btn btn_delete" (click)="clickDeleteBtn()">
+	Удалить
+</button>
 @if (notesItem$ | async; as notesItem) {
 	<note-atom [notesItem]="notesItem"></note-atom>
 }
