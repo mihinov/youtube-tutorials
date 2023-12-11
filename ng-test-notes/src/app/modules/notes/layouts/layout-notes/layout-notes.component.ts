@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ModalService } from '../../../modal/modal.service';
-import { NotesNavComponent } from '../../components/notes-nav/notes-nav.component';
 import { ModalCreateNoteComponent } from '../../components/modal-create-note/modal-create-note.component';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-layout-notes',
@@ -9,14 +9,10 @@ import { ModalCreateNoteComponent } from '../../components/modal-create-note/mod
   styleUrl: './layout-notes.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LayoutNotesComponent implements OnInit {
-
+export class LayoutNotesComponent {
 	constructor(
 		private readonly modalService: ModalService,
 	) {}
-
-	ngOnInit(): void {
-	}
 
 	public clickHeaderBtn(): void {
 		const modalRef = this.modalService.open(ModalCreateNoteComponent, {
@@ -24,5 +20,10 @@ export class LayoutNotesComponent implements OnInit {
 				key: 'dsadasdsada'
 			}
 		});
+
+		(window as any).modalRef = modalRef;
+
+		modalRef.afterClosed().subscribe(() => console.log('afterClosed'));
+		modalRef.afterOpened().subscribe(() => console.log('afterOpened'));
 	}
 }

@@ -54,11 +54,11 @@
   position: absolute;
   right: 20px;
   top: 20px;
-	--width: 35px;
+	--width: 30px;
   width: var(--width);
   height: var(--width);
   cursor: pointer;
-  --colorModalClose: var(--white);
+  --colorModalClose: var(--color);
 }
 
 .modal__content {
@@ -66,5 +66,5 @@
 	background-color: var(--modalBgContentColor);
 	margin: 0 auto;
 	border-radius: 20px;
-	padding: 40px;
+	padding: 70px 40px 40px 40px;
 }

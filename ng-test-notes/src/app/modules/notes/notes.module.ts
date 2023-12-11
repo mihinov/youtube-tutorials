@@ -10,6 +10,8 @@ import { NotesRoutingModule } from './notes-routing.module';
 import { LayoutNotesComponent } from './layouts/layout-notes/layout-notes.component';
 import { HeaderModule } from '../header/header.module';
 import { ModalService } from '../modal/modal.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ModalCreateNoteComponent } from './components/modal-create-note/modal-create-note.component';
 
 @NgModule({
   declarations: [
@@ -19,12 +21,14 @@ import { ModalService } from '../modal/modal.service';
 		NoteWrapperComponent,
 		NoteEmptyComponent,
 		NoteAtomComponent,
-  	LayoutNotesComponent
+  	LayoutNotesComponent,
+		ModalCreateNoteComponent
 	],
   imports: [
     CommonModule,
 		NotesRoutingModule,
 		HeaderModule,
+		ReactiveFormsModule
   ],
 	providers: [
 		ModalService

@@ -27,7 +27,7 @@
 	--btnColor: var(--white);
 	--btnColorActive: var(--dark);
 	--modalBgContentColor: var(--darkDark);
-	--modalBgColor: var(--darkWhite);
+	--modalBgColor: rgb(57 57 57);
 	--modalColor: var(--color);
 	--transitionDuration: calc( var(--transitionDurationS) * 1s );
 	--transitionTimingFunction: ease;
@@ -61,6 +61,10 @@ body {
 	transition-timing-function: var(--transitionTimingFunction);
 	transition-duration: var(--transitionDuration);
 	transition-property: padding-right;
+}
+
+input {
+	font-size: inherit;
 }
 
 .overflowHidden {

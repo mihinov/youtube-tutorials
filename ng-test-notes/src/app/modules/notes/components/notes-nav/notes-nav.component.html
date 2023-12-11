@@ -1,5 +1,5 @@
 @if (notes$ | async; as notes) {
-	<div class="notes-nav">
+	<nav role="navigation" class="notes-nav">
 		@for (note of notes; track note.id) {
 			<a
 				class="btn"
@@ -7,6 +7,5 @@
 				[routerLink]="'/notes/' + note.id"
 			> {{ note.title }} </a>
 		}
-	</div> <!-- .notes-nav -->
+	</nav> <!-- .notes-nav -->
 }
-

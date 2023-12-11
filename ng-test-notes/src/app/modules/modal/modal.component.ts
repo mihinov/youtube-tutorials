@@ -39,6 +39,11 @@ export class ModalComponent implements AfterViewInit {
 		this.el.nativeElement.style.transitionDuration = `${this.modalConfig.transitionDurationS}s`;
 	}
 
+	public createAndOpenModal(config: InternalModalConfig): void {
+		this.openModal(config);
+		this.renderModalContent();
+  }
+
 	public openModal(config: InternalModalConfig): void {
 		const scrollbarWidth = this.getScrollbarWidth();
 
@@ -46,25 +51,24 @@ export class ModalComponent implements AfterViewInit {
 		this.document.body.style.paddingRight = `${scrollbarWidth}px`;
     this.document.body.classList.add('overflowHidden');
 		this.element.classList.add('modal_open');
-		this.renderModalContent();
-  }
-
-  public closeModal(): void {
-		this.document.body.style.removeProperty('padding-right');
-    this.document.body.classList.remove('overflowHidden');
-    this.element.classList.remove('modal_open');
-		this.close.emit();
-  }
+	}
 
 	public clickModal(event: any): void {
+		// Если это отжатие мыши, то закончить
 		const pointerEvent: PointerEvent = event;
 		if (pointerEvent.target === null) return;
 		const targetNode: HTMLElement = pointerEvent.target as HTMLElement;
 
 		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
-			this.closeModal();
+			this.close.emit();
 		}
 	}
+
+	public closeModal(): void {
+		this.document.body.style.removeProperty('padding-right');
+    this.document.body.classList.remove('overflowHidden');
+    this.element.classList.remove('modal_open');
+  }
 
 	private getScrollbarWidth(): number {
 		// Создание элемента для проверки наличия прокрутки
