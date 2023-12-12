@@ -17,8 +17,14 @@
 }
 
 .wrapper__left {
+	position: relative;
 	padding-right: var(--paddingX);
 	padding-top: var(--paddingY);
+}
+
+.btn_hidden {
+	opacity: 0;
+	visibility: hidden;
 }
 
 .wrapper__right {

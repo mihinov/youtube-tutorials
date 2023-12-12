@@ -12,6 +12,7 @@ import { HeaderModule } from '../header/header.module';
 import { ModalService } from '../modal/modal.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ModalCreateNoteComponent } from './components/modal-create-note/modal-create-note.component';
+import { LineBreaksToBrPipe } from '../../pipes/line-breaks-to-br.pipe';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { ModalCreateNoteComponent } from './components/modal-create-note/modal-c
 		NoteEmptyComponent,
 		NoteAtomComponent,
   	LayoutNotesComponent,
-		ModalCreateNoteComponent
+		ModalCreateNoteComponent,
+		LineBreaksToBrPipe,
 	],
   imports: [
     CommonModule,

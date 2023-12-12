@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { ChangeDetectionStrategy } from '@angular/core';
+import { NotesService } from '../../services/notes.service';
+import { Observable, map } from 'rxjs';
+import { isEmptyNotes } from '../../models';
 
 @Component({
   selector: 'app-page-notes',
@@ -8,5 +11,11 @@ import { ChangeDetectionStrategy } from '@angular/core';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PageNotesComponent {
+	constructor(
+		private readonly notesService: NotesService
+	) {}
 
+	public clickDeleteAllBtn(): void {
+		this.notesService.deleteAll();
+	}
 }

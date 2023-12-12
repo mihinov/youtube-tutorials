@@ -15,9 +15,8 @@ export class PageErrorComponent {
   private readonly secondsLeftConst: number = 5;
 
 	private secondsLeft: BehaviorSubject<number> = new BehaviorSubject(this.secondsLeftConst);
-	private lastUrl: BehaviorSubject<string> = new BehaviorSubject('');
 	public secondsLeft$: Observable<number> = this.secondsLeft.asObservable();
-	public lastUrl$: Observable<string> = this.lastUrl.asObservable();
+	public prevUrl$: Observable<string> = this.navigationErrorRouteService.prevUrl$;
 	public countDown$: Observable<number> = interval(1000).pipe(
 		map((value) => this.secondsLeftConst - value - 1),
 		takeWhile((value) => value >= 0),
@@ -37,10 +36,5 @@ export class PageErrorComponent {
 
 	ngOnInit(): void {
 		this.countDown$.subscribe();
-
-		const prevUrl = this.navigationErrorRouteService.getPreviousUrl();
-		const host = window.location.host;
-
-		this.lastUrl.next(`${host}${prevUrl}`);
 	}
 }

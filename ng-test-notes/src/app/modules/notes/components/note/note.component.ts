@@ -22,10 +22,14 @@ export class NoteComponent {
 	public notesItem$: Observable<NotesItem | null> = this.id$.pipe(
 		switchMap((id) => {
 			if (id === undefined) return of(null);
-			return this.notesService.get(id);
+			return this.notesService.getNotesItem(id);
 		}),
 		tap(notesItem => {
-			if (notesItem === null) this.router.navigate(['notes']);
+			if (notesItem === null) {
+				this.router.navigate(['notes']);
+				return;
+			}
+			this.notesService.setActiveNotesItemId(notesItem.id, true);
 			this.notesItem = notesItem;
 		})
 	);

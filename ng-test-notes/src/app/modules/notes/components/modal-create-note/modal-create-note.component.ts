@@ -4,6 +4,7 @@ import { NotesService } from '../../services/notes.service';
 import { AddedNotesItem } from '../../models';
 import { MODAL_DATA, MODAL_REF } from '../../../modal/modal.tokens';
 import { ModalRef } from '../../../modal/modal.models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-modal-create-note',
@@ -19,8 +20,9 @@ export class ModalCreateNoteComponent {
 	});
 
 	constructor(
-		private notesService: NotesService,
-		@Inject(MODAL_REF) private modalRef: ModalRef
+		private readonly notesService: NotesService,
+		@Inject(MODAL_REF) private readonly modalRef: ModalRef,
+		private readonly router: Router
 	) {
 	}
 
@@ -28,9 +30,10 @@ export class ModalCreateNoteComponent {
 		if (this.form.valid === false) return;
 
 		const formValue = this.form.value as AddedNotesItem;
+		const notesItem = this.notesService.add(formValue);
 
-		this.notesService.add(formValue);
 		this.modalRef.destroy();
+		this.router.navigate(['notes', notesItem.id]);
 	}
 
 }

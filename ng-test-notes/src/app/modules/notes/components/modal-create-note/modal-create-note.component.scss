@@ -7,3 +7,8 @@ form {
 	flex-direction: column;
 	gap: 20px;
 }
+
+form > * {
+	max-width: 100%;
+	min-width: 100%;
+}

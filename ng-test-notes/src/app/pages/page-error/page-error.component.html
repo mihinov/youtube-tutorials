@@ -1,8 +1,8 @@
-@if (lastUrl$ | async; as lastUrl) {
+@if (prevUrl$ | async; as prevUrl) {
 	@if (secondsLeft$ | async; as secondsLeft) {
 		<div class="container">
 			<p>
-				Вы перешли по некорректному адресу {{ lastUrl }}, переадресация на главную страницу через {{ secondsLeft }} сек.
+				Вы перешли по некорректному адресу {{ prevUrl }}, переадресация на главную страницу через {{ secondsLeft }} сек.
 			</p>
 		</div>
 	}

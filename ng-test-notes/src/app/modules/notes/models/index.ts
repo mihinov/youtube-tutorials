@@ -8,3 +8,7 @@ export interface AddedNotesItem {
 	title: string;
 	description: string;
 }
+
+export interface isEmptyNotes {
+	isEmpty: boolean;
+}

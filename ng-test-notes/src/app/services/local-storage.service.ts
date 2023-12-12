@@ -17,4 +17,8 @@ export class LocalStorageService {
 	public set<T>(key: string, value: T): void {
 		localStorage.setItem(key, JSON.stringify(value));
 	}
+
+	public delete(key: string) {
+		localStorage.removeItem(key);
+	}
 }

@@ -2,7 +2,8 @@
 
 <form [formGroup]="form" (ngSubmit)="submitForm()">
 	<input type="text" [formControl]="form.controls.title" name="title" placeholder="название">
-	<input type="text" [formControl]="form.controls.description" name="description" placeholder="описание">
+	<textarea type="text" [formControl]="form.controls.description" name="description" placeholder="описание">
+	</textarea>
 	<button class="btn" type="submit" [disabled]="!form.valid">
 		Создать
 	</button>
