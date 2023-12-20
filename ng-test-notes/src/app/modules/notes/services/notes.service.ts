@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map, shareReplay, takeUntil, tap } from 'rxjs/operators';
 import { NotesItem, AddedNotesItem } from '../models';
 import { LocalStorageService } from '../../../services/local-storage.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -13,21 +14,27 @@ export class NotesService {
 	private readonly stateNotes: BehaviorSubject<Record<string, NotesItem>> = new BehaviorSubject({});
 	private readonly stateActiveNotesItemId: BehaviorSubject<string | null> = new BehaviorSubject<null | string>(null);
 	public readonly notes$: Observable<NotesItem[]> = this.stateNotes.pipe(
-		map(obj => (Object.values(obj)))
+		map(obj => (Object.values(obj))),
+		shareReplay(1)
 	);
-	public activeNotesItemId$: Observable<string | null> = this.stateActiveNotesItemId.asObservable();
-	public activeNotesItem$: Observable<NotesItem | null> = this.stateActiveNotesItemId.pipe(
+	public readonly activeNotesItemId$: Observable<string | null> = this.stateActiveNotesItemId.pipe(
+		shareReplay(1)
+	)
+	public readonly activeNotesItem$: Observable<NotesItem | null> = this.stateActiveNotesItemId.pipe(
 		map(activeNotesItemId => {
 			if (activeNotesItemId === null) return null;
 			return this._getSyncNotesItem(activeNotesItemId);
-		})
+		}),
+		shareReplay(1)
 	);
 
   constructor(
-		private readonly localStorageService: LocalStorageService
+		private readonly localStorageService: LocalStorageService,
+		private readonly router: Router
 	) {
 		this._initDefaultNotes();
 		this._initActiveNoteId();
+		this._initActiveNotesItemRouting();
 	}
 
 	public add(addedNotesItem: AddedNotesItem): NotesItem {
@@ -49,13 +56,16 @@ export class NotesService {
 		const isNoteExists = id in lastStateNotes;
 
 		if (isNoteExists === false) return;
+
 		delete lastStateNotes[id];
-		if (this.stateActiveNotesItemId.value !== null && id === this.stateActiveNotesItemId.value) {
-			this.localStorageService.delete(this.keyActiveNotesItemIdInLocalStorage);
-		}
 
 		const allIdNotes = Object.keys(lastStateNotes);
 		const lastId: string | undefined = allIdNotes[allIdNotes.length - 1];
+
+		if (lastId === undefined) {
+			this.localStorageService.delete(this.keyActiveNotesItemIdInLocalStorage);
+			this.setActiveNotesItemId(null, false);
+		}
 
 		if (lastId !== undefined) {
 			this.setActiveNotesItemId(lastId, true);
@@ -74,19 +84,33 @@ export class NotesService {
 		)
 	}
 
-	public isExistNotesItem(id: string): Observable<boolean> {
-		return this.getNotesItem(id).pipe(
-			map((notesItem) => notesItem !== null)
-		);
-	}
-
-	public setActiveNotesItemId(id: string, updateLocalStorage: boolean): void {
+	public setActiveNotesItemId(id: string | null, updateLocalStorage: boolean): void {
+		if (this.stateActiveNotesItemId.value === id) return;
 		this.stateActiveNotesItemId.next(id);
 		if (updateLocalStorage === true) this.localStorageService.set(this.keyActiveNotesItemIdInLocalStorage, id);
 	}
 
 	public getActiveNotesItemId(): string | null {
 		return this.stateActiveNotesItemId.value;
+	}
+
+	private _initActiveNotesItemRouting() {
+		this.stateActiveNotesItemId.pipe(
+			tap((activeNotesItemId) => {
+				if (activeNotesItemId === null) {
+					this.router.navigate(['notes']);
+					return;
+				}
+
+				const currentUrl = this.router.url;
+				const nextUrl = `/notes/${activeNotesItemId}`;
+
+				if (nextUrl !== currentUrl) {
+					this.router.navigateByUrl(nextUrl);
+				}
+			})
+		)
+		.subscribe();
 	}
 
 	private _update(newStateNotes: Record<string, NotesItem>, updateLocalStorage: boolean): void {
@@ -104,7 +128,7 @@ export class NotesService {
 	}
 
 	private _initDefaultNotes(): void {
-		const notesInLocalStorage = this.localStorageService.get(this.keyNotesInLocalStorage);
+		const notesInLocalStorage = this.localStorageService.get<Record<string, NotesItem>>(this.keyNotesInLocalStorage);
 
 		if (notesInLocalStorage === null) {
 			this._addArrNotes(this._getFourNotes(), true);
@@ -117,9 +141,12 @@ export class NotesService {
 	}
 
 	private _initActiveNoteId(): void {
-		const activeNoteIdInLocalStorage = this.localStorageService.get(this.keyActiveNotesItemIdInLocalStorage);
+		const activeNoteIdInLocalStorage = this.localStorageService.get<string>(this.keyActiveNotesItemIdInLocalStorage);
 
-		if (activeNoteIdInLocalStorage !== null && typeof activeNoteIdInLocalStorage === 'string') {
+		if (
+			activeNoteIdInLocalStorage !== null &&
+			typeof activeNoteIdInLocalStorage === 'string'
+		) {
 			this.stateActiveNotesItemId.next(activeNoteIdInLocalStorage);
 		}
 	}

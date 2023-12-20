@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotesService } from '../../services/notes.service';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { NotesItem } from '../../models';
@@ -22,7 +22,7 @@ export class NoteComponent {
 	public notesItem$: Observable<NotesItem | null> = this.id$.pipe(
 		switchMap((id) => {
 			if (id === undefined) return of(null);
-			return this.notesService.getNotesItem(id);
+			return this.notesService.getNotesItem(id).pipe(take(1))
 		}),
 		tap(notesItem => {
 			if (notesItem === null) {

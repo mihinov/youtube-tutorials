@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { NotesService } from '../../services/notes.service';
-import { Observable } from 'rxjs';
+import { Observable, filter, map, tap } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { NotesItem } from '../../models';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'notes-nav',
@@ -12,11 +13,10 @@ import { NotesItem } from '../../models';
 })
 export class NotesNavComponent {
 	public notes$: Observable<NotesItem[]> = this.notesService.notes$;
+	public activeNotesItemId$: Observable<string | null> = this.notesService.activeNotesItemId$;
 
 	constructor(
-		private readonly notesService: NotesService,
-		// @Inject(MODAL_DATA) public data: any,
+		private readonly notesService: NotesService
 	) {
-		// console.log(1);
 	}
 }

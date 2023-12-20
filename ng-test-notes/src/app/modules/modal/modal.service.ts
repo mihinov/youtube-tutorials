@@ -41,34 +41,32 @@ export class ModalService {
 
   private closeAndDestroy(): void {
 		if (this.modalComponentRef === null) return;
-		if (this.currentConfig === null) return;
 
-		this.modalComponentRef.instance.closeModal();
-		timer(this.currentConfig.transitionDurationS * 1000)
-		.pipe(take(1))
-		.subscribe(() => {
-			if (this.modalComponentRef === null) return;
+		if (this.modalComponentRef.instance.isOpen === false) {
+			this._destroy();
+			return;
+		}
 
+		const animationEnd$ = this.modalComponentRef.instance.closeModal();
 
-			this.stateAfterClosed.next(null);
-			this.appRef.detachView(this.modalComponentRef.hostView);
-			this.modalComponentRef.destroy();
-			this.modalComponentRef = null;
-		});
+		if (animationEnd$ === null) return;
+
+		animationEnd$
+			.pipe(take(1))
+			.subscribe(() => this._destroy());
   }
 
-	private _close() {
+	private _destroy(): void {
 		if (this.modalComponentRef === null) return;
-		if (this.currentConfig === null) return;
 
-		this.modalComponentRef.instance.closeModal();
-		timer(this.currentConfig.transitionDurationS * 1000)
-		.pipe(take(1))
-		.subscribe(() => {
-			if (this.modalComponentRef === null) return;
+		this.stateAfterClosed.next(null);
+		this.appRef.detachView(this.modalComponentRef.hostView);
+		this.modalComponentRef.destroy();
+		this.modalComponentRef = null;
+	}
 
-			this.stateAfterClosed.next(null);
-		});
+	private _close() {
+		this.stateAfterClosed.next(null);
 	}
 
 	private _create(component: Type<any>, config: ModalConfig): ModalRef {

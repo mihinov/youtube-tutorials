@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Injector, Input, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { InternalModalConfig, ModalRef } from './modal.models';
 import { MODAL_DATA, MODAL_REF } from './modal.tokens';
+import { shareReplay, take, timer } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -11,6 +12,7 @@ import { MODAL_DATA, MODAL_REF } from './modal.tokens';
 })
 export class ModalComponent implements AfterViewInit {
 	public modalConfig: InternalModalConfig | null = null;
+	public isOpen: boolean = false;
 	@Input() public componentModalContent: Type<any> | null = null;
 	@Output() public close = new EventEmitter<void>();
 	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent: ViewContainerRef | null = null;
@@ -28,7 +30,7 @@ export class ModalComponent implements AfterViewInit {
   }
 
 	ngAfterViewInit(): void {
-		this.renderModalContent();
+		this._renderModalContent();
 
 		if (this.modalRef === null) return;
 		if (this.modalConfig === null) return;
@@ -36,11 +38,11 @@ export class ModalComponent implements AfterViewInit {
 
 	public createAndOpenModal(config: InternalModalConfig, returnRef: ModalRef): void {
 		this.openModal(config, returnRef);
-		this.renderModalContent();
+		this._renderModalContent();
   }
 
 	public openModal(config: InternalModalConfig, returnRef: ModalRef): void {
-		const scrollbarWidth = this.getScrollbarWidth();
+		const scrollbarWidth = this._getScrollbarWidth();
 
 		this.returnRef = returnRef;
 		this.modalConfig = config;
@@ -48,6 +50,7 @@ export class ModalComponent implements AfterViewInit {
     this.document.body.classList.add('overflowHidden');
 		this.el.nativeElement.style.transitionDuration = `${this.modalConfig.transitionDurationS}s`;
 		this.element.classList.add('modal_open');
+		this.isOpen = true;
 	}
 
 	public clickModal(event: any): void {
@@ -57,17 +60,42 @@ export class ModalComponent implements AfterViewInit {
 		const targetNode: HTMLElement = pointerEvent.target as HTMLElement;
 
 		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
-			this.close.emit();
+			this._closeModal();
 		}
 	}
 
-	public closeModal(): void {
+	public closeModal() {
+		if (this.modalConfig === null) return null;
+
+		this._closeModalCss();
+
+		return timer(this.modalConfig.transitionDurationS * 1000)
+			.pipe(
+				take(1),
+				shareReplay(1)
+			);
+	}
+
+	private _closeModal(): void {
+		if (this.modalConfig === null) return;
+
+		this._closeModalCss();
+
+		timer(this.modalConfig.transitionDurationS * 1000)
+			.pipe(take(1))
+			.subscribe(() => {
+				this.close.emit();
+			});
+  }
+
+	private _closeModalCss(): void {
 		this.document.body.style.removeProperty('padding-right');
     this.document.body.classList.remove('overflowHidden');
     this.element.classList.remove('modal_open');
-  }
+		this.isOpen = false;
+	}
 
-	private getScrollbarWidth(): number {
+	private _getScrollbarWidth(): number {
 		// Создание элемента для проверки наличия прокрутки
 		const scrollDiv = this.document.createElement('div');
 		scrollDiv.style.width = '100px';
@@ -91,7 +119,7 @@ export class ModalComponent implements AfterViewInit {
 		return hasScrollbar ? scrollbarWidth : 0;
 	}
 
-	private renderModalContent(): void {
+	private _renderModalContent(): void {
 		if (this.vcrModalContent === null) return;
 		if (this.componentModalContent === null) return;
 		if (this.returnRef === null) return;

@@ -1,11 +1,18 @@
 @if (notes$ | async; as notes) {
-	<nav role="navigation" class="notes-nav">
-		@for (note of notes; track note.id) {
-			<a
-				class="btn"
-				routerLinkActive="btn_active"
-				[routerLink]="'/notes/' + note.id"
-			> {{ note.title }} </a>
-		}
-	</nav> <!-- .notes-nav -->
+	@if ({ activeNotesItemId: activeNotesItemId$ | async }; as obs ) {
+
+		<nav role="navigation" class="notes-nav">
+			@for (note of notes; track note.id) {
+				<a
+					class="btn"
+					[ngClass]="{
+						'btn_active': note.id === obs.activeNotesItemId
+					}"
+
+					[routerLink]="'/notes/' + note.id"
+				> {{ note.title }} </a>
+			}
+		</nav> <!-- .notes-nav -->
+
+	}
 }
