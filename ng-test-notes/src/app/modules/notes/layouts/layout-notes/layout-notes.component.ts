@@ -17,6 +17,6 @@ export class LayoutNotesComponent {
 	}
 
 	public clickHeaderBtn(): void {
-		const modalRef1 = this.modalService.open(ModalCreateNoteComponent);
+		this.modalService.open(ModalCreateNoteComponent);
 	}
 }
