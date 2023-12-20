@@ -1,2 +1,0 @@
-const t=document.querySelector(".progressbar__percent tspan"),e=document.querySelector(".progressbar__info tspan"),n=document.querySelector(".progressbar");gsap.timeline().to(n,{"--opacityThumb":1,duration:.2}).to(n,{"--percent":100,duration:5,ease:"linear",onUpdate:function(){let o=gsap.getProperty(n,"--percent");o>99?e.textContent="Закончили?":o>60&&o<99?e.textContent="Разгоняемся!":o>40&&o<60?e.textContent="Погнали!":o>0&&o<40&&(e.textContent="Загрузочка ..."),t.textContent=Math.round(o)}});
-//# sourceMappingURL=index.0d77d260.js.map
