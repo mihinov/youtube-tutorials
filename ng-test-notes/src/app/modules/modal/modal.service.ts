@@ -1,6 +1,6 @@
 import { Injectable, ComponentFactoryResolver, ComponentRef, Type, ApplicationRef, Injector, Inject } from '@angular/core';
 import { ModalComponent } from './modal.component';
-import { Observable, ReplaySubject, Subject, take, timer } from 'rxjs';
+import { Observable, ReplaySubject, Subject, take } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { ModalModule } from './modal.module';

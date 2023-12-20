@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay, takeUntil, tap } from 'rxjs/operators';
+import { map, shareReplay, tap } from 'rxjs/operators';
 import { NotesItem, AddedNotesItem } from '../models';
 import { LocalStorageService } from '../../../services/local-storage.service';
 import { Router } from '@angular/router';
