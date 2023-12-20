@@ -18,5 +18,7 @@ export class LayoutNotesComponent {
 
 	public clickHeaderBtn(): void {
 		this.modalService.open(ModalCreateNoteComponent);
+		console.log(1);
+
 	}
 }
