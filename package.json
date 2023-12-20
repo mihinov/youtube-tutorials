@@ -14,7 +14,7 @@
     "build:youtube-css-paint-api": "parcel build youtube-css-paint-api/index.html --public-url ./ --dist-dir dist/youtube-css-paint-api",
 		"build:ng-test-notes": "cd ./ng-test-notes && npm run build:github",
     "build:readme": "node ./copyReadme.js",
-    "build": "npm run build:ng-test-notes && npm run build:readme"
+    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:youtube-game-of-life && npm run build:angular-tree && npm run build:youtube-css-paint-api && npm run build:ng-test-notes && npm run build:readme"
   },
   "author": "",
   "license": "ISC",
