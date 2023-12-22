@@ -1,8 +1,8 @@
 import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Injector, Input, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
-import { InternalModalConfig, ModalRef } from './modal.models';
+import { InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { MODAL_DATA, MODAL_REF } from './modal.tokens';
-import { shareReplay, take, timer } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject, shareReplay, take, timer } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -13,43 +13,51 @@ import { shareReplay, take, timer } from 'rxjs';
 export class ModalComponent implements AfterViewInit {
 	public modalConfig: InternalModalConfig | null = null;
 	public isOpen: boolean = false;
-	@Input() public componentModalContent: Type<any> | null = null;
+	public componentModalContent: Type<any> | null = null;
 	@Output() public close = new EventEmitter<void>();
-	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent: ViewContainerRef | null = null;
-	@ViewChild('modalRef', { static: false }) private modalRef: ElementRef<HTMLDivElement> | null = null;
-	private element: HTMLElement;
+	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent!: ViewContainerRef;
+	@ViewChild('modalRef', { static: false }) private modalHtml!: ElementRef<HTMLDivElement>;
 	private returnRef: ModalRef | null = null;
+	private afterViewInit$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+	private defaultConfig: ModalConfig = {
+		maxWidth: 1000,
+		minWidth: 200
+	};
 
 	constructor(
-		private readonly el: ElementRef,
 		private readonly cdr: ChangeDetectorRef,
 		@Inject(DOCUMENT) private readonly document: Document,
 		private readonly injector: Injector
 	) {
-    this.element = this.el.nativeElement;
   }
 
 	ngAfterViewInit(): void {
-		this._renderModalContent();
-
-		if (this.modalRef === null) return;
-		if (this.modalConfig === null) return;
+		this.afterViewInit$.next(true);
 	}
 
-	public createAndOpenModal(config: InternalModalConfig, returnRef: ModalRef): void {
-		this.openModal(config, returnRef);
-		this._renderModalContent();
+	public createAndOpenModal({config, returnRef, componentModalContent}: { config?: ModalConfig, returnRef: ModalRef, componentModalContent: Type<any> }): void {
+		this.componentModalContent = componentModalContent;
+		this.returnRef = returnRef;
+
+		this.afterViewInit$
+			.pipe(take(1))
+			.subscribe(() => {
+				this._createModalContent();
+				this.openModal(config);
+			});
   }
 
-	public openModal(config: InternalModalConfig, returnRef: ModalRef): void {
+	public openModal(config?: ModalConfig): void {
+		if (this.modalHtml === null) return;
+		if (config === undefined) config = this.defaultConfig;
+
+		this.modalConfig = this.createConfig(config);
 		const scrollbarWidth = this._getScrollbarWidth();
 
-		this.returnRef = returnRef;
-		this.modalConfig = config;
 		if (scrollbarWidth !== 0) this.document.body.style.paddingRight = `${scrollbarWidth}px`;
     this.document.body.classList.add('overflowHidden');
-		this.el.nativeElement.style.transitionDuration = `${this.modalConfig.transitionDurationS}s`;
-		this.element.classList.add('modal_open');
+		this.modalHtml.nativeElement.style.transitionDuration = `${this.modalConfig.transitionDurationS}s`;
+		this.modalHtml.nativeElement.classList.add('modal_open');
 		this.isOpen = true;
 	}
 
@@ -89,9 +97,10 @@ export class ModalComponent implements AfterViewInit {
   }
 
 	private _closeModalCss(): void {
+		if (this.modalHtml === null) return;
 		this.document.body.style.removeProperty('padding-right');
     this.document.body.classList.remove('overflowHidden');
-    this.element.classList.remove('modal_open');
+    this.modalHtml.nativeElement.classList.remove('modal_open');
 		this.isOpen = false;
 	}
 
@@ -119,11 +128,8 @@ export class ModalComponent implements AfterViewInit {
 		return hasScrollbar ? scrollbarWidth : 0;
 	}
 
-	private _renderModalContent(): void {
-		if (this.vcrModalContent === null) return;
+	private _createModalContent(): void {
 		if (this.componentModalContent === null) return;
-		if (this.returnRef === null) return;
-		if (this.modalConfig === null) return;
 
 		this.vcrModalContent.clear();
     this.vcrModalContent.createComponent(this.componentModalContent, {
@@ -138,5 +144,35 @@ export class ModalComponent implements AfterViewInit {
 
 		this.cdr.detectChanges();
 	}
+
+	private createConfig(config: ModalConfig): InternalModalConfig {
+    const transitionDuration = this.getTransitionDuration();
+    const defaultMaxWidth = 1000;
+    const defaultMinWidth = 200;
+
+    const resultConfig: InternalModalConfig = {
+        maxWidth: config.maxWidth !== undefined ? config.maxWidth : defaultMaxWidth,
+        minWidth: config.minWidth !== undefined ? config.minWidth : defaultMinWidth,
+        transitionDurationS: config.transitionDurationS !== undefined ? config.transitionDurationS : transitionDuration
+    };
+
+    if (config.data !== undefined) resultConfig.data = config.data;
+
+    return resultConfig;
+	}
+
+	private getTransitionDuration(): number {
+		const defaultDuration = 0.2;
+
+		if (!this.document.documentElement.computedStyleMap) return defaultDuration;
+
+		const transitionDurationProp = this.document.documentElement.computedStyleMap().get('--transitionDurationS') as (CSSUnitValue | null);
+		if (transitionDurationProp === null) return defaultDuration;
+		const transitionDuration = transitionDurationProp.value || defaultDuration;
+
+		return transitionDuration;
+	}
+
+
 
 }

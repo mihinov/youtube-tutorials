@@ -1,8 +1,8 @@
 import { Injectable, ComponentFactoryResolver, ComponentRef, Type, ApplicationRef, Injector, Inject } from '@angular/core';
 import { ModalComponent } from './modal.component';
-import { Observable, ReplaySubject, Subject, take } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, take } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
-import { InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
+import { ModalConfig, ModalRef, ModalStateItem } from './modal.models';
 import { ModalModule } from './modal.module';
 
 @Injectable({
@@ -10,16 +10,12 @@ import { ModalModule } from './modal.module';
 })
 export class ModalService {
   private modalComponentRef: ComponentRef<ModalComponent> | null = null;
-	private defaultConfig: ModalConfig = {
-		maxWidth: 1000,
-		minWidth: 200
-	};
-	private currentConfig: InternalModalConfig | null = null;
 	private stateAfterClosed: Subject<any> = new Subject<any>();
 	private stateAfterOpened: Subject<any> = new ReplaySubject<any>(1);
 	private afterClosed$: Observable<any> = this.stateAfterClosed.pipe(take(1));
 	private afterOpened$: Observable<any> = this.stateAfterOpened.pipe(take(1));
 	private returnRef: ModalRef | null = null;
+	private stateModals: BehaviorSubject<ModalStateItem[]> = new BehaviorSubject<ModalStateItem[]>([]);
 
   constructor(
     private readonly componentFactoryResolver: ComponentFactoryResolver,
@@ -30,116 +26,139 @@ export class ModalService {
 
 	}
 
-  public open(component: Type<any>, config: ModalConfig = this.defaultConfig): ModalRef {
+  public open(component: Type<any>, config?: ModalConfig): ModalRef {
+
+		const modal = this.getModal(component);
+
 		// Если модальное окно уже создано
-		if (this.modalComponentRef?.instance.componentModalContent === component) {
-			return this._open(config);
+		if (modal !== null) {
+			return this._open(modal, config);
 		}
 
 		return this._create(component, config);
   }
 
-  private closeAndDestroy(): void {
-		if (this.modalComponentRef === null) return;
-
-		if (this.modalComponentRef.instance.isOpen === false) {
-			this._destroy();
+  private closeAndDestroy(modalStateItem: ModalStateItem): void {
+		const modalComponentRefInstance = modalStateItem.modalComponentRef.instance;
+		if (modalComponentRefInstance.isOpen === false) {
+			this._destroy(modalStateItem);
 			return;
 		}
 
-		const animationEnd$ = this.modalComponentRef.instance.closeModal();
+		const animationEnd$ = modalComponentRefInstance.closeModal();
 
 		if (animationEnd$ === null) return;
 
+		console.log('destroy');
+
 		animationEnd$
 			.pipe(take(1))
-			.subscribe(() => this._destroy());
+			.subscribe(() => this._destroy(modalStateItem));
   }
 
-	private _destroy(): void {
-		if (this.modalComponentRef === null) return;
-
+	private _destroy(modalStateItem: ModalStateItem): void {
 		this.stateAfterClosed.next(null);
-		this.appRef.detachView(this.modalComponentRef.hostView);
-		this.modalComponentRef.destroy();
-		this.modalComponentRef = null;
+		this.appRef.detachView(modalStateItem.modalComponentRef.hostView);
+		modalStateItem.modalComponentRef.destroy();
+		this.deleteModal(modalStateItem);
 	}
 
-	private _close() {
+	private _close(modalStateItem: ModalStateItem): void {
 		this.stateAfterClosed.next(null);
 	}
 
-	private _create(component: Type<any>, config: ModalConfig): ModalRef {
-		this.currentConfig = this.createConfig(config);
+	private getModal(component: Type<any>): ModalStateItem | null {
+		const modals = this.stateModals.value;
+
+		const findedModal = modals.find((modal) => modal.componentModalContent === component);
+
+		if (findedModal === undefined) return null;
+
+		return findedModal;
+	}
+
+	private deleteModal(modalStateItem: ModalStateItem): void {
+		const stateModalsArr = this.stateModals.value;
+
+		const findedModalIdx = stateModalsArr.findIndex((modal) => modal.modalComponentRef === modalStateItem.modalComponentRef);
+
+		if (findedModalIdx !== -1) {
+			stateModalsArr.splice(findedModalIdx, 1);
+		}
+
+		this.stateModals.next(stateModalsArr);
+	}
+
+	private getReturnObj(modalStateItem: ModalStateItem): ModalRef {
+		const internalConfig = modalStateItem.modalComponentRef.instance.modalConfig;
+
+		return {
+			afterClosed: () => this.afterClosed$,
+			afterOpened: () => this.afterOpened$,
+			close: () => this._close(modalStateItem),
+			destroy: () => this.closeAndDestroy(modalStateItem),
+			open: () => this._open(modalStateItem)
+		};
+	}
+
+	private _create(component: Type<any>, config?: ModalConfig): ModalRef {
 		this.modalComponentRef = this.componentFactoryResolver.resolveComponentFactory(ModalComponent).create(this.injector);
-		this.appRef.attachView(this.modalComponentRef.hostView);
-		this.document.body.appendChild(this.modalComponentRef.location.nativeElement);
 
-    this.modalComponentRef.instance.componentModalContent = component;
+		const modalStateItem: ModalStateItem = {
+			id: window.crypto.randomUUID(),
+			componentModalContent: component,
+			modalComponentRef: this.modalComponentRef
+		};
+
 		this.modalComponentRef.instance.close
 			.pipe(take(1))
-			.subscribe(() => this._close());
+			.subscribe(() => this._close(modalStateItem));
 
 		this.setObserversAndStates();
 		this.stateAfterOpened.next(null);
-		this.returnRef = this.getReturnObj();
-		this.modalComponentRef.instance.createAndOpenModal(this.currentConfig, this.returnRef);
+		this.returnRef = this.getReturnObj(modalStateItem);
+
+		if (config === undefined) {
+			this.modalComponentRef.instance.createAndOpenModal({
+				returnRef: this.returnRef,
+				componentModalContent: component
+			});
+		} else {
+			this.modalComponentRef.instance.createAndOpenModal({
+				config: config,
+				returnRef: this.returnRef,
+				componentModalContent: component
+			});
+		}
+
+		this.appRef.attachView(this.modalComponentRef.hostView);
+		this.document.body.appendChild(this.modalComponentRef.location.nativeElement);
+
+		this.stateModals.next([...this.stateModals.value, modalStateItem]);
+		console.log(this.stateModals.value);
 
 		return this.returnRef;
 	}
 
-	private getReturnObj(): ModalRef {
-		return {
-			afterClosed: () => this.afterClosed$,
-			afterOpened: () => this.afterOpened$,
-			close: () => this._close(),
-			destroy: () => this.closeAndDestroy(),
-			open: () => this._open(this.currentConfig)
-		};
-	}
+	private _open(modalStateItem: ModalStateItem, config?: ModalConfig): ModalRef {
+		if (this.modalComponentRef !== null && this.returnRef !== null) {
 
-	private _open(config: ModalConfig | null): ModalRef {
-		if (this.modalComponentRef !== null && config !== null && this.returnRef !== null) {
-			this.currentConfig = this.createConfig(config);
-			this.modalComponentRef.instance.openModal(this.currentConfig, this.returnRef);
+			if (config === undefined) {
+				this.modalComponentRef.instance.openModal();
+			} else {
+				this.modalComponentRef.instance.openModal(config);
+			}
+
 			this.setObserversAndStates();
 			this.stateAfterOpened.next(null);
 
 			this.modalComponentRef.instance.close
 				.pipe(take(1))
-				.subscribe(() => this._close());
+				.subscribe(() => this._close(modalStateItem));
 
 		}
 
-		return this.getReturnObj();
-	}
-
-	private createConfig(config: ModalConfig): InternalModalConfig {
-    const transitionDuration = this.getTransitionDuration();
-    const defaultMaxWidth = 1000;
-    const defaultMinWidth = 200;
-
-    const resultConfig: InternalModalConfig = {
-        maxWidth: config.maxWidth !== undefined ? config.maxWidth : defaultMaxWidth,
-        minWidth: config.minWidth !== undefined ? config.minWidth : defaultMinWidth,
-        transitionDurationS: config.transitionDurationS !== undefined ? config.transitionDurationS : transitionDuration
-    };
-
-    if (config.data !== undefined) resultConfig.data = config.data;
-
-    return resultConfig;
-	}
-
-	private getTransitionDuration(): number {
-		const defaultDuration = 0.2;
-
-		if (!this.document.documentElement.computedStyleMap) return defaultDuration;
-
-		const transitionDurationProp = this.document.documentElement.computedStyleMap().get('--transitionDurationS') as (CSSUnitValue | null);
-		if (transitionDurationProp === null) return defaultDuration;
-		const transitionDuration = transitionDurationProp.value || defaultDuration;
-
-		return transitionDuration;
+		return this.getReturnObj(modalStateItem);
 	}
 
 	private setObserversAndStates(): void {

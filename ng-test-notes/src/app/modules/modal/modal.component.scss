@@ -1,4 +1,4 @@
-:host {
+.modal {
 	opacity: 0;
   visibility: hidden;
 	transition-property: visibility, opacity;
@@ -6,12 +6,12 @@
   transition-duration: var(--transitionDuration);
 }
 
-:host.modal_open {
+.modal.modal_open {
   opacity: 1;
   visibility: visible;
 }
 
-.modal {
+.modal__wrapper {
   position: fixed;
   top: 0;
   right: 0;
