@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Injector, Input, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { MODAL_DATA, MODAL_REF } from './modal.tokens';
-import { BehaviorSubject, ReplaySubject, Subject, shareReplay, take, timer } from 'rxjs';
+import { ReplaySubject, shareReplay, take, timer } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -17,7 +17,6 @@ export class ModalComponent implements AfterViewInit {
 	@Output() public close = new EventEmitter<void>();
 	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent!: ViewContainerRef;
 	@ViewChild('modalRef', { static: false }) private modalHtml!: ElementRef<HTMLDivElement>;
-	private returnRef: ModalRef | null = null;
 	private afterViewInit$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 	private defaultConfig: ModalConfig = {
 		maxWidth: 1000,
@@ -37,12 +36,11 @@ export class ModalComponent implements AfterViewInit {
 
 	public createAndOpenModal({config, returnRef, componentModalContent}: { config?: ModalConfig, returnRef: ModalRef, componentModalContent: Type<any> }): void {
 		this.componentModalContent = componentModalContent;
-		this.returnRef = returnRef;
 
 		this.afterViewInit$
 			.pipe(take(1))
 			.subscribe(() => {
-				this._createModalContent();
+				this._createModalContent(returnRef);
 				this.openModal(config);
 			});
   }
@@ -128,7 +126,7 @@ export class ModalComponent implements AfterViewInit {
 		return hasScrollbar ? scrollbarWidth : 0;
 	}
 
-	private _createModalContent(): void {
+	private _createModalContent(returnRef: ModalRef): void {
 		if (this.componentModalContent === null) return;
 
 		this.vcrModalContent.clear();
@@ -137,7 +135,7 @@ export class ModalComponent implements AfterViewInit {
 				parent: this.injector,
 				providers: [
 					{ provide: MODAL_DATA, useValue: this.modalConfig?.data },
-					{ provide: MODAL_REF, useValue: this.returnRef }
+					{ provide: MODAL_REF, useValue: returnRef }
 				]
 			}),
 		});
