@@ -9,12 +9,6 @@ import { ModalModule } from './modal.module';
 	providedIn: ModalModule
 })
 export class ModalService {
-  private modalComponentRef: ComponentRef<ModalComponent> | null = null;
-	private stateAfterClosed: Subject<any> = new Subject<any>();
-	private stateAfterOpened: Subject<any> = new ReplaySubject<any>(1);
-	private afterClosed$: Observable<any> = this.stateAfterClosed.pipe(take(1));
-	private afterOpened$: Observable<any> = this.stateAfterOpened.pipe(take(1));
-	private returnRef: ModalRef | null = null;
 	private stateModals: BehaviorSubject<ModalStateItem[]> = new BehaviorSubject<ModalStateItem[]>([]);
 
   constructor(
@@ -57,14 +51,14 @@ export class ModalService {
   }
 
 	private _destroy(modalStateItem: ModalStateItem): void {
-		this.stateAfterClosed.next(null);
+		modalStateItem.state.stateAfterClosed.next(null);
 		this.appRef.detachView(modalStateItem.modalComponentRef.hostView);
 		modalStateItem.modalComponentRef.destroy();
 		this.deleteModal(modalStateItem);
 	}
 
 	private _close(modalStateItem: ModalStateItem): void {
-		this.stateAfterClosed.next(null);
+		modalStateItem.state.stateAfterClosed.next(null);
 	}
 
 	private getModal(component: Type<any>): ModalStateItem | null {
@@ -93,78 +87,96 @@ export class ModalService {
 		const internalConfig = modalStateItem.modalComponentRef.instance.modalConfig;
 
 		return {
-			afterClosed: () => this.afterClosed$,
-			afterOpened: () => this.afterOpened$,
+			afterClosed: () => modalStateItem.obs.afterClosed$,
+			afterOpened: () => modalStateItem.obs.afterOpened$,
 			close: () => this._close(modalStateItem),
 			destroy: () => this.closeAndDestroy(modalStateItem),
 			open: () => this._open(modalStateItem)
 		};
 	}
 
-	private _create(component: Type<any>, config?: ModalConfig): ModalRef {
-		this.modalComponentRef = this.componentFactoryResolver.resolveComponentFactory(ModalComponent).create(this.injector);
+	private createModalStateItem(component: Type<any>, modalComponentRef: ComponentRef<ModalComponent>): ModalStateItem {
+		const stateAfterClosed = new Subject<any>();
+		const stateAfterOpened = new ReplaySubject<any>(1);
 
 		const modalStateItem: ModalStateItem = {
 			id: window.crypto.randomUUID(),
 			componentModalContent: component,
-			modalComponentRef: this.modalComponentRef
+			modalComponentRef: modalComponentRef,
+			state: {
+				stateAfterClosed: stateAfterClosed,
+				stateAfterOpened: stateAfterOpened
+			},
+			obs: {
+				afterClosed$: stateAfterClosed.pipe(take(1)),
+				afterOpened$: stateAfterOpened.pipe(take(1))
+			}
 		};
 
-		this.modalComponentRef.instance.close
+		return modalStateItem;
+	}
+
+	private _create(component: Type<any>, config?: ModalConfig): ModalRef {
+		const modalComponentRef = this.componentFactoryResolver.resolveComponentFactory(ModalComponent).create(this.injector);
+
+		const modalStateItem = this.createModalStateItem(component, modalComponentRef);
+
+		modalStateItem.state.stateAfterOpened.next(null);
+
+		modalComponentRef.instance.close
 			.pipe(take(1))
 			.subscribe(() => this._close(modalStateItem));
 
-		this.setObserversAndStates();
-		this.stateAfterOpened.next(null);
-		this.returnRef = this.getReturnObj(modalStateItem);
+		const returnRef = this.getReturnObj(modalStateItem);
 
 		if (config === undefined) {
-			this.modalComponentRef.instance.createAndOpenModal({
-				returnRef: this.returnRef,
+			modalComponentRef.instance.createAndOpenModal({
+				returnRef: returnRef,
 				componentModalContent: component
 			});
 		} else {
-			this.modalComponentRef.instance.createAndOpenModal({
+			modalComponentRef.instance.createAndOpenModal({
 				config: config,
-				returnRef: this.returnRef,
+				returnRef: returnRef,
 				componentModalContent: component
 			});
 		}
 
-		this.appRef.attachView(this.modalComponentRef.hostView);
-		this.document.body.appendChild(this.modalComponentRef.location.nativeElement);
+		this.appRef.attachView(modalComponentRef.hostView);
+		this.document.body.appendChild(modalComponentRef.location.nativeElement);
 
 		this.stateModals.next([...this.stateModals.value, modalStateItem]);
 		console.log(this.stateModals.value);
 
-		return this.returnRef;
+		return returnRef;
 	}
 
 	private _open(modalStateItem: ModalStateItem, config?: ModalConfig): ModalRef {
-		if (this.modalComponentRef !== null && this.returnRef !== null) {
+		const modalComponentRefInstance = modalStateItem.modalComponentRef.instance;
 
-			if (config === undefined) {
-				this.modalComponentRef.instance.openModal();
-			} else {
-				this.modalComponentRef.instance.openModal(config);
-			}
-
-			this.setObserversAndStates();
-			this.stateAfterOpened.next(null);
-
-			this.modalComponentRef.instance.close
-				.pipe(take(1))
-				.subscribe(() => this._close(modalStateItem));
-
+		if (config === undefined) {
+			modalComponentRefInstance.openModal();
+		} else {
+			modalComponentRefInstance.openModal(config);
 		}
+
+		this.setObserversAndStates(modalStateItem);
+		modalStateItem.state.stateAfterOpened.next(null);
+
+		modalComponentRefInstance.close
+			.pipe(take(1))
+			.subscribe(() => this._close(modalStateItem));
 
 		return this.getReturnObj(modalStateItem);
 	}
 
-	private setObserversAndStates(): void {
-		this.stateAfterClosed = new Subject();
-		this.stateAfterOpened = new ReplaySubject(1);
-		this.afterClosed$ = this.stateAfterClosed.pipe(take(1));
-		this.afterOpened$ = this.stateAfterOpened.pipe(take(1));
+	private setObserversAndStates(modalStateItem: ModalStateItem): void {
+		const stateAfterClosed = new Subject();
+		const stateAfterOpened = new ReplaySubject(1);
+
+		modalStateItem.state.stateAfterClosed = stateAfterClosed;
+		modalStateItem.state.stateAfterOpened = stateAfterOpened;
+		modalStateItem.obs.afterClosed$ = stateAfterClosed.pipe(take(1));
+		modalStateItem.obs.afterOpened$ = stateAfterOpened.pipe(take(1));
 	}
 }

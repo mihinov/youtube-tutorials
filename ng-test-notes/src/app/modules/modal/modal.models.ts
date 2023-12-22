@@ -1,5 +1,5 @@
 import { ComponentRef, Type } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, ReplaySubject, Subject } from "rxjs";
 import { ModalComponent } from "./modal.component";
 
 export interface ModalConfig {
@@ -28,4 +28,12 @@ export interface ModalStateItem {
 	id: string;
 	componentModalContent: Type<any>;
 	modalComponentRef: ComponentRef<ModalComponent>;
+	state: {
+		stateAfterClosed: Subject<any>;
+		stateAfterOpened: ReplaySubject<any>;
+	}
+	obs: {
+		afterClosed$: Observable<any>;
+		afterOpened$: Observable<any>;
+	}
 }

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { ModalService } from '../../../modal/modal.service';
 import { ModalCreateNoteComponent } from '../../components/modal-create-note/modal-create-note.component';
+import { NoteEmptyComponent } from '../../components/note-empty/note-empty.component';
 
 @Component({
   selector: 'app-layout-notes',
