@@ -129,18 +129,11 @@ export class ModalService {
 
 		const returnRef = this.getReturnObj(modalStateItem);
 
-		if (config === undefined) {
-			modalComponentRef.instance.createAndOpenModal({
-				returnRef: returnRef,
-				componentModalContent: component
-			});
-		} else {
-			modalComponentRef.instance.createAndOpenModal({
-				config: config,
-				returnRef: returnRef,
-				componentModalContent: component
-			});
-		}
+		modalComponentRef.instance.createAndOpenModal({
+			config: config,
+			returnRef: returnRef,
+			componentModalContent: component
+		});
 
 		this.appRef.attachView(modalComponentRef.hostView);
 		this.document.body.appendChild(modalComponentRef.location.nativeElement);
