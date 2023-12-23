@@ -78,7 +78,7 @@ input, textarea {
 	color: var(--inputColor);
 	transition-timing-function: var(--transitionTimingFunction);
 	transition-duration: var(--transitionDuration);
-	transition-property: border-color;
+	transition-property: border-color, background-color, color;
 	border-radius: 8px;
 }
 

@@ -35,4 +35,7 @@
 
 .wrapper > :first-child {
 	border-right: 3px solid var(--color);
+	transition-timing-function: var(--transitionTimingFunction);
+	transition-duration: var(--transitionDuration);
+	transition-property: border-color;
 }

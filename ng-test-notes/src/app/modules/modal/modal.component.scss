@@ -46,6 +46,9 @@
   width: 100%;
   height: 100%;
   z-index: 1;
+	transition-property: background-color;
+  transition-timing-function: var(--transitionTimingFunction);
+  transition-duration: var(--transitionDuration);
 }
 
 .modal__close {
@@ -68,4 +71,18 @@
 	padding: 55px 40px 40px 40px;
 	max-width: 100%;
 	overflow: hidden;
+	transition-property: background-color;
+  transition-timing-function: var(--transitionTimingFunction);
+  transition-duration: var(--transitionDuration);
+}
+
+.modal__close-svg-line {
+	fill: none;
+	stroke: var(--colorModalClose);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	stroke-width: 3px;
+	transition-property: stroke;
+  transition-timing-function: var(--transitionTimingFunction);
+  transition-duration: var(--transitionDuration);
 }
