@@ -1,4 +1,12 @@
-<div #modalRef class="modal">
+<div
+	class="modal"
+	[ngStyle]="{
+		'transition-duration': modalConfig?.transitionDurationS + 's'
+	}"
+	[ngClass]="{
+		'modal_open': isOpen
+	}"
+>
 
 	<div
 		class="modal__wrapper"
@@ -11,8 +19,10 @@
 			<div
 				class="modal__content"
 				[ngStyle]="{
-					'max-width': modalConfig?.maxWidth + 'px',
-					'min-width': modalConfig?.minWidth + 'px'
+					'max-width': modalConfig?.maxWidth,
+					'min-width': modalConfig?.minWidth,
+					'max-height': modalConfig?.maxHeight,
+					'min-height': modalConfig?.minHeight
 				}"
 			>
 

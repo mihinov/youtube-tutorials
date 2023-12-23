@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, Scroll } from '@angular/router';
-import { filter, tap, Subscription, BehaviorSubject, map, switchMap } from 'rxjs';
+import { filter, tap, Subscription, BehaviorSubject, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

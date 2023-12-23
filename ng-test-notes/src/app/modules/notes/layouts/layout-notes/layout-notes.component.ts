@@ -18,6 +18,7 @@ export class LayoutNotesComponent {
 
 	public clickHeaderBtn(): void {
 		const modalRef = this.modalService.open(ModalCreateNoteComponent, {
+
 		});
 
 		// modalRef.afterClosed().subscribe(() => modalRef.destroy());

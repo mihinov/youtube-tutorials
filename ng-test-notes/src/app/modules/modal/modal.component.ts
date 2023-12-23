@@ -16,12 +16,7 @@ export class ModalComponent implements AfterViewInit {
 	public componentModalContent: Type<any> | null = null;
 	@Output() public close = new EventEmitter<void>();
 	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent!: ViewContainerRef;
-	@ViewChild('modalRef', { static: false }) private modalHtml!: ElementRef<HTMLDivElement>;
 	private afterViewInit$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-	private defaultConfig: ModalConfig = {
-		maxWidth: 1000,
-		minWidth: 200
-	};
 
 	constructor(
 		private readonly cdr: ChangeDetectorRef,
@@ -46,17 +41,14 @@ export class ModalComponent implements AfterViewInit {
   }
 
 	public openModal(config?: ModalConfig): void {
-		if (this.modalHtml === null) return;
-		if (config === undefined) config = this.defaultConfig;
-
 		this.modalConfig = this.createConfig(config);
 		const scrollbarWidth = this._getScrollbarWidth();
 
 		if (scrollbarWidth !== 0) this.document.body.style.paddingRight = `${scrollbarWidth}px`;
     this.document.body.classList.add('overflowHidden');
-		this.modalHtml.nativeElement.style.transitionDuration = `${this.modalConfig.transitionDurationS}s`;
-		this.modalHtml.nativeElement.classList.add('modal_open');
+		this.document.addEventListener('keydown', this.escFn);
 		this.isOpen = true;
+		this.cdr.detectChanges();
 	}
 
 	public clickModal(event: any): void {
@@ -82,6 +74,12 @@ export class ModalComponent implements AfterViewInit {
 			);
 	}
 
+	private escFn = (event: KeyboardEvent): void => {
+		if (event.key === 'Escape') {
+			this._closeModal();
+		}
+	}
+
 	private _closeModal(): void {
 		if (this.modalConfig === null) return;
 
@@ -95,10 +93,9 @@ export class ModalComponent implements AfterViewInit {
   }
 
 	private _closeModalCss(): void {
-		if (this.modalHtml === null) return;
 		this.document.body.style.removeProperty('padding-right');
     this.document.body.classList.remove('overflowHidden');
-    this.modalHtml.nativeElement.classList.remove('modal_open');
+		this.document.removeEventListener('keydown', this.escFn);
 		this.isOpen = false;
 	}
 
@@ -143,18 +140,17 @@ export class ModalComponent implements AfterViewInit {
 		this.cdr.detectChanges();
 	}
 
-	private createConfig(config: ModalConfig): InternalModalConfig {
-    const transitionDuration = this.getTransitionDuration();
-    const defaultMaxWidth = 1000;
-    const defaultMinWidth = 200;
+	private createConfig(config?: ModalConfig): InternalModalConfig {
+    const defaultTransitionDuration = this.getTransitionDuration();
+
+		if (config === undefined) return {
+			transitionDurationS: defaultTransitionDuration
+		};
 
     const resultConfig: InternalModalConfig = {
-        maxWidth: config.maxWidth !== undefined ? config.maxWidth : defaultMaxWidth,
-        minWidth: config.minWidth !== undefined ? config.minWidth : defaultMinWidth,
-        transitionDurationS: config.transitionDurationS !== undefined ? config.transitionDurationS : transitionDuration
+			...config,
+      transitionDurationS: config.transitionDurationS === undefined ? defaultTransitionDuration : config.transitionDurationS
     };
-
-    if (config.data !== undefined) resultConfig.data = config.data;
 
     return resultConfig;
 	}

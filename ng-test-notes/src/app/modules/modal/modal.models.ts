@@ -3,15 +3,19 @@ import { Observable, ReplaySubject, Subject } from "rxjs";
 import { ModalComponent } from "./modal.component";
 
 export interface ModalConfig {
-	maxWidth?: number;
-	minWidth?: number;
+	maxWidth?: string;
+	minWidth?: string;
+	minHeight?: string;
+	maxHeight?: string;
 	transitionDurationS?: number;
 	data?: any;
 }
 
 export interface InternalModalConfig {
-	maxWidth: number;
-	minWidth: number;
+	maxWidth?: string;
+	minWidth?: string;
+	minHeight?: string;
+	maxHeight?: string;
 	transitionDurationS: number;
 	data?: any;
 }
