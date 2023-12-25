@@ -99,12 +99,6 @@ export class ModalComponent implements AfterViewInit {
 			);
 	}
 
-	private escFn = (event: KeyboardEvent): void => {
-		if (event.key === 'Escape') {
-			this._closeModal();
-		}
-	}
-
 	private _closeModal(): void {
 		if (this.modalConfig === null) return;
 
@@ -116,6 +110,12 @@ export class ModalComponent implements AfterViewInit {
 				this.close.emit();
 			});
   }
+
+	private escFn = (event: KeyboardEvent): void => {
+		if (event.key === 'Escape') {
+			this._closeModal();
+		}
+	}
 
 	private _closeModalCss(): void {
 		this.document.body.style.removeProperty('padding-right');

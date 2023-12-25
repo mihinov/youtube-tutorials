@@ -95,7 +95,7 @@ export class NotesService {
 	}
 
 	private _initActiveNotesItemRouting() {
-		this.stateActiveNotesItemId.pipe(
+		this.activeNotesItemId$.pipe(
 			tap((activeNotesItemId) => {
 				if (activeNotesItemId === null) {
 					this.router.navigate(['notes']);

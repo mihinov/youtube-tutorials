@@ -43,8 +43,6 @@ export class ModalService {
 
 		if (animationEnd$ === null) return;
 
-		console.log('destroy');
-
 		animationEnd$
 			.pipe(take(1))
 			.subscribe(() => this._destroy(modalStateItem));
@@ -137,9 +135,7 @@ export class ModalService {
 
 		this.appRef.attachView(modalComponentRef.hostView);
 		this.document.body.appendChild(modalComponentRef.location.nativeElement);
-
 		this.stateModals.next([...this.stateModals.value, modalStateItem]);
-		console.log(this.stateModals.value);
 
 		return returnRef;
 	}

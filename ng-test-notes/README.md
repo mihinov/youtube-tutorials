@@ -1,5 +1,7 @@
 # NgTestNotes
 
+[https://mihinov.github.io/youtube-tutorials/ng-test-notes/notes](https://mihinov.github.io/youtube-tutorials/ng-test-notes/notes)
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.5.
 
 ## Development server
