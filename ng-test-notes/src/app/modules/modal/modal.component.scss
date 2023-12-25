@@ -33,6 +33,7 @@
 	justify-content: center;
 	min-height: 100%;
 	z-index: 2;
+	user-select: none;
 }
 
 .modal__background {
@@ -71,6 +72,7 @@
 	padding: 55px 40px 40px 40px;
 	max-width: 100%;
 	overflow: hidden;
+	user-select: text;
 	transition-property: background-color;
   transition-timing-function: var(--transitionTimingFunction);
   transition-duration: var(--transitionDuration);

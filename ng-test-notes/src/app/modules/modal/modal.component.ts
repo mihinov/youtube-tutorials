@@ -2,7 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Injector, Input, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { MODAL_DATA, MODAL_REF } from './modal.tokens';
-import { ReplaySubject, shareReplay, take, timer } from 'rxjs';
+import { Observable, ReplaySubject, shareReplay, take, timer } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -17,6 +17,8 @@ export class ModalComponent implements AfterViewInit {
 	@Output() public close = new EventEmitter<void>();
 	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent!: ViewContainerRef;
 	private afterViewInit$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+	private isPointerUp: boolean = false;
+	private isPointerDown: boolean = false;
 
 	constructor(
 		private readonly cdr: ChangeDetectorRef,
@@ -51,18 +53,41 @@ export class ModalComponent implements AfterViewInit {
 		this.cdr.detectChanges();
 	}
 
-	public clickModal(event: any): void {
-		// Если это отжатие мыши, то закончить
-		const pointerEvent: PointerEvent = event;
-		if (pointerEvent.target === null) return;
-		const targetNode: HTMLElement = pointerEvent.target as HTMLElement;
+	public pointerUp(event: PointerEvent): void {
+		if (event.target === null) return;
+		const targetNode: HTMLElement = event.target as HTMLElement;
+
+		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
+			this.isPointerUp = true;
+		}
+
+		if (this.isPointerUp === true && this.isPointerDown === true) {
+			this._closeModal();
+		}
+
+		this.isPointerUp = false;
+		this.isPointerDown = false;
+	}
+
+	public pointerDown(event: PointerEvent): void {
+		if (event.target === null) return;
+		const targetNode: HTMLElement = event.target as HTMLElement;
+
+		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
+			this.isPointerDown = true;
+		}
+	}
+
+	public clickModal(event: PointerEvent): void {
+		if (event.target === null) return;
+		const targetNode: HTMLElement = event.target as HTMLElement;
 
 		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
 			this._closeModal();
 		}
 	}
 
-	public closeModal() {
+	public closeModal(): Observable<unknown> | null {
 		if (this.modalConfig === null) return null;
 
 		this._closeModalCss();
@@ -166,7 +191,5 @@ export class ModalComponent implements AfterViewInit {
 
 		return transitionDuration;
 	}
-
-
 
 }

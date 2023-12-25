@@ -12,7 +12,8 @@
 		class="modal__wrapper"
 		aria-modal="true"
 		role="dialog"
-		(pointerdown)="clickModal($event)"
+		(pointerdown)="pointerDown($event)"
+		(pointerup)="pointerUp($event)"
 	>
 		<div class="modal__body">
 
