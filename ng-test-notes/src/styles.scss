@@ -2,10 +2,10 @@
 	box-sizing: inherit;
 }
 
-@property --transitionDurationS {
+@property --transitionDurationMS {
 	syntax: "<number>";
   inherits: false;
-  initial-value: 0.2;
+  initial-value: 200;
 }
 
 :root {
@@ -33,7 +33,7 @@
 	--inputBorderColor: var(--color);
 	--inputHoverBorderColor: rgb(190, 190, 190);
 	--inputFocusBorderColor: var(--darkWhite);
-	--transitionDuration: calc( var(--transitionDurationS) * 1s );
+	--transitionDuration: calc( var(--transitionDurationMS) * 1ms );
 	--transitionTimingFunction: ease;
 }
 

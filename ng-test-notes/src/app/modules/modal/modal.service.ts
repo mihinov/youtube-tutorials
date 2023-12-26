@@ -1,8 +1,8 @@
 import { Injectable, ComponentFactoryResolver, ComponentRef, Type, ApplicationRef, Injector, Inject } from '@angular/core';
 import { ModalComponent } from './modal.component';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, take } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, map, shareReplay, switchMap, take, tap } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
-import { ModalConfig, ModalRef, ModalStateItem } from './modal.models';
+import { InternalModalConfig, ModalConfig, ModalRef, ModalStateItem } from './modal.models';
 import { ModalModule } from './modal.module';
 
 @Injectable({
@@ -32,36 +32,32 @@ export class ModalService {
 		return this._create(component, config);
   }
 
-  private closeAndDestroy(modalStateItem: ModalStateItem): void {
+  private closeAndDestroy(modalStateItem: ModalStateItem, dialogResult?: any): void {
 		const modalComponentRefInstance = modalStateItem.modalComponentRef.instance;
+
 		if (modalComponentRefInstance.isOpen === false) {
-			this._destroy(modalStateItem);
+			this._destroy(modalStateItem, dialogResult);
 			return;
 		}
 
-		const animationEnd$ = modalComponentRefInstance.closeModal();
-
-		if (animationEnd$ === null) return;
-
-		animationEnd$
-			.pipe(take(1))
-			.subscribe(() => this._destroy(modalStateItem));
+		modalComponentRefInstance.closeModal({ isDestroy: true, dialogResult });
   }
 
-	private _destroy(modalStateItem: ModalStateItem): void {
-		modalStateItem.state.stateAfterClosed.next(null);
+	private _destroy(modalStateItem: ModalStateItem, dialogResult?: any): void {
+		modalStateItem.state.stateAfterClosed.next(dialogResult);
 		this.appRef.detachView(modalStateItem.modalComponentRef.hostView);
 		modalStateItem.modalComponentRef.destroy();
 		this.deleteModal(modalStateItem);
 	}
 
-	private _close(modalStateItem: ModalStateItem): void {
-		modalStateItem.state.stateAfterClosed.next(null);
+	private _close(modalStateItem: ModalStateItem, dialogResult?: any): void {
+		const modalComponentRefInstance = modalStateItem.modalComponentRef.instance;
+
+		modalComponentRefInstance.closeModal({ dialogResult, isDestroy: false });
 	}
 
 	private getModal(component: Type<any>): ModalStateItem | null {
 		const modals = this.stateModals.value;
-
 		const findedModal = modals.find((modal) => modal.componentModalContent === component);
 
 		if (findedModal === undefined) return null;
@@ -71,7 +67,6 @@ export class ModalService {
 
 	private deleteModal(modalStateItem: ModalStateItem): void {
 		const stateModalsArr = this.stateModals.value;
-
 		const findedModalIdx = stateModalsArr.findIndex((modal) => modal.modalComponentRef === modalStateItem.modalComponentRef);
 
 		if (findedModalIdx !== -1) {
@@ -82,14 +77,19 @@ export class ModalService {
 	}
 
 	private getReturnObj(modalStateItem: ModalStateItem): ModalRef {
-		const internalConfig = modalStateItem.modalComponentRef.instance.modalConfig;
-
 		return {
 			afterClosed: () => modalStateItem.obs.afterClosed$,
 			afterOpened: () => modalStateItem.obs.afterOpened$,
-			close: () => this._close(modalStateItem),
-			destroy: () => this.closeAndDestroy(modalStateItem),
-			open: () => this._open(modalStateItem)
+			close: (dialogResult?: any) => this._close(modalStateItem, dialogResult),
+			open: (data?: any) => {
+				const modalConfig: InternalModalConfig | null = modalStateItem.modalComponentRef.instance.modalConfig;
+				if (modalConfig === null) return;
+				modalConfig.data = data;
+				this._open(modalStateItem, modalConfig);
+			},
+			destroy: (dialogResult?: any) => {
+				this.closeAndDestroy(modalStateItem, dialogResult);
+			}
 		};
 	}
 
@@ -116,22 +116,31 @@ export class ModalService {
 
 	private _create(component: Type<any>, config?: ModalConfig): ModalRef {
 		const modalComponentRef = this.componentFactoryResolver.resolveComponentFactory(ModalComponent).create(this.injector);
-
 		const modalStateItem = this.createModalStateItem(component, modalComponentRef);
 
-		modalStateItem.state.stateAfterOpened.next(null);
-
 		modalComponentRef.instance.close
-			.pipe(take(1))
-			.subscribe(() => this._close(modalStateItem));
+			.pipe(
+				take(1),
+				tap(({ isDestroy, dialogResult }) => {
+					if (isDestroy === true) {
+						this._destroy(modalStateItem, dialogResult);
+					} else {
+						modalStateItem.state.stateAfterClosed.next(dialogResult);
+					}
+				})
+			)
+			.subscribe();
 
 		const returnRef = this.getReturnObj(modalStateItem);
 
-		modalComponentRef.instance.createAndOpenModal({
+		modalComponentRef.instance.createAndOpenModal$({
 			config: config,
 			returnRef: returnRef,
 			componentModalContent: component
-		});
+		})
+			.subscribe(() => {
+				modalStateItem.state.stateAfterOpened.next(null);
+			});
 
 		this.appRef.attachView(modalComponentRef.hostView);
 		this.document.body.appendChild(modalComponentRef.location.nativeElement);
@@ -143,25 +152,31 @@ export class ModalService {
 	private _open(modalStateItem: ModalStateItem, config?: ModalConfig): ModalRef {
 		const modalComponentRefInstance = modalStateItem.modalComponentRef.instance;
 
-		if (config === undefined) {
-			modalComponentRefInstance.openModal();
-		} else {
-			modalComponentRefInstance.openModal(config);
-		}
-
 		this.setObserversAndStates(modalStateItem);
-		modalStateItem.state.stateAfterOpened.next(null);
+		modalComponentRefInstance.openModal$(config)
+			.subscribe(() => {
+				modalStateItem.state.stateAfterOpened.next(null);
+			});
 
 		modalComponentRefInstance.close
-			.pipe(take(1))
-			.subscribe(() => this._close(modalStateItem));
+			.pipe(
+				take(1),
+				tap(({ isDestroy, dialogResult }) => {
+					if (isDestroy === true) {
+						this._destroy(modalStateItem, dialogResult);
+					} else {
+						modalStateItem.state.stateAfterClosed.next(dialogResult);
+					}
+				})
+			)
+			.subscribe();
 
 		return this.getReturnObj(modalStateItem);
 	}
 
 	private setObserversAndStates(modalStateItem: ModalStateItem): void {
-		const stateAfterClosed = new Subject();
-		const stateAfterOpened = new ReplaySubject(1);
+		const stateAfterClosed = new Subject<any>();
+		const stateAfterOpened = new ReplaySubject<any>(1);
 
 		modalStateItem.state.stateAfterClosed = stateAfterClosed;
 		modalStateItem.state.stateAfterOpened = stateAfterOpened;

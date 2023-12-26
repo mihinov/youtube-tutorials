@@ -1,8 +1,8 @@
 import { DOCUMENT } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, EventEmitter, Inject, Injector, Input, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
-import { InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Injector, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { CloseModalInputArgs, InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { MODAL_DATA, MODAL_REF } from './modal.tokens';
-import { Observable, ReplaySubject, shareReplay, take, timer } from 'rxjs';
+import { Observable, ReplaySubject, filter, map, of, shareReplay, switchMap, take, tap, timer } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -14,7 +14,7 @@ export class ModalComponent implements AfterViewInit {
 	public modalConfig: InternalModalConfig | null = null;
 	public isOpen: boolean = false;
 	public componentModalContent: Type<any> | null = null;
-	@Output() public close = new EventEmitter<void>();
+	@Output() public close = new EventEmitter<CloseModalInputArgs>();
 	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent!: ViewContainerRef;
 	private afterViewInit$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 	private isPointerUp: boolean = false;
@@ -31,18 +31,22 @@ export class ModalComponent implements AfterViewInit {
 		this.afterViewInit$.next(true);
 	}
 
-	public createAndOpenModal({config, returnRef, componentModalContent}: { config?: ModalConfig, returnRef: ModalRef, componentModalContent: Type<any> }): void {
+	public createAndOpenModal$(
+		{config, returnRef, componentModalContent}: { config?: ModalConfig, returnRef: ModalRef, componentModalContent: Type<any> }
+	): Observable<number> {
 		this.componentModalContent = componentModalContent;
+		const modalConfig = this.createConfig(config);
 
-		this.afterViewInit$
-			.pipe(take(1))
-			.subscribe(() => {
-				this._createModalContent(returnRef);
-				this.openModal(config);
-			});
+		return this.afterViewInit$
+			.pipe(
+				take(1),
+				tap(() => this._createModalContent(returnRef, componentModalContent, modalConfig)),
+				switchMap(() => this.openModal$(modalConfig)),
+				shareReplay(1)
+			);
   }
 
-	public openModal(config?: ModalConfig): void {
+	public openModal$(config?: ModalConfig): Observable<number> {
 		this.modalConfig = this.createConfig(config);
 		const scrollbarWidth = this._getScrollbarWidth();
 
@@ -51,6 +55,12 @@ export class ModalComponent implements AfterViewInit {
 		this.document.addEventListener('keydown', this.escFn);
 		this.isOpen = true;
 		this.cdr.detectChanges();
+
+		return timer(this.modalConfig.transitionDuration)
+			.pipe(
+				take(1),
+				shareReplay(1)
+			);
 	}
 
 	public pointerUp(event: PointerEvent): void {
@@ -62,7 +72,7 @@ export class ModalComponent implements AfterViewInit {
 		}
 
 		if (this.isPointerUp === true && this.isPointerDown === true) {
-			this._closeModal();
+			this.closeModal();
 		}
 
 		this.isPointerUp = false;
@@ -83,37 +93,28 @@ export class ModalComponent implements AfterViewInit {
 		const targetNode: HTMLElement = event.target as HTMLElement;
 
 		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
-			this._closeModal();
+			this.closeModal();
 		}
 	}
 
-	public closeModal(): Observable<unknown> | null {
-		if (this.modalConfig === null) return null;
-
-		this._closeModalCss();
-
-		return timer(this.modalConfig.transitionDurationS * 1000)
-			.pipe(
-				take(1),
-				shareReplay(1)
-			);
-	}
-
-	private _closeModal(): void {
+	public closeModal({ isDestroy, dialogResult }: CloseModalInputArgs = { isDestroy: false }): void {
 		if (this.modalConfig === null) return;
 
 		this._closeModalCss();
 
-		timer(this.modalConfig.transitionDurationS * 1000)
-			.pipe(take(1))
-			.subscribe(() => {
-				this.close.emit();
-			});
-  }
+		timer(this.modalConfig.transitionDuration)
+			.pipe(
+				take(1),
+				tap(() => {
+					this.close.emit({ isDestroy, dialogResult });
+				})
+			)
+			.subscribe();
+	}
 
 	private escFn = (event: KeyboardEvent): void => {
 		if (event.key === 'Escape') {
-			this._closeModal();
+			this.closeModal();
 		}
 	}
 
@@ -122,6 +123,7 @@ export class ModalComponent implements AfterViewInit {
     this.document.body.classList.remove('overflowHidden');
 		this.document.removeEventListener('keydown', this.escFn);
 		this.isOpen = false;
+		this.cdr.detectChanges();
 	}
 
 	private _getScrollbarWidth(): number {
@@ -148,15 +150,13 @@ export class ModalComponent implements AfterViewInit {
 		return hasScrollbar ? scrollbarWidth : 0;
 	}
 
-	private _createModalContent(returnRef: ModalRef): void {
-		if (this.componentModalContent === null) return;
-
+	private _createModalContent(returnRef: ModalRef, componentModalContent: Type<any>, modalConfig: InternalModalConfig): void {
 		this.vcrModalContent.clear();
-    this.vcrModalContent.createComponent(this.componentModalContent, {
+    this.vcrModalContent.createComponent(componentModalContent, {
 			injector: Injector.create({
 				parent: this.injector,
 				providers: [
-					{ provide: MODAL_DATA, useValue: this.modalConfig?.data },
+					{ provide: MODAL_DATA, useValue: modalConfig?.data },
 					{ provide: MODAL_REF, useValue: returnRef }
 				]
 			}),
@@ -169,23 +169,23 @@ export class ModalComponent implements AfterViewInit {
     const defaultTransitionDuration = this.getTransitionDuration();
 
 		if (config === undefined) return {
-			transitionDurationS: defaultTransitionDuration
+			transitionDuration: defaultTransitionDuration
 		};
 
     const resultConfig: InternalModalConfig = {
 			...config,
-      transitionDurationS: config.transitionDurationS === undefined ? defaultTransitionDuration : config.transitionDurationS
+      transitionDuration: config.transitionDuration === undefined ? defaultTransitionDuration : config.transitionDuration
     };
 
     return resultConfig;
 	}
 
 	private getTransitionDuration(): number {
-		const defaultDuration = 0.2;
+		const defaultDuration = 200;
 
 		if (!this.document.documentElement.computedStyleMap) return defaultDuration;
 
-		const transitionDurationProp = this.document.documentElement.computedStyleMap().get('--transitionDurationS') as (CSSUnitValue | null);
+		const transitionDurationProp = this.document.documentElement.computedStyleMap().get('--transitionDurationMS') as (CSSUnitValue | null);
 		if (transitionDurationProp === null) return defaultDuration;
 		const transitionDuration = transitionDurationProp.value || defaultDuration;
 

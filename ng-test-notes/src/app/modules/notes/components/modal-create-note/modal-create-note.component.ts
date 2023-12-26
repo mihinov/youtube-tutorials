@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 })
 export class ModalCreateNoteComponent {
 
-	form = new FormGroup({
+	public form = new FormGroup({
 		title: new FormControl('', [Validators.required]),
 		description: new FormControl('', [Validators.required])
 	});
@@ -22,8 +22,10 @@ export class ModalCreateNoteComponent {
 	constructor(
 		private readonly notesService: NotesService,
 		@Inject(MODAL_REF) private readonly modalRef: ModalRef,
+		@Inject(MODAL_DATA) private readonly modalData: any,
 		private readonly router: Router
 	) {
+		console.log(modalData, 'modalData');
 	}
 
 	public submitForm(): void {
@@ -32,7 +34,7 @@ export class ModalCreateNoteComponent {
 		const formValue = this.form.value as AddedNotesItem;
 		const notesItem = this.notesService.add(formValue);
 
-		this.modalRef.destroy();
+		this.modalRef.destroy(notesItem);
 		this.router.navigate(['notes', notesItem.id]);
 	}
 

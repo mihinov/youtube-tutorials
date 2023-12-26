@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ModalService } from '../../../modal/modal.service';
 import { ModalCreateNoteComponent } from '../../components/modal-create-note/modal-create-note.component';
-import { NoteEmptyComponent } from '../../components/note-empty/note-empty.component';
 
 @Component({
   selector: 'app-layout-notes',
@@ -18,9 +17,16 @@ export class LayoutNotesComponent {
 
 	public clickHeaderBtn(): void {
 		const modalRef = this.modalService.open(ModalCreateNoteComponent, {
-
+			data: {
+				a: 1
+			}
 		});
 
-		// modalRef.afterClosed().subscribe(() => modalRef.destroy());
+		modalRef.afterOpened().subscribe(() => console.log('afterOpened'));
+		modalRef.afterClosed().subscribe((result) => {
+			console.log('afterClosed');
+			console.log(result);
+		});
+
 	}
 }

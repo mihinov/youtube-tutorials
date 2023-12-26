@@ -7,7 +7,7 @@ export interface ModalConfig {
 	minWidth?: string;
 	minHeight?: string;
 	maxHeight?: string;
-	transitionDurationS?: number;
+	transitionDuration?: number;
 	data?: any;
 }
 
@@ -16,16 +16,16 @@ export interface InternalModalConfig {
 	minWidth?: string;
 	minHeight?: string;
 	maxHeight?: string;
-	transitionDurationS: number;
+	transitionDuration: number;
 	data?: any;
 }
 
 export interface ModalRef {
 	afterClosed: () => Observable<any>;
 	afterOpened: () => Observable<any>;
-	close: () => void,
-	destroy: () => void,
-	open: () => void
+	open: (data?: any) => void;
+	close: (dialogResult?: any) => void;
+	destroy: (dialogResult?: any) => void;
 }
 
 export interface ModalStateItem {
@@ -33,11 +33,16 @@ export interface ModalStateItem {
 	componentModalContent: Type<any>;
 	modalComponentRef: ComponentRef<ModalComponent>;
 	state: {
-		stateAfterClosed: Subject<any>;
-		stateAfterOpened: ReplaySubject<any>;
+		stateAfterClosed: Subject<any | void>;
+		stateAfterOpened: ReplaySubject<any | void>;
 	}
 	obs: {
-		afterClosed$: Observable<any>;
-		afterOpened$: Observable<any>;
+		afterClosed$: Observable<any | void>;
+		afterOpened$: Observable<any | void>;
 	}
+}
+
+export interface CloseModalInputArgs {
+	isDestroy: boolean;
+	dialogResult?: any;
 }
