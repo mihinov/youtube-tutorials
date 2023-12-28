@@ -10,23 +10,23 @@ import { ModalCreateNoteComponent } from '../../components/modal-create-note/mod
 })
 export class LayoutNotesComponent {
 	constructor(
-		private readonly modalService: ModalService
+		private readonly _modalService: ModalService
 	) {
 
 	}
 
 	public clickHeaderBtn(): void {
-		const modalRef = this.modalService.open(ModalCreateNoteComponent, {
+		const modalRef = this._modalService.open(ModalCreateNoteComponent, {
 			data: {
 				a: 1
 			}
 		});
 
-		modalRef.afterOpened().subscribe(() => console.log('afterOpened'));
-		modalRef.afterClosed().subscribe((result) => {
-			console.log('afterClosed');
-			console.log(result);
-		});
+		// modalRef.afterOpened().subscribe(() => console.log('afterOpened'));
+		// modalRef.afterClosed().subscribe((result) => {
+		// 	console.log('afterClosed');
+		// 	console.log(result);
+		// });
 
 	}
 }

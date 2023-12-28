@@ -9,18 +9,17 @@ import { Router } from '@angular/router';
   providedIn: 'root',
 })
 export class NotesService {
-	private readonly keyNotesInLocalStorage: string = 'notes';
-	private readonly keyActiveNotesItemIdInLocalStorage: string = 'activeNotesItemId';
-	private readonly stateNotes: BehaviorSubject<Record<string, NotesItem>> = new BehaviorSubject({});
-	private readonly stateActiveNotesItemId: BehaviorSubject<string | null> = new BehaviorSubject<null | string>(null);
-	public readonly notes$: Observable<NotesItem[]> = this.stateNotes.pipe(
-		map(obj => (Object.values(obj))),
+	private readonly _keyNotesInLocalStorage: string = 'notes';
+	private readonly _keyActiveNotesItemIdInLocalStorage: string = 'activeNotesItemId';
+	private readonly _stateNotes: BehaviorSubject<NotesItem[]> = new BehaviorSubject([] as NotesItem[]);
+	private readonly _stateActiveNotesItemId: BehaviorSubject<string | null> = new BehaviorSubject<null | string>(null);
+	public readonly notes$: Observable<NotesItem[]> = this._stateNotes.pipe(
 		shareReplay(1)
 	);
-	public readonly activeNotesItemId$: Observable<string | null> = this.stateActiveNotesItemId.pipe(
+	public readonly activeNotesItemId$: Observable<string | null> = this._stateActiveNotesItemId.pipe(
 		shareReplay(1)
 	)
-	public readonly activeNotesItem$: Observable<NotesItem | null> = this.stateActiveNotesItemId.pipe(
+	public readonly activeNotesItem$: Observable<NotesItem | null> = this._stateActiveNotesItemId.pipe(
 		map(activeNotesItemId => {
 			if (activeNotesItemId === null) return null;
 			return this._getSyncNotesItem(activeNotesItemId);
@@ -29,8 +28,8 @@ export class NotesService {
 	);
 
   constructor(
-		private readonly localStorageService: LocalStorageService,
-		private readonly router: Router
+		private readonly _localStorageService: LocalStorageService,
+		private readonly _router: Router
 	) {
 		this._initDefaultNotes();
 		this._initActiveNoteId();
@@ -43,162 +42,146 @@ export class NotesService {
 			description: addedNotesItem.description,
 			title: addedNotesItem.title
 		};
-		const lastStateNotes = this.stateNotes.value;
+		const notes = this._stateNotes.value;
 
-		lastStateNotes[newNotesItem.id] = newNotesItem;
-		this._update(lastStateNotes, true);
+		notes.push(newNotesItem);
+
+		this._update(notes, true);
 
 		return newNotesItem;
 	}
 
 	public delete(id: string): void {
-		const lastStateNotes = this.stateNotes.value;
-		const isNoteExists = id in lastStateNotes;
+		const notes = this._stateNotes.value;
+		const idxFindedNotesItem = notes.findIndex(notesItem => notesItem.id === id);
+		const isNoteExists = idxFindedNotesItem !== -1;
 
 		if (isNoteExists === false) return;
 
-		delete lastStateNotes[id];
+		notes.splice(idxFindedNotesItem, 1);
 
-		const allIdNotes = Object.keys(lastStateNotes);
-		const lastId: string | undefined = allIdNotes[allIdNotes.length - 1];
-
-		if (lastId === undefined) {
-			this.localStorageService.delete(this.keyActiveNotesItemIdInLocalStorage);
+		if (notes.length === 0) {
+			this._localStorageService.delete(this._keyActiveNotesItemIdInLocalStorage);
 			this.setActiveNotesItemId(null, false);
+			this._update(notes, true);
+			return;
 		}
 
-		if (lastId !== undefined) {
-			this.setActiveNotesItemId(lastId, true);
-		}
+		const nextActiveId = notes[idxFindedNotesItem] === undefined ? notes[notes.length - 1].id : notes[idxFindedNotesItem].id;
 
-		this._update(lastStateNotes, true);
-	}
-
-	public deleteAll(): void {
-		this._update({}, true);
+		this.setActiveNotesItemId(nextActiveId, true);
+		this._update(notes, true);
 	}
 
 	public getNotesItem(id: string): Observable<NotesItem | null> {
-		return this.stateNotes.pipe(
+		return this._stateNotes.pipe(
 			map(() => this._getSyncNotesItem(id))
 		)
 	}
 
 	public setActiveNotesItemId(id: string | null, updateLocalStorage: boolean): void {
-		if (this.stateActiveNotesItemId.value === id) return;
-		this.stateActiveNotesItemId.next(id);
-		if (updateLocalStorage === true) this.localStorageService.set(this.keyActiveNotesItemIdInLocalStorage, id);
+		if (this._stateActiveNotesItemId.value === id) return;
+		this._stateActiveNotesItemId.next(id);
+		if (updateLocalStorage === true) this._localStorageService.set(this._keyActiveNotesItemIdInLocalStorage, id);
 	}
 
 	public getActiveNotesItemId(): string | null {
-		return this.stateActiveNotesItemId.value;
+		return this._stateActiveNotesItemId.value;
 	}
 
 	private _initActiveNotesItemRouting() {
 		this.activeNotesItemId$.pipe(
 			tap((activeNotesItemId) => {
 				if (activeNotesItemId === null) {
-					this.router.navigate(['notes']);
+					this._router.navigate(['notes']);
 					return;
 				}
 
-				const currentUrl = this.router.url;
+				const currentUrl = this._router.url;
 				const nextUrl = `/notes/${activeNotesItemId}`;
 
 				if (nextUrl !== currentUrl) {
-					this.router.navigateByUrl(nextUrl);
+					this._router.navigateByUrl(nextUrl);
 				}
 			})
 		)
 		.subscribe();
 	}
 
-	private _update(newStateNotes: Record<string, NotesItem>, updateLocalStorage: boolean): void {
-		if (updateLocalStorage === true) this.localStorageService.set(this.keyNotesInLocalStorage, newStateNotes);
-		this.stateNotes.next(newStateNotes);
+	private _update(newStateNotes: NotesItem[], updateLocalStorage: boolean): void {
+		if (updateLocalStorage === true) this._localStorageService.set(this._keyNotesInLocalStorage, newStateNotes);
+		this._stateNotes.next(newStateNotes);
 	}
 
 	private _getSyncNotesItem(id: string): NotesItem | null {
-		const stateNotes = this.stateNotes.value;
-		const isNoteExists = id in stateNotes;
+		const notes = this._stateNotes.value;
+		const findedNotesItem = notes.find(notesItem => notesItem.id === id);
 
-		if (isNoteExists === false) return null;
+		if (findedNotesItem === undefined) return null;
 
-		return stateNotes[id];
+		return findedNotesItem;
 	}
 
 	private _initDefaultNotes(): void {
-		const notesInLocalStorage = this.localStorageService.get<Record<string, NotesItem>>(this.keyNotesInLocalStorage);
+		const notesInLocalStorage = this._localStorageService.get<NotesItem[]>(this._keyNotesInLocalStorage);
 
 		if (notesInLocalStorage === null) {
 			this._addArrNotes(this._getFourNotes(), true);
 			return;
 		}
 
-		if (this._isObject(notesInLocalStorage)) {
-			this._addObjNotes(notesInLocalStorage, false);
+		if (Array.isArray(notesInLocalStorage)) {
+			this._addArrNotes(notesInLocalStorage, false);
 		}
 	}
 
 	private _initActiveNoteId(): void {
-		const activeNoteIdInLocalStorage = this.localStorageService.get<string>(this.keyActiveNotesItemIdInLocalStorage);
+		const activeNoteIdInLocalStorage = this._localStorageService.get<string>(this._keyActiveNotesItemIdInLocalStorage);
 
 		if (
 			activeNoteIdInLocalStorage !== null &&
 			typeof activeNoteIdInLocalStorage === 'string'
 		) {
-			this.stateActiveNotesItemId.next(activeNoteIdInLocalStorage);
+			this._stateActiveNotesItemId.next(activeNoteIdInLocalStorage);
 		}
 	}
 
-	private _addArrNotes(addedNotesItemArr: AddedNotesItem[], updateLocalStorage: boolean): void {
-		const stateNotes = this.stateNotes.value;
+	private _addArrNotes(addedNotesItemArr: NotesItem[], updateLocalStorage: boolean): void {
+		const notes = [...this._stateNotes.value, ...addedNotesItemArr];
 
-		for (const addedNotesItem of addedNotesItemArr) {
-			const id = window.crypto.randomUUID();
-			stateNotes[id] = {
-				id: id,
-				...addedNotesItem
-			};
-		}
-
-		this._update(stateNotes, updateLocalStorage);
+		this._update(notes, updateLocalStorage);
 	}
 
-	private _addObjNotes(objNotes: Record<string, NotesItem>, updateLocalStorage: boolean) {
-		this._update(objNotes, updateLocalStorage);
-	}
-
-	private _getFourNotes(): AddedNotesItem[] {
+	private _getFourNotes(): NotesItem[] {
 		return [
 			{
+				id: window.crypto.randomUUID(),
 				title: 'Заметка 1',
 				description: `
 					текст текст текст
 				`
 			},
 			{
+				id: window.crypto.randomUUID(),
 				title: 'Заметка 2',
 				description: `
 					текст текст текст
 				`
 			},
 			{
+				id: window.crypto.randomUUID(),
 				title: 'Заметка 3',
 				description: `
 					текст текст текст
 				`
 			},
 			{
+				id: window.crypto.randomUUID(),
 				title: 'Заметка 4',
 				description: `
 					текст текст текст
 				`
 			}
 		];
-	}
-
-	private _isObject(obj: any): boolean {
-		return Object.prototype.toString.call(obj) === '[object Object]';
 	}
 }

@@ -15,29 +15,29 @@ export class ModalComponent implements AfterViewInit {
 	public isOpen: boolean = false;
 	public componentModalContent: Type<any> | null = null;
 	@Output() public close = new EventEmitter<CloseModalInputArgs>();
-	@ViewChild('modalContent', { read: ViewContainerRef }) private vcrModalContent!: ViewContainerRef;
-	private afterViewInit$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-	private isPointerUp: boolean = false;
-	private isPointerDown: boolean = false;
+	@ViewChild('modalContent', { read: ViewContainerRef }) private _vcrModalContent!: ViewContainerRef;
+	private _afterViewInit$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+	private _isPointerUp: boolean = false;
+	private _isPointerDown: boolean = false;
 
 	constructor(
-		private readonly cdr: ChangeDetectorRef,
-		@Inject(DOCUMENT) private readonly document: Document,
-		private readonly injector: Injector
+		private readonly _cdr: ChangeDetectorRef,
+		@Inject(DOCUMENT) private readonly _document: Document,
+		private readonly _injector: Injector
 	) {
   }
 
 	ngAfterViewInit(): void {
-		this.afterViewInit$.next(true);
+		this._afterViewInit$.next(true);
 	}
 
 	public createAndOpenModal$(
 		{config, returnRef, componentModalContent}: { config?: ModalConfig, returnRef: ModalRef, componentModalContent: Type<any> }
 	): Observable<number> {
 		this.componentModalContent = componentModalContent;
-		const modalConfig = this.createConfig(config);
+		const modalConfig = this._createConfig(config);
 
-		return this.afterViewInit$
+		return this._afterViewInit$
 			.pipe(
 				take(1),
 				tap(() => this._createModalContent(returnRef, componentModalContent, modalConfig)),
@@ -47,14 +47,14 @@ export class ModalComponent implements AfterViewInit {
   }
 
 	public openModal$(config?: ModalConfig): Observable<number> {
-		this.modalConfig = this.createConfig(config);
+		this.modalConfig = this._createConfig(config);
 		const scrollbarWidth = this._getScrollbarWidth();
 
-		if (scrollbarWidth !== 0) this.document.body.style.paddingRight = `${scrollbarWidth}px`;
-    this.document.body.classList.add('overflowHidden');
-		this.document.addEventListener('keydown', this.escFn);
+		if (scrollbarWidth !== 0) this._document.body.style.paddingRight = `${scrollbarWidth}px`;
+    this._document.body.classList.add('overflowHidden');
+		this._document.addEventListener('keydown', this._escFn);
 		this.isOpen = true;
-		this.cdr.detectChanges();
+		this._cdr.detectChanges();
 
 		return timer(this.modalConfig.transitionDuration)
 			.pipe(
@@ -68,15 +68,15 @@ export class ModalComponent implements AfterViewInit {
 		const targetNode: HTMLElement = event.target as HTMLElement;
 
 		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
-			this.isPointerUp = true;
+			this._isPointerUp = true;
 		}
 
-		if (this.isPointerUp === true && this.isPointerDown === true) {
+		if (this._isPointerUp === true && this._isPointerDown === true) {
 			this.closeModal();
 		}
 
-		this.isPointerUp = false;
-		this.isPointerDown = false;
+		this._isPointerUp = false;
+		this._isPointerDown = false;
 	}
 
 	public pointerDown(event: PointerEvent): void {
@@ -84,7 +84,7 @@ export class ModalComponent implements AfterViewInit {
 		const targetNode: HTMLElement = event.target as HTMLElement;
 
 		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
-			this.isPointerDown = true;
+			this._isPointerDown = true;
 		}
 	}
 
@@ -112,49 +112,49 @@ export class ModalComponent implements AfterViewInit {
 			.subscribe();
 	}
 
-	private escFn = (event: KeyboardEvent): void => {
+	private _escFn = (event: KeyboardEvent): void => {
 		if (event.key === 'Escape') {
 			this.closeModal();
 		}
 	}
 
 	private _closeModalCss(): void {
-		this.document.body.style.removeProperty('padding-right');
-    this.document.body.classList.remove('overflowHidden');
-		this.document.removeEventListener('keydown', this.escFn);
+		this._document.body.style.removeProperty('padding-right');
+    this._document.body.classList.remove('overflowHidden');
+		this._document.removeEventListener('keydown', this._escFn);
 		this.isOpen = false;
-		this.cdr.detectChanges();
+		this._cdr.detectChanges();
 	}
 
 	private _getScrollbarWidth(): number {
 		// Создание элемента для проверки наличия прокрутки
-		const scrollDiv = this.document.createElement('div');
+		const scrollDiv = this._document.createElement('div');
 		scrollDiv.style.width = '100px';
 		scrollDiv.style.height = '100px';
 		scrollDiv.style.overflow = 'scroll';
 		scrollDiv.style.position = 'absolute';
 		scrollDiv.style.top = '-9999px';
 		scrollDiv.style.opacity = '0';
-		this.document.body.appendChild(scrollDiv);
+		this._document.body.appendChild(scrollDiv);
 
 		// Вычисление ширины скроллбара при наличии прокрутки
 		const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
 
 		// Удаление временного элемента
-		this.document.body.removeChild(scrollDiv);
+		this._document.body.removeChild(scrollDiv);
 
 		// Проверка наличия прокрутки на данный момент
-		const hasScrollbar = window.innerWidth > this.document.documentElement.clientWidth;
+		const hasScrollbar = window.innerWidth > this._document.documentElement.clientWidth;
 
 		// Возвращение ширины скроллбара, если он есть, иначе 0
 		return hasScrollbar ? scrollbarWidth : 0;
 	}
 
 	private _createModalContent(returnRef: ModalRef, componentModalContent: Type<any>, modalConfig: InternalModalConfig): void {
-		this.vcrModalContent.clear();
-    this.vcrModalContent.createComponent(componentModalContent, {
+		this._vcrModalContent.clear();
+    this._vcrModalContent.createComponent(componentModalContent, {
 			injector: Injector.create({
-				parent: this.injector,
+				parent: this._injector,
 				providers: [
 					{ provide: MODAL_DATA, useValue: modalConfig?.data },
 					{ provide: MODAL_REF, useValue: returnRef }
@@ -162,11 +162,11 @@ export class ModalComponent implements AfterViewInit {
 			}),
 		});
 
-		this.cdr.detectChanges();
+		this._cdr.detectChanges();
 	}
 
-	private createConfig(config?: ModalConfig): InternalModalConfig {
-    const defaultTransitionDuration = this.getTransitionDuration();
+	private _createConfig(config?: ModalConfig): InternalModalConfig {
+    const defaultTransitionDuration = this._getTransitionDuration();
 
 		if (config === undefined) return {
 			transitionDuration: defaultTransitionDuration
@@ -180,12 +180,12 @@ export class ModalComponent implements AfterViewInit {
     return resultConfig;
 	}
 
-	private getTransitionDuration(): number {
+	private _getTransitionDuration(): number {
 		const defaultDuration = 200;
 
-		if (!this.document.documentElement.computedStyleMap) return defaultDuration;
+		if (!this._document.documentElement.computedStyleMap) return defaultDuration;
 
-		const transitionDurationProp = this.document.documentElement.computedStyleMap().get('--transitionDurationMS') as (CSSUnitValue | null);
+		const transitionDurationProp = this._document.documentElement.computedStyleMap().get('--transitionDurationMS') as (CSSUnitValue | null);
 		if (transitionDurationProp === null) return defaultDuration;
 		const transitionDuration = transitionDurationProp.value || defaultDuration;
 

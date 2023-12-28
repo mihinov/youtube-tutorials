@@ -20,22 +20,22 @@ export class ModalCreateNoteComponent {
 	});
 
 	constructor(
-		private readonly notesService: NotesService,
-		@Inject(MODAL_REF) private readonly modalRef: ModalRef,
-		@Inject(MODAL_DATA) private readonly modalData: any,
-		private readonly router: Router
+		private readonly _notesService: NotesService,
+		@Inject(MODAL_REF) private readonly _modalRef: ModalRef,
+		@Inject(MODAL_DATA) private readonly _modalData: any,
+		private readonly _router: Router
 	) {
-		console.log(modalData, 'modalData');
+		// console.log(_modalData, 'modalData');
 	}
 
 	public submitForm(): void {
 		if (this.form.valid === false) return;
 
 		const formValue = this.form.value as AddedNotesItem;
-		const notesItem = this.notesService.add(formValue);
+		const notesItem = this._notesService.add(formValue);
 
-		this.modalRef.destroy(notesItem);
-		this.router.navigate(['notes', notesItem.id]);
+		this._modalRef.destroy(notesItem);
+		this._router.navigate(['notes', notesItem.id]);
 	}
 
 }

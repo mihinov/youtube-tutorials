@@ -15,34 +15,34 @@ import { NotesItem } from '../../models';
 })
 export class NoteComponent {
 
-	private notesItem: NotesItem | null = null;
-	private id$: Observable<string | undefined> = this.route.params.pipe(
+	private _notesItem: NotesItem | null = null;
+	private _id$: Observable<string | undefined> = this._route.params.pipe(
 		map(params => params['id']),
 	);
-	public notesItem$: Observable<NotesItem | null> = this.id$.pipe(
+	public notesItem$: Observable<NotesItem | null> = this._id$.pipe(
 		switchMap((id) => {
 			if (id === undefined) return of(null);
-			return this.notesService.getNotesItem(id).pipe(take(1))
+			return this._notesService.getNotesItem(id).pipe(take(1))
 		}),
 		tap(notesItem => {
 			if (notesItem === null) {
-				this.router.navigate(['notes']);
+				this._router.navigate(['notes']);
 				return;
 			}
-			this.notesService.setActiveNotesItemId(notesItem.id, true);
-			this.notesItem = notesItem;
+			this._notesService.setActiveNotesItemId(notesItem.id, true);
+			this._notesItem = notesItem;
 		})
 	);
 
 	constructor(
-		private readonly route: ActivatedRoute,
-		private readonly router: Router,
-		private readonly notesService: NotesService
+		private readonly _route: ActivatedRoute,
+		private readonly _router: Router,
+		private readonly _notesService: NotesService
 	) { }
 
 	public clickDeleteBtn(): void {
-		if (this.notesItem === null) return;
-		this.notesService.delete(this.notesItem.id);
+		if (this._notesItem === null) return;
+		this._notesService.delete(this._notesItem.id);
 	}
 
 }

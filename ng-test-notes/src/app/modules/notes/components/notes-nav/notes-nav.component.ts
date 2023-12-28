@@ -12,11 +12,11 @@ import { Router } from '@angular/router';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NotesNavComponent {
-	public notes$: Observable<NotesItem[]> = this.notesService.notes$;
-	public activeNotesItemId$: Observable<string | null> = this.notesService.activeNotesItemId$;
+	public notes$: Observable<NotesItem[]> = this._notesService.notes$;
+	public activeNotesItemId$: Observable<string | null> = this._notesService.activeNotesItemId$;
 
 	constructor(
-		private readonly notesService: NotesService
+		private readonly _notesService: NotesService
 	) {
 	}
 }
