@@ -45,7 +45,6 @@ export class NotesService {
 		const notes = this._stateNotes.value;
 
 		notes.push(newNotesItem);
-
 		this._update(notes, true);
 
 		return newNotesItem;
@@ -146,8 +145,8 @@ export class NotesService {
 		}
 	}
 
-	private _addArrNotes(addedNotesItemArr: NotesItem[], updateLocalStorage: boolean): void {
-		const notes = [...this._stateNotes.value, ...addedNotesItemArr];
+	private _addArrNotes(notesItemArr: NotesItem[], updateLocalStorage: boolean): void {
+		const notes = [...this._stateNotes.value, ...notesItemArr];
 
 		this._update(notes, updateLocalStorage);
 	}
