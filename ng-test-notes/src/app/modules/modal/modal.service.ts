@@ -1,6 +1,6 @@
 import { Injectable, ComponentFactoryResolver, ComponentRef, Type, ApplicationRef, Injector, Inject } from '@angular/core';
 import { ModalComponent } from './modal.component';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, filter, map, shareReplay, switchMap, take, tap } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject, take, tap } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { InternalModalConfig, ModalConfig, ModalRef, ModalStateItem } from './modal.models';
 import { ModalModule } from './modal.module';
@@ -21,7 +21,6 @@ export class ModalService {
 	}
 
   public open(component: Type<any>, config?: ModalConfig): ModalRef {
-
 		const modal = this._getModal(component);
 
 		// Если модальное окно уже создано

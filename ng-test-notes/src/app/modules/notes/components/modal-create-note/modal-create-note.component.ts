@@ -25,7 +25,6 @@ export class ModalCreateNoteComponent {
 		@Inject(MODAL_DATA) private readonly _modalData: any,
 		private readonly _router: Router
 	) {
-		// console.log(_modalData, 'modalData');
 	}
 
 	public submitForm(): void {
