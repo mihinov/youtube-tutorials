@@ -129,12 +129,15 @@ export class ModalComponent implements AfterViewInit {
 	private _getScrollbarWidth(): number {
 		// Создание элемента для проверки наличия прокрутки
 		const scrollDiv = this._document.createElement('div');
-		scrollDiv.style.width = '100px';
-		scrollDiv.style.height = '100px';
-		scrollDiv.style.overflow = 'scroll';
-		scrollDiv.style.position = 'absolute';
-		scrollDiv.style.top = '-9999px';
-		scrollDiv.style.opacity = '0';
+		Object.assign(scrollDiv.style, {
+			width: '100px',
+			height: '100px',
+			overflow: 'scroll',
+			position: 'absolute',
+			top: '-9999px',
+			opacity: 0
+		});
+
 		this._document.body.appendChild(scrollDiv);
 
 		// Вычисление ширины скроллбара при наличии прокрутки
