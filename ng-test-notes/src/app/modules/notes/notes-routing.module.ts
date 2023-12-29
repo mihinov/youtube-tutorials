@@ -7,7 +7,6 @@ import { PageNotesComponent } from "./pages/page-notes/page-notes.component";
 import { LayoutNotesComponent } from "./layouts/layout-notes/layout-notes.component";
 
 const routes: Routes = [
-
 	{ path: '', component: LayoutNotesComponent, children: [
 		{ path: '', redirectTo: 'notes', pathMatch: 'full' },
 		{ path: 'notes', component: PageNotesComponent, children: [

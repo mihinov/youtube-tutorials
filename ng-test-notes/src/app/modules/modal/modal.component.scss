@@ -88,3 +88,7 @@
   transition-timing-function: var(--transitionTimingFunction);
   transition-duration: var(--transitionDuration);
 }
+
+.modal__close:hover .modal__close-svg-line {
+	stroke: var(--inputHoverBorderColor);
+}
