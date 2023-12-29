@@ -19,6 +19,10 @@
 .wrapper__left {
 	position: relative;
 	padding: var(--paddingY) var(--paddingX) var(--paddingY) 0;
+	border-right: 3px solid var(--color);
+	transition-timing-function: var(--transitionTimingFunction);
+	transition-duration: var(--transitionDuration);
+	transition-property: border-color;
 }
 
 .btn_hidden {
@@ -28,13 +32,6 @@
 
 .wrapper__right {
 	padding: var(--paddingY) 0 0 var(--paddingX);
-}
-
-.wrapper__left {
-	border-right: 3px solid var(--color);
-	transition-timing-function: var(--transitionTimingFunction);
-	transition-duration: var(--transitionDuration);
-	transition-property: border-color;
 }
 
 @media (max-width: 500px) {
@@ -53,7 +50,7 @@
 		scrollbar-width: 0;
 	}
 
-	notes-nav {
+	.notes-nav {
 		display: block;
 		max-width: 200px;
 		margin: 0 auto;
