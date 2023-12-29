@@ -48,9 +48,6 @@ export class ModalComponent implements AfterViewInit {
 
 	public openModal$(config?: ModalConfig): Observable<number> {
 		this.modalConfig = this._createConfig(config);
-		const scrollbarWidth = this._getScrollbarWidth();
-
-		if (scrollbarWidth !== 0) this._document.body.style.paddingRight = `${scrollbarWidth}px`;
     this._document.body.classList.add('overflowHidden');
 		this._document.addEventListener('keydown', this._escFn);
 		this.isOpen = true;
@@ -124,33 +121,6 @@ export class ModalComponent implements AfterViewInit {
 		this._document.removeEventListener('keydown', this._escFn);
 		this.isOpen = false;
 		this._cdr.detectChanges();
-	}
-
-	private _getScrollbarWidth(): number {
-		// Создание элемента для проверки наличия прокрутки
-		const scrollDiv = this._document.createElement('div');
-		Object.assign(scrollDiv.style, {
-			width: '100px',
-			height: '100px',
-			overflow: 'scroll',
-			position: 'absolute',
-			top: '-9999px',
-			opacity: 0
-		});
-
-		this._document.body.appendChild(scrollDiv);
-
-		// Вычисление ширины скроллбара при наличии прокрутки
-		const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-
-		// Удаление временного элемента
-		this._document.body.removeChild(scrollDiv);
-
-		// Проверка наличия прокрутки на данный момент
-		const hasScrollbar = window.innerWidth > this._document.documentElement.clientWidth;
-
-		// Возвращение ширины скроллбара, если он есть, иначе 0
-		return hasScrollbar ? scrollbarWidth : 0;
 	}
 
 	private _createModalContent(returnRef: ModalRef, componentModalContent: Type<any>, modalConfig: InternalModalConfig): void {
