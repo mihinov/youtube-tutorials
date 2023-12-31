@@ -1,9 +1,8 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { NotesService } from '../../services/notes.service';
-import { Observable, filter, map, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { NotesItem } from '../../models';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'notes-nav',
@@ -13,7 +12,6 @@ import { Router } from '@angular/router';
 })
 export class NotesNavComponent {
 	public notes$: Observable<NotesItem[]> = this._notesService.notes$;
-	public activeNotesItemId$: Observable<string | null> = this._notesService.activeNotesItemId$;
 
 	constructor(
 		private readonly _notesService: NotesService

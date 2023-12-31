@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotesService } from '../../services/notes.service';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { map, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { NotesItem } from '../../models';
 
@@ -14,23 +14,21 @@ import { NotesItem } from '../../models';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NoteComponent {
-
-	private _notesItem: NotesItem | null = null;
+	private _notesItem: BehaviorSubject<NotesItem | null> = new BehaviorSubject<NotesItem | null>(null);
 	private _id$: Observable<string | undefined> = this._route.params.pipe(
 		map(params => params['id']),
 	);
 	public notesItem$: Observable<NotesItem | null> = this._id$.pipe(
 		switchMap((id) => {
 			if (id === undefined) return of(null);
-			return this._notesService.getNotesItem(id).pipe(take(1))
+			return this._notesService.getNotesItem$(id).pipe(take(1))
 		}),
 		tap(notesItem => {
 			if (notesItem === null) {
 				this._router.navigate(['notes']);
 				return;
 			}
-			this._notesService.setActiveNotesItemId(notesItem.id, true);
-			this._notesItem = notesItem;
+			this._notesItem.next(notesItem);
 		})
 	);
 
@@ -41,8 +39,8 @@ export class NoteComponent {
 	) { }
 
 	public clickDeleteBtn(): void {
-		if (this._notesItem === null) return;
-		this._notesService.delete(this._notesItem.id);
+		if (this._notesItem.value === null) return;
+		this._notesService.delete(this._notesItem.value.id);
 	}
 
 }
