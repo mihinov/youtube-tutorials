@@ -3,20 +3,21 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { NotesItem, AddedNotesItem } from '../models';
 import { LocalStorageService } from '../../../services/local-storage.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotesService {
 	private readonly _keyNotesInLocalStorage: string = 'notes';
-	private readonly _keyActiveNotesItemIdInLocalStorage: string = 'activeNotesItemId';
 	private readonly _stateNotes: BehaviorSubject<NotesItem[]> = new BehaviorSubject([] as NotesItem[]);
 	public readonly notes$: Observable<NotesItem[]> = this._stateNotes.pipe(
 		shareReplay(1)
 	);
 
   constructor(
-		private readonly _localStorageService: LocalStorageService
+		private readonly _localStorageService: LocalStorageService,
+		private readonly _router: Router
 	) {
 		this._initDefaultNotes();
 	}
@@ -45,12 +46,15 @@ export class NotesService {
 		notes.splice(idxFindedNotesItem, 1);
 
 		if (notes.length === 0) {
-			this._localStorageService.delete(this._keyActiveNotesItemIdInLocalStorage);
 			this._update(notes, true);
+			this._router.navigateByUrl('notes');
 			return;
 		}
 
+		const nextActiveId = notes[idxFindedNotesItem] === undefined ? notes[notes.length - 1].id : notes[idxFindedNotesItem].id;
+
 		this._update(notes, true);
+		this._router.navigate(['notes', nextActiveId]);
 	}
 
 	public getNotesItem$(id: string): Observable<NotesItem | null> {
