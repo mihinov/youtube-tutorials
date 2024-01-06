@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { shareReplay } from 'rxjs/operators';
 import { NotesItem, AddedNotesItem, NotesItemDeleteInfo } from '../models';
 import { LocalStorageService } from '../../../services/local-storage.service';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -16,8 +15,7 @@ export class NotesService {
 	);
 
   constructor(
-		private readonly _localStorageService: LocalStorageService,
-		private readonly _router: Router
+		private readonly _localStorageService: LocalStorageService
 	) {
 		this._initDefaultNotes();
 	}
