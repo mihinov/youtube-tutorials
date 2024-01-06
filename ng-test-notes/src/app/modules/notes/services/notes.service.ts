@@ -57,24 +57,18 @@ export class NotesService {
 		this._router.navigate(['notes', nextActiveId]);
 	}
 
-	public getNotesItem$(id: string): Observable<NotesItem | null> {
-		return this._stateNotes.pipe(
-			map(() => this._getSyncNotesItem(id))
-		)
-	}
-
-	private _update(newStateNotes: NotesItem[], updateLocalStorage: boolean): void {
-		if (updateLocalStorage === true) this._localStorageService.set(this._keyNotesInLocalStorage, newStateNotes);
-		this._stateNotes.next(newStateNotes);
-	}
-
-	private _getSyncNotesItem(id: string): NotesItem | null {
+	public getNotesItem(id: string): NotesItem | null {
 		const notes = this._stateNotes.value;
 		const findedNotesItem = notes.find(notesItem => notesItem.id === id);
 
 		if (findedNotesItem === undefined) return null;
 
 		return findedNotesItem;
+	}
+
+	private _update(newStateNotes: NotesItem[], updateLocalStorage: boolean): void {
+		if (updateLocalStorage === true) this._localStorageService.set(this._keyNotesInLocalStorage, newStateNotes);
+		this._stateNotes.next(newStateNotes);
 	}
 
 	private _initDefaultNotes(): void {

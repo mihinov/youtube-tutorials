@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotesService } from '../../services/notes.service';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { NotesItem } from '../../models';
@@ -16,12 +16,12 @@ import { NotesItem } from '../../models';
 export class NoteComponent {
 	private _notesItem: BehaviorSubject<NotesItem | null> = new BehaviorSubject<NotesItem | null>(null);
 	private _id$: Observable<string | undefined> = this._route.params.pipe(
-		map(params => params['id']),
+		map(params => params['id'])
 	);
 	public notesItem$: Observable<NotesItem | null> = this._id$.pipe(
-		switchMap((id) => {
-			if (id === undefined) return of(null);
-			return this._notesService.getNotesItem$(id).pipe(take(1))
+		map(id => {
+			if (id === undefined) return null;
+			return this._notesService.getNotesItem(id);
 		}),
 		tap(notesItem => {
 			if (notesItem === null) {
