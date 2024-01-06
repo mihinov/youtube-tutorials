@@ -12,3 +12,8 @@ export interface AddedNotesItem {
 export interface isEmptyNotes {
 	isEmpty: boolean;
 }
+
+export interface NotesItemDeleteInfo {
+	isEmptyNotes: boolean;
+	nextActiveId: string | null;
+}

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { NotesItem, AddedNotesItem } from '../models';
+import { NotesItem, AddedNotesItem, NotesItemDeleteInfo } from '../models';
 import { LocalStorageService } from '../../../services/local-storage.service';
 import { Router } from '@angular/router';
 
@@ -36,25 +36,32 @@ export class NotesService {
 		return newNotesItem;
 	}
 
-	public delete(id: string): void {
+	public delete(id: string): NotesItemDeleteInfo {
 		const notes = this._stateNotes.value;
 		const idxFindedNotesItem = notes.findIndex(notesItem => notesItem.id === id);
 		const isNoteExists = idxFindedNotesItem !== -1;
 
-		if (isNoteExists === false) return;
+		if (isNoteExists === false) return {
+			isEmptyNotes: notes.length === 0,
+			nextActiveId: null
+		};
 
 		notes.splice(idxFindedNotesItem, 1);
+		this._update(notes, true);
 
 		if (notes.length === 0) {
-			this._update(notes, true);
-			this._router.navigateByUrl('notes');
-			return;
+			return {
+				isEmptyNotes: notes.length === 0,
+				nextActiveId: null
+			}
 		}
 
 		const nextActiveId = notes[idxFindedNotesItem] === undefined ? notes[notes.length - 1].id : notes[idxFindedNotesItem].id;
 
-		this._update(notes, true);
-		this._router.navigate(['notes', nextActiveId]);
+		return {
+			isEmptyNotes: notes.length === 0,
+			nextActiveId: nextActiveId
+		}
 	}
 
 	public getNotesItem(id: string): NotesItem | null {

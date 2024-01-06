@@ -25,7 +25,7 @@ export class NoteComponent {
 		}),
 		tap(notesItem => {
 			if (notesItem === null) {
-				this._router.navigate(['notes']);
+				this._router.navigateByUrl('notes');
 				return;
 			}
 			this._notesItem.next(notesItem);
@@ -40,7 +40,14 @@ export class NoteComponent {
 
 	public clickDeleteBtn(): void {
 		if (this._notesItem.value === null) return;
-		this._notesService.delete(this._notesItem.value.id);
+
+		const deleteInfo = this._notesService.delete(this._notesItem.value.id);
+
+		if (deleteInfo.isEmptyNotes === true) {
+			this._router.navigateByUrl('notes');
+		} else if (deleteInfo.nextActiveId !== null) {
+			this._router.navigate(['notes', deleteInfo.nextActiveId]);
+		}
 	}
 
 }
