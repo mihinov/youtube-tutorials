@@ -1,0 +1,20 @@
+input, textarea {
+	outline: none;
+	font-size: inherit;
+	padding: 10px;
+	border: 2px solid var(--inputBorderColor);
+	background-color: var(--inputBgColor);
+	color: var(--inputColor);
+	transition-timing-function: var(--transitionTimingFunction);
+	transition-duration: var(--transitionDuration);
+	transition-property: border-color, background-color, color;
+	border-radius: 8px;
+}
+
+input:hover, textarea:hover {
+	border-color: var(--inputHoverBorderColor);
+}
+
+input:focus, textarea:focus {
+	border-color: var(--inputFocusBorderColor);
+}

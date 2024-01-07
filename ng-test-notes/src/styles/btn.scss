@@ -1,0 +1,57 @@
+.btn {
+	user-select: none;
+	font-size: inherit;
+	cursor: pointer;
+	outline: none;
+	display: block;
+	background-color: var(--btnBgColor);
+	color: var(--btnColor);
+	padding: 10px 20px;
+	transition-duration: var(--transitionDuration);
+	transition-timing-function: var(--transitionTimingFunction);
+	border: 2px solid var(--btnBorderColor);
+	border-radius: 8px;
+	transition-property: background-color, color, border-color;
+}
+
+.btn:hover {
+	background-color: var(--btnBgColorHover);
+	border-color: var(--btnBorderColorHover);
+}
+
+.btn:active {
+	border-color: var(--btnBorderColorClicked);
+	background-color: var(--btnBgColorHover);
+}
+
+.btn:focus {
+	border-color: var(--btnBorderColorFocus);
+}
+
+.btn:focus:active {
+	border-color: var(--btnBorderColorFocusClicked);
+}
+
+.btn.btn_active:focus:active {
+	border-color: var(--btnBorderColorFocusActiveClicked);
+}
+
+.btn.btn_active {
+	background-color: var(--btnBgColorActive);
+	color: var(--btnColorActive);
+}
+
+.btn_delete {
+	--btnBorderColor: transparent;
+	--btnBgColor: #dc3545;
+	--btnBorderColorHover: transparent;
+	--btnBgColorHover: #c82333;
+	--btnBorderColorFocus: black;
+	--btnBgBorderColorHover: transparent;
+	--btnBorderColorFocusClicked: #6d0610;
+}
+
+.btn[disabled] {
+	opacity: 0.5;
+	pointer-events: none;
+}
