@@ -51,13 +51,16 @@
 	:root {
 		--bgColor: var(--white);
 		--color: var(--dark);
+
 		--btnBorderColor: var(--darkWhite);
 		--btnBorderColorHover: var(--darkWhiteWhite);
 		--btnBorderColorFocus: var(--dark);
+
 		--modalBgContentColor: var(--white);
-		--inputBgColor: var(--white);
 		--modalBgColor: var(--dark);
 		--modalColor: var(--dark);
+
+		--inputBgColor: var(--white);
 		--inputBorderColor: rgb(170, 170, 170);
 		--inputHoverBorderColor: rgb(120, 120, 120);
 		--inputFocusBorderColor: black;
