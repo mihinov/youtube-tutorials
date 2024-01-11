@@ -78,19 +78,11 @@ export class ModalComponent implements AfterViewInit {
 
 	public pointerDown(event: PointerEvent): void {
 		if (event.target === null) return;
+		if (event.button === 2) return; // Если правая кнопка мыши
 		const targetNode: HTMLElement = event.target as HTMLElement;
 
 		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
 			this._isPointerDown = true;
-		}
-	}
-
-	public clickModal(event: PointerEvent): void {
-		if (event.target === null) return;
-		const targetNode: HTMLElement = event.target as HTMLElement;
-
-		if (targetNode.classList.contains('modal__body') || targetNode.closest('.modal__close') !== null) {
-			this.closeModal();
 		}
 	}
 
