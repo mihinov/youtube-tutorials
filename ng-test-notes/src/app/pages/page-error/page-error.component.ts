@@ -14,24 +14,24 @@ import { ChangeDetectionStrategy } from '@angular/core';
 export class PageErrorComponent {
   private readonly secondsLeftConst: number = 5;
 
-	private secondsLeft: BehaviorSubject<number> = new BehaviorSubject(this.secondsLeftConst);
-	public secondsLeft$: Observable<number> = this.secondsLeft.asObservable();
-	public prevUrl$: Observable<string> = this.navigationErrorRouteService.prevUrl$;
+	private secondsLeftState: BehaviorSubject<number> = new BehaviorSubject(this.secondsLeftConst);
+	public secondsLeft$: Observable<number> = this.secondsLeftState.asObservable();
+	public prevUrl$: Observable<string> = this._navigationErrorRouteService.prevUrl$;
 	public countDown$: Observable<number> = interval(1000).pipe(
 		map((value) => this.secondsLeftConst - value - 1),
 		takeWhile((value) => value >= 0),
 		tap(count => {
-			this.secondsLeft.next(count);
+			this.secondsLeftState.next(count);
 			if (count === 0) {
-				this.router.navigate(['/'], { queryParamsHandling: 'preserve', preserveFragment: true});
+				this._router.navigate( ['/'], { queryParamsHandling: 'preserve', preserveFragment: true} );
 			}
 		}),
 		takeUntilDestroyed()
 	);
 
 	constructor(
-		private readonly router: Router,
-		private readonly navigationErrorRouteService: NavigationErrorRouteService
+		private readonly _router: Router,
+		private readonly _navigationErrorRouteService: NavigationErrorRouteService
 	) { }
 
 	ngOnInit(): void {

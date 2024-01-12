@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Router, Scroll } from '@angular/router';
-import { filter, tap, Subscription, BehaviorSubject, map, shareReplay } from 'rxjs';
+import { filter, tap, Subscription, BehaviorSubject, map, shareReplay, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NavigationErrorRouteService {
 
-  private _statePrevMiniUrl = new BehaviorSubject('');
-	private _prevMiniUrl$ = this.router.events
+  private _statePrevMiniUrl: BehaviorSubject<string> = new BehaviorSubject('');
+	private _prevMiniUrl$: Observable<string> = this.router.events
 	.pipe(
 		filter(event => event instanceof Scroll),
 		tap((event: any) => {
@@ -18,7 +18,7 @@ export class NavigationErrorRouteService {
 		shareReplay(1)
 	);
   private _subs: Subscription;
-	public prevUrl$ = this._prevMiniUrl$.pipe(
+	public prevUrl$: Observable<string> = this._prevMiniUrl$.pipe(
 		map((prevMiniUrl) => `${window.location.host}${prevMiniUrl}`),
 		shareReplay(1)
 	);
@@ -26,7 +26,7 @@ export class NavigationErrorRouteService {
   constructor(
 		private readonly router: Router
 	) {
-		this._subs = this._prevMiniUrl$.subscribe()
+		this._subs = this._prevMiniUrl$.subscribe();
 	}
 
   public destroy(): void {
