@@ -12,32 +12,32 @@
     "build:youtube-experience-bar": "parcel build youtube-experience-bar/index.html --public-url ./ --dist-dir dist/youtube-experience-bar",
     "build:youtube-game-of-life": "parcel build youtube-game-of-life/only-ts/index.html --public-url ./ --dist-dir dist/youtube-game-of-life && parcel build youtube-game-of-life/only-js/index.html --public-url ./ --dist-dir dist/youtube-game-of-life/only-js",
     "build:youtube-css-paint-api": "parcel build youtube-css-paint-api/index.html --public-url ./ --dist-dir dist/youtube-css-paint-api",
-		"build:ng-test-notes": "cd ./ng-test-notes && npm run build:github",
+    "build:ng-test-notes": "cd ./ng-test-notes && npm run build:github",
     "build:readme": "node ./helpers/copyReadme.js",
-		"delete-browser-folders": "node ./helpers/delete-browser-folders.js",
+    "delete-browser-folders": "node ./helpers/delete-browser-folders.js",
     "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:youtube-game-of-life && npm run build:angular-tree && npm run build:youtube-css-paint-api && npm run build:ng-test-notes && npm run build:readme && npm run delete-browser-folders"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@angular/animations": "^17.0.0",
-    "@angular/common": "^17.0.0",
-    "@angular/compiler": "^17.0.0",
-    "@angular/core": "^17.0.0",
-    "@angular/forms": "^17.0.0",
-    "@angular/platform-browser": "^17.0.0",
-    "@angular/platform-browser-dynamic": "^17.0.0",
-    "@angular/router": "^17.0.0",
-    "gsap": "^3.12.3",
+    "@angular/animations": "^17.1.0",
+    "@angular/common": "^17.1.0",
+    "@angular/compiler": "^17.1.0",
+    "@angular/core": "^17.1.0",
+    "@angular/forms": "^17.1.0",
+    "@angular/platform-browser": "^17.1.0",
+    "@angular/platform-browser-dynamic": "^17.1.0",
+    "@angular/router": "^17.1.0",
+    "gsap": "^3.12.5",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "^0.14.2"
+    "zone.js": "^0.14.3"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^17.0.5",
-    "@angular/cli": "^17.0.5",
-    "@angular/compiler-cli": "^17.0.0",
-    "parcel": "^2.10.3",
-    "typescript": "~5.2.2"
+    "@angular-devkit/build-angular": "^17.1.0",
+    "@angular/cli": "^17.1.0",
+    "@angular/compiler-cli": "^17.1.0",
+    "parcel": "^2.11.0",
+    "typescript": "~5.3.2"
   }
 }
