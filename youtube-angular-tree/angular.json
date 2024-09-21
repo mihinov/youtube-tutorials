@@ -103,10 +103,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "youtube-angular-tree:build:production"
+              "buildTarget": "youtube-angular-tree:build:production"
             },
             "development": {
-              "browserTarget": "youtube-angular-tree:build:development"
+              "buildTarget": "youtube-angular-tree:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -114,7 +114,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "youtube-angular-tree:build"
+            "buildTarget": "youtube-angular-tree:build"
           }
         }
       }
