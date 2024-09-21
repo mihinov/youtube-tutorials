@@ -6,8 +6,8 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Массив папок ng-test-notes
-const ngTestNotesFolders = ['../dist/ng-test-notes'];
+// Массив папок с ангуляр проектами (которые создают папку browser при билде)
+const ngTestNotesFolders = ['../dist/ng-test-notes', '../dist/youtube-angular-tree'];
 
 // Функция для перемещения файлов из папки browser
 function moveFilesAndRemoveBrowser(folderPath) {
