@@ -44,6 +44,7 @@
   },
   "optionalDependencies": {
     "@parcel/watcher": "^2.5.0",
+    "@rollup/rollup-linux-x64-gnu": "^4.28.1",
     "@swc/core": "^1.10.0",
     "lightningcss": "^1.28.2"
   }
