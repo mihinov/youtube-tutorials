@@ -37,7 +37,6 @@
     "@angular-devkit/build-angular": "^19.0.4",
     "@angular/cli": "^19.0.4",
     "@angular/compiler-cli": "^19.0.3",
-    "@parcel/watcher": "^2.5.0",
     "parcel": "^2.13.2",
     "svgo": "^3.3.2",
     "typescript": "~5.5.4"
