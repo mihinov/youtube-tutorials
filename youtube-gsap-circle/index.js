@@ -1,3 +1,5 @@
+import gsap from 'gsap';
+
 const percentNode = document.querySelector('.progressbar__percent tspan');
 const infoNode = document.querySelector('.progressbar__info tspan');
 const svgNode = document.querySelector('.progressbar');
