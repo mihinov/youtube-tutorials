@@ -6,17 +6,18 @@ import { DOCUMENT } from '@angular/common';
 import gsap from 'gsap';
 
 @Component({
-  selector: 'app-angular-tree',
-  templateUrl: './angular-tree.component.html',
-  styleUrls: ['./angular-tree.component.scss'],
-  providers: [
-    // Этот код использует фабрику для предоставления сервиса TreeGeneratorService и использует функцию inject для попытки получения экземпляра сервиса из родительского инжектора. Если экземпляр не найден, то создается новый экземпляр сервиса. Параметры optional и skipSelf определяют поведение при поиске сервиса в инжекторах.
-		{
-			provide: TreeService,
-			useFactory: () => inject(TreeService, { optional: true, skipSelf: true }) ?? new TreeService()
-		}
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-angular-tree',
+    templateUrl: './angular-tree.component.html',
+    styleUrls: ['./angular-tree.component.scss'],
+    providers: [
+        // Этот код использует фабрику для предоставления сервиса TreeGeneratorService и использует функцию inject для попытки получения экземпляра сервиса из родительского инжектора. Если экземпляр не найден, то создается новый экземпляр сервиса. Параметры optional и skipSelf определяют поведение при поиске сервиса в инжекторах.
+        {
+            provide: TreeService,
+            useFactory: () => inject(TreeService, { optional: true, skipSelf: true }) ?? new TreeService()
+        }
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class AngularTreeComponent implements OnInit {
 
