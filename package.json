@@ -4,18 +4,19 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "build:gsap-circle": "parcel build ./youtube-gsap-circle/index.html --public-url ./ --dist-dir dist/youtube-gsap-circle",
-    "build:perspective-card": "parcel build youtube-perspective-card/index.html --public-url ./ --dist-dir dist/youtube-perspective-card",
+    "build:gsap-circle": "cross-env PROJECT=youtube-gsap-circle vite build --emptyOutDir",
+    "build:perspective-card": "cross-env PROJECT=youtube-perspective-card vite build --emptyOutDir",
     "build:angular-tree": "cd ./youtube-angular-tree && npm run build:github",
-    "build:security-supplies": "parcel build youtube-security-supplies/index.html --public-url ./ --dist-dir dist/youtube-security-supplies",
-    "build:pointer-events": "parcel build pointer-events/index.html --public-url ./ --dist-dir dist/pointer-events",
-    "build:youtube-experience-bar": "parcel build youtube-experience-bar/index.html --public-url ./ --dist-dir dist/youtube-experience-bar",
-    "build:youtube-game-of-life": "parcel build youtube-game-of-life/only-ts/index.html --public-url ./ --dist-dir dist/youtube-game-of-life && parcel build youtube-game-of-life/only-js/index.html --public-url ./ --dist-dir dist/youtube-game-of-life/only-js",
-    "build:youtube-css-paint-api": "parcel build youtube-css-paint-api/index.html --public-url ./ --dist-dir dist/youtube-css-paint-api",
+    "build:security-supplies": "cross-env PROJECT=youtube-security-supplies vite build --emptyOutDir",
+    "build:pointer-events": "cross-env PROJECT=pointer-events vite build --emptyOutDir",
+    "build:youtube-experience-bar": "cross-env PROJECT=youtube-experience-bar vite build --emptyOutDir",
+    "build:youtube-game-of-life-ts": "cross-env PROJECT=youtube-game-of-life/only-ts vite build --emptyOutDir",
+    "build:youtube-game-of-life-js": "cross-env PROJECT=youtube-game-of-life/only-js vite build --emptyOutDir",
+    "build:youtube-css-paint-api": "cross-env PROJECT=youtube-css-paint-api vite build --emptyOutDir",
     "build:ng-test-notes": "cd ./ng-test-notes && npm run build:github",
     "build:readme": "node ./helpers/copyReadme.js",
     "delete-browser-folders": "node ./helpers/delete-browser-folders.js",
-    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:youtube-game-of-life && npm run build:angular-tree && npm run build:youtube-css-paint-api && npm run build:ng-test-notes && npm run build:readme && npm run delete-browser-folders"
+    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:youtube-game-of-life-ts && npm run build:youtube-game-of-life-js && npm run build:angular-tree && npm run build:youtube-css-paint-api && npm run build:ng-test-notes && npm run build:readme && npm run delete-browser-folders"
   },
   "author": "",
   "license": "ISC",
@@ -37,8 +38,8 @@
     "@angular-devkit/build-angular": "^19.0.4",
     "@angular/cli": "^19.0.4",
     "@angular/compiler-cli": "^19.0.3",
-    "parcel": "^2.13.2",
-    "svgo": "^3.3.2",
-    "typescript": "~5.5.4"
+    "cross-env": "^7.0.3",
+    "typescript": "~5.5.4",
+    "vite": "^5.4.11"
   }
 }

@@ -2,8 +2,9 @@
   "name": "youtube-css-paint-api",
   "version": "1.0.0",
   "description": "",
+	"type": "module",
   "scripts": {
-		"start": "parcel ./index.html --open"
+		"start": "vite dev --open"
   },
   "author": "",
   "license": "ISC"

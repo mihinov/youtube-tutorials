@@ -1,11 +1,11 @@
 {
-  "name": "game-of-life",
+  "name": "youtube-gsap-circle",
   "version": "1.0.0",
-  "description": "",
   "type": "module",
   "scripts": {
     "start": "vite dev --open"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "description": ""
 }
