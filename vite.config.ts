@@ -9,6 +9,14 @@ export default defineConfig(({ mode }) => {
     root: rootDir,
     build: {
       outDir: path.resolve(__dirname, 'dist', projectName),
+      emptyOutDir: true,
+      rollupOptions: {
+        output: {
+          assetFileNames: '[name].[hash][extname]', // Пример настройки имен файлов
+          entryFileNames: '[name].[hash].js',
+        },
+      },
     },
+    base: `./`, // Делает пути в сгенерированных файлах относительными
   };
 });
