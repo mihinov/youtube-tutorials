@@ -90,8 +90,8 @@ export class WorkletRing {
 		this.endAngle2 = this.startAngle2 + (2 * Math.PI * this.percent2 / 100); // конечный угол для второй части
 	}
 
-	private get(key: string): CSSStyleValue | "" {
-		const val = this.props.get(key);
+	private get(key: string): CSSUnitValue | "" {
+		const val = this.props.get(key) as CSSUnitValue;
 
 		if (!val) {
 			return '';
@@ -104,7 +104,7 @@ export class WorkletRing {
 	}
 
 	private getNumber(key: string): number {
-		return Number(this.get(key)[0] || this.get(key).value) || 0;
+		return Number(this.get(key)[0] || (this.get(key) as any).value) || 0;
 	}
 
 }

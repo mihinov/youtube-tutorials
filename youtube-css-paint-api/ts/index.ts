@@ -1,4 +1,5 @@
 import { Ring } from "./base-ring";
+import workletURL from './worklet-ring.ts?url';
 
 const canvasNode = document.querySelector<HTMLCanvasElement>('.canvas');
 const paintNode = document.querySelector<HTMLDivElement>('.paint');
@@ -30,7 +31,7 @@ const renderPaintNode = () => {
 	paintNode?.classList.remove('_hidden');
 
 	if (CSS.paintWorklet) {
-		CSS.paintWorklet.addModule(new URL("worklet-ring.ts", import.meta.url));
+		CSS.paintWorklet.addModule(workletURL);
 	}
 };
 
