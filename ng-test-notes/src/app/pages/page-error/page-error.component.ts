@@ -6,10 +6,11 @@ import { Observable, interval, map, takeWhile, tap, BehaviorSubject } from 'rxjs
 import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-page-error',
-  templateUrl: './page-error.component.html',
-  styleUrl: './page-error.component.scss',
-	changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-page-error',
+    templateUrl: './page-error.component.html',
+    styleUrl: './page-error.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class PageErrorComponent {
   private readonly secondsLeftConst: number = 5;

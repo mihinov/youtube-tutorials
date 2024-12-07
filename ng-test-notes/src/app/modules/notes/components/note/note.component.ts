@@ -8,10 +8,11 @@ import { NotesItem } from '../../models';
 
 
 @Component({
-  selector: 'note',
-  templateUrl: './note.component.html',
-  styleUrl: './note.component.scss',
-	changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'note',
+    templateUrl: './note.component.html',
+    styleUrl: './note.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NoteComponent {
 	private _notesItem: BehaviorSubject<NotesItem | null> = new BehaviorSubject<NotesItem | null>(null);

@@ -7,10 +7,11 @@ import { ModalRef } from '../../../modal/modal.models';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-modal-create-note',
-  templateUrl: './modal-create-note.component.html',
-  styleUrl: './modal-create-note.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-modal-create-note',
+    templateUrl: './modal-create-note.component.html',
+    styleUrl: './modal-create-note.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ModalCreateNoteComponent {
 

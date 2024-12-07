@@ -3,10 +3,11 @@ import { ModalService } from '../../../modal/modal.service';
 import { ModalCreateNoteComponent } from '../../components/modal-create-note/modal-create-note.component';
 
 @Component({
-  selector: 'app-layout-notes',
-  templateUrl: './layout-notes.component.html',
-  styleUrl: './layout-notes.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'app-layout-notes',
+    templateUrl: './layout-notes.component.html',
+    styleUrl: './layout-notes.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class LayoutNotesComponent {
 	constructor(

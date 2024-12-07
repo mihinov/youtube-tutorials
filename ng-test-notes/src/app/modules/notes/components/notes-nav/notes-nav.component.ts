@@ -5,10 +5,11 @@ import { ChangeDetectionStrategy } from '@angular/core';
 import { NotesItem } from '../../models';
 
 @Component({
-  selector: 'notes-nav',
-  templateUrl: './notes-nav.component.html',
-  styleUrl: './notes-nav.component.scss',
-	changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'notes-nav',
+    templateUrl: './notes-nav.component.html',
+    styleUrl: './notes-nav.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NotesNavComponent {
 	public notes$: Observable<NotesItem[]> = this._notesService.notes$;

@@ -5,10 +5,11 @@ import { MODAL_DATA, MODAL_REF } from './modal.tokens';
 import { Observable, ReplaySubject, filter, map, of, shareReplay, switchMap, take, tap, timer } from 'rxjs';
 
 @Component({
-  selector: 'app-modal',
-  templateUrl: './modal.component.html',
-  styleUrl: './modal.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-modal',
+    templateUrl: './modal.component.html',
+    styleUrl: './modal.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ModalComponent implements AfterViewInit {
 	public modalConfig: InternalModalConfig | null = null;
