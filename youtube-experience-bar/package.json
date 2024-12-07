@@ -4,7 +4,7 @@
   "description": "",
 	"type": "module",
   "scripts": {
-    "start": "vite dev --open"
+    "start": "parcel ./index.html --open"
   },
   "author": "",
   "license": "ISC"
