@@ -2,7 +2,7 @@ import { DOCUMENT, NgStyle, NgClass } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Injector, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { CloseModalInputArgs, InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { MODAL_DATA, MODAL_REF } from './modal.tokens';
-import { Observable, ReplaySubject, filter, map, of, shareReplay, switchMap, take, tap, timer } from 'rxjs';
+import { Observable, ReplaySubject, shareReplay, switchMap, take, tap, timer } from 'rxjs';
 
 @Component({
     selector: 'app-modal',
