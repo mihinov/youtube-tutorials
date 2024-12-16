@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NotesService } from '../../services/notes.service';
 import { AddedNotesItem } from '../../models';
 import { MODAL_DATA, MODAL_REF } from '../../../modal/modal.tokens';
@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
     templateUrl: './modal-create-note.component.html',
     styleUrl: './modal-create-note.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [ReactiveFormsModule]
 })
 export class ModalCreateNoteComponent {
 

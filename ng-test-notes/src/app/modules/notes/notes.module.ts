@@ -7,31 +7,28 @@ import { NotesNavComponent } from './components/notes-nav/notes-nav.component';
 import { PageNotesComponent } from './pages/page-notes/page-notes.component';
 import { NotesRoutingModule } from './notes-routing.module';
 import { LayoutNotesComponent } from './layouts/layout-notes/layout-notes.component';
-import { HeaderModule } from '../header/header.module';
+
 import { ModalService } from '../modal/modal.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ModalCreateNoteComponent } from './components/modal-create-note/modal-create-note.component';
 import { LineBreaksToBrPipe } from '../../pipes/line-breaks-to-br.pipe';
 
 @NgModule({
-  declarations: [
-		PageNotesComponent,
-		NotesNavComponent,
-		NoteComponent,
-		NoteEmptyComponent,
-		NoteAtomComponent,
-  	LayoutNotesComponent,
-		ModalCreateNoteComponent,
-		LineBreaksToBrPipe,
-	],
-  imports: [
+    imports: [
     CommonModule,
-		NotesRoutingModule,
-		HeaderModule,
-		ReactiveFormsModule
-  ],
-	providers: [
-		ModalService
-	]
+    NotesRoutingModule,
+    ReactiveFormsModule,
+    PageNotesComponent,
+    NotesNavComponent,
+    NoteComponent,
+    NoteEmptyComponent,
+    NoteAtomComponent,
+    LayoutNotesComponent,
+    ModalCreateNoteComponent,
+    LineBreaksToBrPipe
+],
+    providers: [
+        ModalService
+    ]
 })
 export class NotesModule { }

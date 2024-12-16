@@ -1,4 +1,4 @@
-import { DOCUMENT } from '@angular/common';
+import { DOCUMENT, NgStyle, NgClass } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Injector, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
 import { CloseModalInputArgs, InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { MODAL_DATA, MODAL_REF } from './modal.tokens';
@@ -9,7 +9,7 @@ import { Observable, ReplaySubject, filter, map, of, shareReplay, switchMap, tak
     templateUrl: './modal.component.html',
     styleUrl: './modal.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NgStyle, NgClass]
 })
 export class ModalComponent implements AfterViewInit {
 	public modalConfig: InternalModalConfig | null = null;

@@ -4,13 +4,14 @@ import { NavigationErrorRouteService } from '../../services/navigation-error-rou
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Observable, interval, map, takeWhile, tap, BehaviorSubject } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-page-error',
     templateUrl: './page-error.component.html',
     styleUrl: './page-error.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [AsyncPipe]
 })
 export class PageErrorComponent {
   private readonly secondsLeftConst: number = 5;

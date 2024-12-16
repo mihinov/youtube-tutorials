@@ -1,20 +1,18 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, Type, ApplicationRef, Injector, Inject } from '@angular/core';
+import { Injectable, ComponentRef, Type, ApplicationRef, Inject, createComponent, EnvironmentInjector } from '@angular/core';
 import { ModalComponent } from './modal.component';
 import { BehaviorSubject, ReplaySubject, Subject, take, tap } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { InternalModalConfig, ModalConfig, ModalRef, ModalStateItem } from './modal.models';
-import { ModalModule } from './modal.module';
 
 @Injectable({
-	providedIn: ModalModule
+	providedIn: 'root'
 })
 export class ModalService {
 	private _stateModals: BehaviorSubject<ModalStateItem[]> = new BehaviorSubject<ModalStateItem[]>([]);
 
   constructor(
-    private readonly _componentFactoryResolver: ComponentFactoryResolver,
     private readonly _appRef: ApplicationRef,
-    private readonly _injector: Injector,
+		private readonly _environmentInjector: EnvironmentInjector,
 		@Inject(DOCUMENT) private readonly _document: Document
   ) {
 
@@ -114,7 +112,7 @@ export class ModalService {
 	}
 
 	private _create(component: Type<any>, config?: ModalConfig): ModalRef {
-		const modalComponentRef = this._componentFactoryResolver.resolveComponentFactory(ModalComponent).create(this._injector);
+		const modalComponentRef = createComponent(ModalComponent, { environmentInjector: this._environmentInjector });
 		const modalStateItem = this._createModalStateItem(component, modalComponentRef);
 
 		modalComponentRef.instance.close

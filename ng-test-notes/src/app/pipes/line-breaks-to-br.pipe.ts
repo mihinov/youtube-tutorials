@@ -1,9 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-    name: 'lineBreaksToBr',
-    standalone: false
-})
+@Pipe({ name: 'lineBreaksToBr' })
 export class LineBreaksToBrPipe implements PipeTransform {
 
 	transform(value: string): string {

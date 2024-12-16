@@ -5,6 +5,8 @@ import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { NotesItem } from '../../models';
+import { NoteAtomComponent } from '../note-atom/note-atom.component';
+import { AsyncPipe } from '@angular/common';
 
 
 @Component({
@@ -12,7 +14,7 @@ import { NotesItem } from '../../models';
     templateUrl: './note.component.html',
     styleUrl: './note.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+    imports: [NoteAtomComponent, AsyncPipe]
 })
 export class NoteComponent {
 	private _notesItem: BehaviorSubject<NotesItem | null> = new BehaviorSubject<NotesItem | null>(null);
