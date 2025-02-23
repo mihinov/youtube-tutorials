@@ -10,7 +10,6 @@ let targetX = 0;
 let targetY = 0;
 let targetXPercent = 0;
 let targetYPercent = 0;
-let animated = false;
 const ease = 0.05; // значение, определяющее скорость анимации или изменения координат
 
 window.addEventListener('pointermove', onMove);
@@ -32,8 +31,6 @@ function onMove(e) {
 
 	targetXPercent = targetX / window.innerWidth;
 	targetYPercent = targetY / window.innerHeight;
-
-	animated = true;
 }
 
 function initPosition() {
@@ -43,7 +40,6 @@ function initPosition() {
 	targetYPercent = targetY / window.innerHeight;
 	currentX = targetX;
 	currentY = targetY;
-	animated = true;
 }
 
 function animate() {
