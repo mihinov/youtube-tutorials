@@ -21,8 +21,8 @@ function onResize(e) {
 }
 
 function onMove(e) {
-  targetX = e.clientX;
-  targetY = e.clientY;
+	targetX = e.clientX;
+	targetY = e.clientY;
 
 	// это сделано, чтобы не выходить за пределы экрана браузера
 	targetX = Math.min(Math.max(targetX, 0), window.innerWidth);
@@ -55,15 +55,15 @@ function animate() {
 	y = parseFloat(y.toFixed(3));
 
 	// устанавливаем соответствующие CSS-переменные
-  if (x !== lastCurrentX) {
-    document.documentElement.style.setProperty('--mouse-x', x);
+	if (x !== lastCurrentX) {
+		document.documentElement.style.setProperty('--mouse-x', x);
 		lastCurrentX = x;
-  }
+	}
 
-  if (y !== lastCurrentY) {
-    document.documentElement.style.setProperty('--mouse-y', y);
+	if (y !== lastCurrentY) {
+		document.documentElement.style.setProperty('--mouse-y', y);
 		lastCurrentY = y;
-  }
+	}
 
 
 	requestAnimationFrame(animate);
