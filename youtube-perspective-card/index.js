@@ -36,17 +36,17 @@ function onMove(e) {
 	animated = true;
 }
 
-function animate() {
-	if (animated === false) {
-		targetX = defaultMouseX * window.innerWidth;
-		targetY = defaultMouseY * window.innerHeight;
-		targetXPercent = targetX / window.innerWidth;
-		targetYPercent = targetY / window.innerHeight;
-		currentX = targetX;
-		currentY = targetY;
-		animated = true;
-	}
+function initPosition() {
+	targetX = defaultMouseX * window.innerWidth;
+	targetY = defaultMouseY * window.innerHeight;
+	targetXPercent = targetX / window.innerWidth;
+	targetYPercent = targetY / window.innerHeight;
+	currentX = targetX;
+	currentY = targetY;
+	animated = true;
+}
 
+function animate() {
 	currentX = currentX + ((targetX - currentX) * ease);
 	currentY = currentY + ((targetY - currentY) * ease);
 
@@ -73,4 +73,5 @@ function animate() {
 	requestAnimationFrame(animate);
 }
 
+initPosition();
 animate();
