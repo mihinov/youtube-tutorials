@@ -93,7 +93,7 @@
                 }
               ],
               "outputHashing": "all",
-							"baseHref": "/ndm-front-test/"
+							"baseHref": "/youtube-tutorials/youtube-ng-github-search/"
             },
 						"development": {
 							"optimization": false,
