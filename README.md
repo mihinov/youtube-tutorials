@@ -12,4 +12,5 @@
 | youtube-game-of-life |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-game-of-life/)   |  [Видео](https://youtu.be/iEIuwn0Sv7g?si=lRhhbIdFhk6qIhQz) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-game-of-life)  |
 | youtube-css-paint-api |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-css-paint-api)   |  [Видео](https://youtu.be/df6kKb2rz0k) |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-css-paint-api)  |
 | ng-test-notes |    [Сайт](https://mihinov.github.io/youtube-tutorials/ng-test-notes)   |  [Видео нету]() |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/ng-test-notes)  |
+| youtube-ng-github-search |    [Сайт](https://mihinov.github.io/youtube-tutorials/youtube-ng-github-search)   |  [Видео нету]() |  [Код](https://github.com/mihinov/youtube-tutorials/tree/master/youtube-ng-github-search)  |
 

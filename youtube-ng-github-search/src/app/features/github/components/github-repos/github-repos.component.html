@@ -1,0 +1,14 @@
+@let loading = loading$ | async;
+@let repos = repos$ | async;
+
+@if (loading) {
+  <app-spinner></app-spinner>
+}
+
+@if (repos && !loading) {
+	<div class="repos-wrapper">
+		@for (repo of repos; track repo.id) {
+			<app-github-repo [repo]="repo"></app-github-repo>
+		}
+	</div>
+}

@@ -13,9 +13,10 @@
     "build:youtube-game-of-life": "parcel build youtube-game-of-life/only-ts/index.html --public-url ./ --dist-dir dist/youtube-game-of-life && parcel build youtube-game-of-life/only-js/index.html --public-url ./ --dist-dir dist/youtube-game-of-life/only-js",
     "build:youtube-css-paint-api": "parcel build youtube-css-paint-api/index.html --public-url ./ --dist-dir dist/youtube-css-paint-api",
     "build:ng-test-notes": "cd ./ng-test-notes && npm run build:github",
+		"build:youtube-ng-github-search": "cd ./youtube-ng-github-search && npm run build:github",
     "build:readme": "node ./helpers/copyReadme.js",
     "delete-browser-folders": "node ./helpers/delete-browser-folders.js",
-    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:youtube-game-of-life && npm run build:angular-tree && npm run build:youtube-css-paint-api && npm run build:ng-test-notes && npm run build:readme && npm run delete-browser-folders"
+    "build": "npm run build:gsap-circle && npm run build:perspective-card && npm run build:security-supplies && npm run build:pointer-events && npm run build:youtube-experience-bar && npm run build:youtube-game-of-life && npm run build:angular-tree && npm run build:youtube-css-paint-api && npm run build:ng-test-notes && npm run build:youtube-ng-github-search && npm run build:readme && npm run delete-browser-folders"
   },
   "author": "",
   "license": "ISC",

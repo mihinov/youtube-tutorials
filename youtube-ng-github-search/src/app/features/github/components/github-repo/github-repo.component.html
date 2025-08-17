@@ -1,0 +1,27 @@
+<div class="repo-card">
+	<div class="repo-card-wrapper">
+		<div class="repo-header">
+			<img [src]="repo.owner.avatar_url" alt="{{ repo.owner.login }}" class="owner-avatar" />
+			<div>
+				<a [href]="repo.html_url" target="_blank" rel="noopener noreferrer" class="repo-name">
+					{{ repo.full_name }}
+				</a>
+				@if (repo.description) {
+					<p class="repo-description">{{ repo.description }}</p>
+				}
+			</div>
+		</div>
+
+		<div class="repo-stats">
+			@if (repo.language) {
+				<span>{{ repo.language }}</span>
+			}
+			<span>⭐ {{ repo.stargazers_count }}</span>
+			<span>🍴 {{ repo.forks_count }}</span>
+			<span>🕒 {{ repo.updated_at | date: 'mediumDate' }}</span>
+			@if (repo.license) {
+				<span>📄 {{ repo.license.name }}</span>
+			}
+		</div>
+	</div> <!-- .repo-card-wrapper -->
+</div> <!-- .repo-card -->
