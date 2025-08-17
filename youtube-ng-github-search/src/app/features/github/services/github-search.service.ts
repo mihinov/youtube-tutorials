@@ -14,10 +14,14 @@ export class GithubSearchService {
 		private readonly _http: HttpClient
 	) { }
 
-	/** Метод для запуска поиска */
 	triggerSearch(params: RepoSearchParams): void {
+		const normalizedQuery = params.query
+			?.trim()                       // обрезаем пробелы по бокам
+			.replace(/\s+/g, ' ')          // схлопываем все подряд идущие пробелы
+			.toLowerCase() ?? '';          // приводим к нижнему регистру
+
 		this._searchTrigger$$.next({
-			query: params.query,
+			query: normalizedQuery,
 			sort: params.sort ?? 'stars',
 			order: params.order ?? 'desc'
 		});
@@ -68,8 +72,8 @@ export class GithubSearchService {
 	private _getRepos(params: RepoSearchParams): Observable<RepoSearchItem[]> {
 		const httpParams = new HttpParams()
 			.set('q', `${params.query} in:name`)
-			.set('sort', params.sort ?? 'stars')
-			.set('order', params.order ?? 'desc');
+			.set('sort', params.sort!)
+			.set('order', params.order!);
 
 		return this._http.get<RepoSearchResponse>(
 			'https://api.github.com/search/repositories',
