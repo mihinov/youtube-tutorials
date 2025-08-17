@@ -4,7 +4,6 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { GithubRepoComponent } from '../github-repo/github-repo.component';
 import { SpinnerComponent } from '../../../../shared/component-spinner/spinner.component';
 import { LoadingDirective } from '../../../../shared/directives/loading.directive';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-github-repos',
