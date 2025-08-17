@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RepoSearchItem, RepoSearchParams, RepoSearchResponse } from '../models';
-import { BehaviorSubject, catchError, debounceTime, filter, finalize, map, merge, Observable, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, catchError, debounceTime, filter, finalize, map, Observable, of, switchMap, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GithubSearchService {
@@ -23,7 +23,11 @@ export class GithubSearchService {
 		this._searchTrigger$$.next({
 			query: normalizedQuery,
 			sort: params.sort ?? 'stars',
-			order: params.order ?? 'desc'
+			order: params.order,
+			searchBy: {
+				name: params.searchBy.name,
+				description: params.searchBy.description
+			}
 		});
 	}
 
@@ -65,17 +69,37 @@ export class GithubSearchService {
 	}
 
 	private _getRepos(params: RepoSearchParams): Observable<RepoSearchItem[]> {
-		const httpParams = new HttpParams()
-			.set('q', `${params.query} in:name,description`)
-			.set('sort', params.sort!)
-			.set('order', params.order!);
+		const searchBy = params.searchBy;
+
+		// Если оба поля false
+		const useNameAndDescriptionByDefault = searchBy.name === false && searchBy.description === false;
+
+		const fields: string[] = [];
+
+		if (useNameAndDescriptionByDefault) {
+			fields.push('name');
+		} else {
+			if (searchBy.name) fields.push('name');
+			if (searchBy.description) fields.push('description');
+		}
+
+		const inFields = fields.length > 0 ? ` in:${fields.join(',')}` : '';
+		let httpParams = new HttpParams().set('q', `${params.query}${inFields}`);
+
+		if (params.sort) {
+			httpParams = httpParams.set('sort', params.sort);
+		}
+
+		if (params.order) {
+			httpParams = httpParams.set('order', params.order);
+		}
 
 		return this._http.get<RepoSearchResponse>(
 			'https://api.github.com/search/repositories',
 			{ params: httpParams }
 		).pipe(
 			map(res => res.items)
-		)
+		);
 	}
 
 	getLoadingStatus(): Observable<boolean> {

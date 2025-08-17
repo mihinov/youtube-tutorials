@@ -1,8 +1,46 @@
-<input
-	class="text-input"
-	name="search"
-	type="text"
-	placeholder="Найти репозитории"
-	(input)="triggerSearch($event)"
-	autofocus
->
+<form [formGroup]="form" class="repo-search-container">
+
+  <input
+		[formControl]="form.controls.query"
+		name="query"
+    class="text-input"
+    type="text"
+    placeholder="Найти репозитории"
+    (input)="triggerSearch()"
+    autofocus
+  >
+
+  <div class="repo-search-checkboxes">
+    <!-- чекбоксы выбора полей -->
+    <label class="repo-checkbox-label">
+      <input
+				type="checkbox"
+				name="name"
+				class="repo-checkbox"
+				[formControl]="form.controls.name"
+				(change)="triggerSearch()"
+			> Название
+    </label>
+    <label class="repo-checkbox-label">
+      <input
+				type="checkbox"
+				name="description"
+				class="repo-checkbox"
+				[formControl]="form.controls.description"
+				(change)="triggerSearch()"
+			> Описание
+    </label>
+
+    <!-- чекбокс сортировки -->
+    <label class="repo-checkbox-label">
+      <input
+				type="checkbox"
+				name="sortByStars"
+				class="repo-checkbox"
+				[formControl]="form.controls.sortByStars"
+				(change)="triggerSearch()"
+			> Сортировать по звёздам
+    </label>
+  </div>
+
+</form>

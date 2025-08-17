@@ -1,3 +1,86 @@
+/* контейнер формы */
+.repo-search-container {
+  display: flex;
+	flex-direction: column;
+  gap: 1rem;
+}
+
 .text-input {
 	max-width: 400px;
 }
+
+
+
+/* контейнер для чекбоксов */
+.repo-search-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* чекбокс контейнер */
+.repo-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: var(--color-text);
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+	transition-duration: 0.2s;
+	transition-property: color;
+}
+
+/* скрываем стандартный чекбокс */
+.repo-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+	--width: 1.2rem;
+	--height: 1.2rem;
+  min-width: var(--width);
+	min-height: var(--height);
+	max-width: var(--width);
+	max-height: var(--height);
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  background-color: var(--color-bg);
+  position: relative;
+  cursor: pointer;
+  transition-duration: 0.2s;
+	transition-property: background-color, opacity;
+}
+
+/* галочка */
+.repo-checkbox::after {
+	--size: 0.4rem;
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--size);
+  height: calc(var(--size) * 2);
+  border: solid var(--color-link);
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+/* отображаем галочку при чекнутом состоянии */
+.repo-checkbox:checked::after {
+  opacity: 1;
+}
+
+/* hover фон квадратика */
+.repo-checkbox:hover {
+  background-color: rgba(3, 102, 214, 0.1); /* светлый синий для hover */
+}
+
+/* disabled состояние */
+.repo-checkbox:disabled {
+  cursor: not-allowed;
+  background-color: var(--color-border);
+  opacity: 0.6;
+}
+

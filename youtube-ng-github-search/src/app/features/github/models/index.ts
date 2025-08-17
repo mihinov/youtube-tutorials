@@ -2,6 +2,10 @@ export type RepoSearchParams = {
   query: string;
   sort?: 'stars' | 'forks' | 'help-wanted-issues' | 'updated';
   order?: 'asc' | 'desc';
+	searchBy: {
+		name: boolean;
+		description: boolean;
+	}
 };
 
 interface RepoSearchOwner {
