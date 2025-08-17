@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, Inject, forwardRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit, Inject, forwardRef, DOCUMENT } from '@angular/core';
 import { TreeData, TreeNestedNode, TreeNodeStateEditable } from './angular-tree.types';
 import { TreeService } from './services/tree.service';
 import { Observable, of } from 'rxjs';
-import { DOCUMENT, NgFor, NgClass, NgIf, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import gsap from 'gsap';
 
 
@@ -18,7 +18,7 @@ import gsap from 'gsap';
 		}
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	imports: [NgFor, NgClass, NgIf, forwardRef(() => AngularTreeComponent), AsyncPipe]
+	imports: [NgClass, forwardRef(() => AngularTreeComponent), AsyncPipe]
 })
 export class AngularTreeComponent implements OnInit {
 

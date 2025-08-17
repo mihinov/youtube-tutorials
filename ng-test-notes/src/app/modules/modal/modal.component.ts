@@ -1,15 +1,15 @@
-import { DOCUMENT, NgStyle, NgClass } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Injector, Output, Type, ViewChild, ViewContainerRef } from '@angular/core';
+import { NgStyle, NgClass } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Inject, Injector, Output, Type, ViewChild, ViewContainerRef, DOCUMENT } from '@angular/core';
 import { CloseModalInputArgs, InternalModalConfig, ModalConfig, ModalRef } from './modal.models';
 import { MODAL_DATA, MODAL_REF } from './modal.tokens';
 import { Observable, ReplaySubject, shareReplay, switchMap, take, tap, timer } from 'rxjs';
 
 @Component({
-    selector: 'app-modal',
-    templateUrl: './modal.component.html',
-    styleUrl: './modal.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [NgStyle, NgClass]
+	selector: 'app-modal',
+	templateUrl: './modal.component.html',
+	styleUrl: './modal.component.scss',
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	imports: [NgStyle, NgClass]
 })
 export class ModalComponent implements AfterViewInit {
 	public modalConfig: InternalModalConfig | null = null;
@@ -26,14 +26,14 @@ export class ModalComponent implements AfterViewInit {
 		@Inject(DOCUMENT) private readonly _document: Document,
 		private readonly _injector: Injector
 	) {
-  }
+	}
 
 	ngAfterViewInit(): void {
 		this._afterViewInit$.next(true);
 	}
 
 	public createAndOpenModal$(
-		{config, returnRef, componentModalContent}: { config?: ModalConfig, returnRef: ModalRef, componentModalContent: Type<any> }
+		{ config, returnRef, componentModalContent }: { config?: ModalConfig, returnRef: ModalRef, componentModalContent: Type<any> }
 	): Observable<number> {
 		this.componentModalContent = componentModalContent;
 		const modalConfig = this._createConfig(config);
@@ -45,11 +45,11 @@ export class ModalComponent implements AfterViewInit {
 				switchMap(() => this.openModal$(modalConfig)),
 				shareReplay(1)
 			);
-  }
+	}
 
 	public openModal$(config?: ModalConfig): Observable<number> {
 		this.modalConfig = this._createConfig(config);
-    this._document.body.classList.add('overflowHidden');
+		this._document.body.classList.add('overflowHidden');
 		this._document.addEventListener('keydown', this._escFn);
 		this.isOpen = true;
 		this._cdr.detectChanges();
@@ -110,7 +110,7 @@ export class ModalComponent implements AfterViewInit {
 
 	private _closeModalCss(): void {
 		this._document.body.style.removeProperty('padding-right');
-    this._document.body.classList.remove('overflowHidden');
+		this._document.body.classList.remove('overflowHidden');
 		this._document.removeEventListener('keydown', this._escFn);
 		this.isOpen = false;
 		this._cdr.detectChanges();
@@ -118,7 +118,7 @@ export class ModalComponent implements AfterViewInit {
 
 	private _createModalContent(returnRef: ModalRef, componentModalContent: Type<any>, modalConfig: InternalModalConfig): void {
 		this._vcrModalContent.clear();
-    this._vcrModalContent.createComponent(componentModalContent, {
+		this._vcrModalContent.createComponent(componentModalContent, {
 			injector: Injector.create({
 				parent: this._injector,
 				providers: [
@@ -132,18 +132,18 @@ export class ModalComponent implements AfterViewInit {
 	}
 
 	private _createConfig(config?: ModalConfig): InternalModalConfig {
-    const defaultTransitionDuration = this._getTransitionDuration();
+		const defaultTransitionDuration = this._getTransitionDuration();
 
 		if (config === undefined) return {
 			transitionDuration: defaultTransitionDuration
 		};
 
-    const resultConfig: InternalModalConfig = {
+		const resultConfig: InternalModalConfig = {
 			...config,
-      transitionDuration: config.transitionDuration === undefined ? defaultTransitionDuration : config.transitionDuration
-    };
+			transitionDuration: config.transitionDuration === undefined ? defaultTransitionDuration : config.transitionDuration
+		};
 
-    return resultConfig;
+		return resultConfig;
 	}
 
 	private _getTransitionDuration(): number {

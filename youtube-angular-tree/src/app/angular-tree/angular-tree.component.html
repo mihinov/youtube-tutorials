@@ -1,9 +1,7 @@
 <ul>
-  <ng-container *ngFor="let node of nodes$ | async; trackBy: trackByFn">
+  @for (node of nodes$ | async; track node.id) {
     <li [attr.node-id]="node.id">
-
       <div class="label-wrapper">
-
         <div
           class="expand-more"
           [ngClass]="{
@@ -12,27 +10,24 @@
           }"
           (click)="expandNodeToggle(node)"
         ></div>
-
         <label class="label" [attr.id]="node.id">
           <input
             type="checkbox"
             [indeterminate]="isNodeIndeterminate(node)"
             [checked]="isNodeChecked(node)"
             (change)="onNodeCheckedChange($event, node)"
-          >
-          <span
-					>{{ node.name }}</span>
-        </label>
-
-      </div>
-
-      <div class="next-tree" #nextTree>
-        <app-angular-tree
-          [nodes$]="transfromChildIntoObs(node.child)"
-          *ngIf="node.child.length !== 0"
-        ></app-angular-tree>
-      </div>
-
-    </li>
-  </ng-container>
-</ul>
+            >
+            <span
+            >{{ node.name }}</span>
+          </label>
+        </div>
+        <div class="next-tree" #nextTree>
+          @if (node.child.length !== 0) {
+            <app-angular-tree
+              [nodes$]="transfromChildIntoObs(node.child)"
+            ></app-angular-tree>
+          }
+        </div>
+      </li>
+    }
+  </ul>

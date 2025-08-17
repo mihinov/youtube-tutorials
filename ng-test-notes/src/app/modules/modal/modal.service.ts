@@ -1,7 +1,7 @@
-import { Injectable, ComponentRef, Type, ApplicationRef, Inject, createComponent, EnvironmentInjector } from '@angular/core';
+import { Injectable, ComponentRef, Type, ApplicationRef, Inject, createComponent, EnvironmentInjector, DOCUMENT } from '@angular/core';
 import { ModalComponent } from './modal.component';
 import { BehaviorSubject, ReplaySubject, Subject, take, tap } from 'rxjs';
-import { DOCUMENT } from '@angular/common';
+
 import { InternalModalConfig, ModalConfig, ModalRef, ModalStateItem } from './modal.models';
 
 @Injectable({
