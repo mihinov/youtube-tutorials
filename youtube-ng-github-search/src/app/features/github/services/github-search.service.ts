@@ -28,15 +28,12 @@ export class GithubSearchService {
 	}
 
 	getRepos(): Observable<RepoSearchItem[]> {
-		const empty$ = this._searchTrigger$$.pipe(
-			filter(params => !params || !params.query),
-			tap(() => this._loading$$.next(false)),
-			map(() => [] as RepoSearchItem[])
-		);
-
-		const search$ = this._searchTrigger$$.pipe(
-			filter((params): params is RepoSearchParams => !!params && !!params.query),
+		return this._searchTrigger$$.pipe(
 			switchMap(params => {
+				if (params === null || params.query === '') {
+					this._loading$$.next(false);
+					return of([] as RepoSearchItem[]);
+				}
 				const key = JSON.stringify(params);
 
 				// если есть кэш — отдаем сразу, не трогаем debounce
@@ -65,8 +62,6 @@ export class GithubSearchService {
 				);
 			})
 		);
-
-		return merge(empty$, search$);
 	}
 
 	private _getRepos(params: RepoSearchParams): Observable<RepoSearchItem[]> {
