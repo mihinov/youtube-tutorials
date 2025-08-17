@@ -18,6 +18,9 @@
 		class="repos-wrapper"
 		[loading]="reposLoading$"
 	>
+		@if (repos.length === 0) {
+			<p>Репозитории не найдены</p>
+		}
 		@for (repo of repos; track repo.id) {
 			<app-github-repo [repo]="repo"></app-github-repo>
 		}
