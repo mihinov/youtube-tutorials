@@ -22,8 +22,5 @@ import { tap } from 'rxjs';
 export class GithubReposComponent {
 	private readonly _githubSearchService = inject(GithubSearchService);
 	protected readonly repos$ = this._githubSearchService.getRepos();
-	protected readonly reposLoading$ = this._githubSearchService.getLoadingStatus()
-	.pipe(
-		tap(loading => console.log('loading', loading))
-	);
+	protected readonly reposLoading$ = this._githubSearchService.getLoadingStatus();
 }
