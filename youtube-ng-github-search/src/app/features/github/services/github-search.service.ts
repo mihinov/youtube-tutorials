@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RepoSearchItem, RepoSearchParams, RepoSearchResponse } from '../models';
-import { BehaviorSubject, catchError, debounceTime, distinctUntilChanged, filter, finalize, map, merge, Observable, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, catchError, debounceTime, filter, finalize, map, merge, Observable, of, switchMap, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GithubSearchService {
@@ -46,26 +46,15 @@ export class GithubSearchService {
 					filter((p): p is RepoSearchParams => !!p && !!p.query),
 					tap(() => this._loading$$.next(true)),
 					debounceTime(2500),
-					distinctUntilChanged((prev, curr) =>
-						prev.query === curr.query &&
-						prev.sort === curr.sort &&
-						prev.order === curr.order
-					),
 					switchMap(p => {
-						const httpParams = new HttpParams()
-							.set('q', `${p.query} in:name`)
-							.set('sort', p.sort ?? 'stars')
-							.set('order', p.order ?? 'desc');
-
-						return this._http.get<RepoSearchResponse>(
-							'https://api.github.com/search/repositories',
-							{ params: httpParams }
-						).pipe(
-							map(res => {
-								this._cache.set(key, res.items);
-								return res.items;
+						return this._getRepos(p).pipe(
+							tap(repos => {
+								this._cache.set(key, repos);
 							}),
-							catchError(() => of([] as RepoSearchItem[])),
+							catchError((error) => {
+								alert(error.message);
+								return of([] as RepoSearchItem[]);
+							}),
 							finalize(() => this._loading$$.next(false))
 						);
 					})
@@ -74,6 +63,20 @@ export class GithubSearchService {
 		);
 
 		return merge(empty$, search$);
+	}
+
+	private _getRepos(params: RepoSearchParams): Observable<RepoSearchItem[]> {
+		const httpParams = new HttpParams()
+			.set('q', `${params.query} in:name`)
+			.set('sort', params.sort ?? 'stars')
+			.set('order', params.order ?? 'desc');
+
+		return this._http.get<RepoSearchResponse>(
+			'https://api.github.com/search/repositories',
+			{ params: httpParams }
+		).pipe(
+			map(res => res.items)
+		)
 	}
 
 	getLoadingStatus(): Observable<boolean> {
