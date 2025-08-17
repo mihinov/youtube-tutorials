@@ -15,6 +15,11 @@ export class GithubSearchService {
 
 	/** Метод для запуска поиска */
 	triggerSearch(params: RepoSearchParams): void {
+		if (!params.query) {
+			this._loading$$.next(false);
+			return;
+		};
+
 		this._searchTrigger$$.next({
 			query: params.query,
 			sort: params.sort ?? 'stars',

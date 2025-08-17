@@ -1,16 +1,20 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { GithubSearchService } from '../../services/github-search.service';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { GithubRepoComponent } from '../github-repo/github-repo.component';
 import { SpinnerComponent } from '../../../../shared/component-spinner/spinner.component';
+import { LoadingDirective } from '../../../../shared/directives/loading.directive';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-github-repos',
   imports: [
-		AsyncPipe,
-		GithubRepoComponent,
-		SpinnerComponent
-	],
+    AsyncPipe,
+    GithubRepoComponent,
+    SpinnerComponent,
+    LoadingDirective,
+		NgIf
+],
   templateUrl: './github-repos.component.html',
   styleUrl: './github-repos.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -18,5 +22,8 @@ import { SpinnerComponent } from '../../../../shared/component-spinner/spinner.c
 export class GithubReposComponent {
 	private readonly _githubSearchService = inject(GithubSearchService);
 	protected readonly repos$ = this._githubSearchService.getRepos();
-	protected readonly loading$ = this._githubSearchService.getLoadingStatus();
+	protected readonly reposLoading$ = this._githubSearchService.getLoadingStatus()
+	.pipe(
+		tap(loading => console.log('loading', loading))
+	);
 }

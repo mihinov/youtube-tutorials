@@ -1,14 +1,39 @@
-@let loading = loading$ | async;
+<!--@let reposLoading = reposLoading$ | async;
 @let repos = repos$ | async;
 
-@if (loading) {
+@if (reposLoading) {
   <app-spinner></app-spinner>
 }
 
-@if (repos && !loading) {
+@if (repos && !reposLoading) {
 	<div class="repos-wrapper">
 		@for (repo of repos; track repo.id) {
 			<app-github-repo [repo]="repo"></app-github-repo>
 		}
 	</div>
+}-->
+
+@if (repos$ | async; as repos) {
+	<div
+		class="repos-wrapper"
+		[loading]="reposLoading$"
+	>
+		@for (repo of repos; track repo.id) {
+			<app-github-repo [repo]="repo"></app-github-repo>
+		}
+	</div>
 }
+
+<!--<ng-container *ngIf="{
+	repos: repos$ | async,
+	reposLoading: reposLoading$ | async
+} as obs">
+	<div
+		class="repos-wrapper"
+		[loading]="obs.reposLoading"
+	>
+		@for (repo of obs.repos; track repo.id) {
+			<app-github-repo [repo]="repo"></app-github-repo>
+		}
+	</div>
+</ng-container>-->
