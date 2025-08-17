@@ -66,7 +66,7 @@ export class GithubSearchService {
 
 	private _getRepos(params: RepoSearchParams): Observable<RepoSearchItem[]> {
 		const httpParams = new HttpParams()
-			.set('q', `${params.query} in:name`)
+			.set('q', `${params.query} in:name,description`)
 			.set('sort', params.sort!)
 			.set('order', params.order!);
 
